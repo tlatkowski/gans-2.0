@@ -1,5 +1,5 @@
-from keras.layers import Dense, LeakyReLU, BatchNormalization, Reshape, Conv2DTranspose
-from keras.models import Input, Model
+from tensorflow.python.keras import layers
+from tensorflow.python.keras import Input, Model
 
 
 class Generator:
@@ -14,20 +14,20 @@ class Generator:
 def create_model(hidden_size):
     z = Input(shape=[hidden_size])
     
-    x = Dense(units=7 * 7 * 256, use_bias=False)(z)
-    x = BatchNormalization()(x)
-    x = LeakyReLU()(x)
+    x = layers.Dense(units=7 * 7 * 256, use_bias=False)(z)
+    x = layers.BatchNormalization()(x)
+    x = layers.LeakyReLU()(x)
     
-    x = Reshape((7, 7, 256))(x)
-    x = Conv2DTranspose(128, (5, 5), strides=(1, 1), padding='same', use_bias=False)(x)
-    x = BatchNormalization()(x)
-    x = LeakyReLU()(x)
+    x = layers.Reshape((7, 7, 256))(x)
+    x = layers.Conv2DTranspose(128, (5, 5), strides=(1, 1), padding='same', use_bias=False)(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.LeakyReLU()(x)
     
-    x = Conv2DTranspose(64, (5, 5), strides=(2, 2), padding='same', use_bias=False)(x)
-    x = BatchNormalization()(x)
-    x = LeakyReLU()(x)
+    x = layers.Conv2DTranspose(64, (5, 5), strides=(2, 2), padding='same', use_bias=False)(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.LeakyReLU()(x)
     
-    x = Conv2DTranspose(1, (5, 5), strides=(2, 2), padding='same', use_bias=False,
+    x = layers.Conv2DTranspose(1, (5, 5), strides=(2, 2), padding='same', use_bias=False,
                         activation='tanh')(x)
     
     model = Model(name='Generator', inputs=z, outputs=x)
