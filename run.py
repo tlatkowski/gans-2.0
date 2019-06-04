@@ -5,7 +5,7 @@ import tensorflow as tf
 
 from data_loaders import mnist
 from layers import losses
-from models import discriminator, generator
+from models import discriminator, generators
 
 hidden_size = 100
 
@@ -13,7 +13,7 @@ img_height = 28
 img_width = 28
 num_channels = 1
 
-g = generator.Generator(hidden_size)
+g = generators.RandomToImageGenerator(hidden_size)
 z = tf.random.normal(shape=[16, 100])
 
 generated_image = g(z)
