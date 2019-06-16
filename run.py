@@ -103,4 +103,5 @@ def train(dataset, epochs):
             print('ok')
 
 
-train(mnist.train_dataset, EPOCHS)
+dataset = mnist.load_data()
+train(dataset, EPOCHS)
