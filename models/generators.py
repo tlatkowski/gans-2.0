@@ -1,5 +1,6 @@
 from tensorflow.python.keras import Input, Model
 from tensorflow.python.keras import layers
+from models import attention
 
 
 class RandomToImageGenerator:
@@ -45,11 +46,25 @@ class TextToImageGenerator:
         return self._model(inputs)
     
     def create_model(self):
-        layers.Dot
         inputs = Input(shape=[self.max_sequence_length, self.embedding_size])
-        # inputs_transposed = layers.Permute(dims=(2, 1))(inputs)
-        # query_key = layers.Dot(axes=[1, 2])([inputs, inputs_transposed])
-        query_key = layers.Dot(axes=2)([inputs, inputs])
-        attentions = layers.Softmax(axis=-1)(query_key)  # TODO test it
-        qkv = layers.Dot(axes=1)([attentions, inputs])
-        raise NotImplementedError
+        
+        multihead_output = attention.multihead_attention_model(inputs)
+        multihead_output = layers.Flatten()(multihead_output)
+        
+        x = layers.Dense(units=7 * 7 * 256, use_bias=False)(multihead_output)
+        x = layers.BatchNormalization()(x)
+        x = layers.LeakyReLU()(x)
+
+        x = layers.Reshape((7, 7, 256))(x)
+        x = layers.Conv2DTranspose(128, (5, 5), strides=(1, 1), padding='same', use_bias=False)(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.LeakyReLU()(x)
+
+        x = layers.Conv2DTranspose(64, (5, 5), strides=(2, 2), padding='same', use_bias=False)(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.LeakyReLU()(x)
+
+        x = layers.Conv2DTranspose(1, (5, 5), strides=(2, 2), padding='same', use_bias=False,
+                                   activation='tanh')(x)
+        model = Model(name='Generator', inputs=inputs, outputs=x)
+        return model
