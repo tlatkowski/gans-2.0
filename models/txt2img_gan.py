@@ -3,6 +3,8 @@ import os
 import tensorflow as tf
 
 from models import discriminator, generators
+from models import vanilla_gan
+from data_loaders import mnist
 
 
 class Text2ImageGAN:
@@ -15,22 +17,13 @@ class Text2ImageGAN:
         img_width = 28
         num_channels = 1
         
-        g = generators.RandomToImageGenerator(hidden_size)
+        self.g = generators.RandomToImageGenerator(hidden_size)
         z = tf.random.normal(shape=[16, 100])
         
         generated_image = g(z)
-        # for i in range(generated_image.shape[0]):
-        #     plt.subplot(4, 4, i + 1)
-        #     plt.imshow(generated_image[i, :, :, 0] * 127.5 + 127.5, cmap='gray')
-        #     plt.axis('off')
         
-        # plt.show()
-        
-        d = discriminator.Discriminator(img_height, img_width, num_channels)
-        decision = d(generated_image)
-        
-        generator_optimizer = tf.keras.optimizers.Adam(1e-4)
-        discriminator_optimizer = tf.keras.optimizers.Adam(1e-4)
+        self.d = discriminator.Discriminator(img_height, img_width, num_channels)
+        decision = self.d(generated_image)
         
         checkpoint_dir = './training_checkpoints'
         checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
@@ -39,7 +32,6 @@ class Text2ImageGAN:
         #                                  generator=generator,
         #                                  discriminator=discriminator)
         
-        EPOCHS = 50
         noise_dim = 100
         num_examples_to_generate = 16
         
@@ -47,7 +39,13 @@ class Text2ImageGAN:
         # to visualize progress in the animated GIF)
         seed = tf.random.normal([num_examples_to_generate, noise_dim])
         
-        BATCH_SIZE = 200
+        self.batch_size = 200
+        self.num_epochs = 10
+    
+    def fit(self):
+        dataset = mnist.load_data(self.batch_size)
+        gan_trainer = vanilla_gan.GANTrainer(self.batch_size, self.g, self.d)
+        gan_trainer.train(dataset, self.num_epochs)
 
 
 
