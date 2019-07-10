@@ -5,7 +5,7 @@ import tensorflow as tf
 
 from data_loaders import mnist
 from layers import losses
-from models import discriminator, generators
+from models import discriminators, generators
 
 hidden_size = 100
 
@@ -25,7 +25,7 @@ generated_image = g(z)
 # plt.show()
 
 
-d = discriminator.Discriminator(img_height, img_width, num_channels)
+d = discriminators.Discriminator(img_height, img_width, num_channels)
 decision = d(generated_image)
 
 generator_optimizer = tf.keras.optimizers.Adam(1e-4)

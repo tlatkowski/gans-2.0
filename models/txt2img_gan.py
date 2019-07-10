@@ -2,15 +2,14 @@ import os
 
 import tensorflow as tf
 
-from models import discriminator, generators
-from models import vanilla_gan
 from data_loaders import mnist
+from models import discriminators, generators
+from models.gan_trainer import GANTrainer
 
 
 class Text2ImageGAN:
     
     def __init__(self):
-        
         hidden_size = 100
         
         img_height = 28
@@ -18,19 +17,12 @@ class Text2ImageGAN:
         num_channels = 1
         
         self.g = generators.RandomToImageGenerator(hidden_size)
-        z = tf.random.normal(shape=[16, 100])
+        z = tf.random.normal(shape=[16, hidden_size])
         
-        generated_image = g(z)
+        generated_image = self.g(z)
         
-        self.d = discriminator.Discriminator(img_height, img_width, num_channels)
-        decision = self.d(generated_image)
-        
-        checkpoint_dir = './training_checkpoints'
-        checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
-        # checkpoint = tf.train.Checkpoint(generator_optimizer=generator_optimizer,
-        #                                  discriminator_optimizer=discriminator_optimizer,
-        #                                  generator=generator,
-        #                                  discriminator=discriminator)
+        self.discriminator = discriminators.Discriminator(img_height, img_width, num_channels)
+        decision = self.discriminator(generated_image)
         
         noise_dim = 100
         num_examples_to_generate = 16
@@ -44,8 +36,5 @@ class Text2ImageGAN:
     
     def fit(self):
         dataset = mnist.load_data(self.batch_size)
-        gan_trainer = vanilla_gan.GANTrainer(self.batch_size, self.g, self.d)
+        gan_trainer = GANTrainer(self.batch_size, self.g, self.discriminator)
         gan_trainer.train(dataset, self.num_epochs)
-
-
-

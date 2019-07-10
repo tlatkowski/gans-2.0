@@ -1,11 +1,11 @@
 import tensorflow as tf
 
-from models import txt2img_gan
+from models import vanilla_gan
 
 
 class TestModels(tf.test.TestCase):
     
-    def testText2ImageGAN(self):
-        model = txt2img_gan.Text2ImageGAN()
+    def testRandom2ImageGAN(self):
+        model = vanilla_gan.Random2ImageGAN()
         model.fit()
         raise NotImplementedError
