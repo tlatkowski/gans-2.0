@@ -1,8 +1,28 @@
+import enum
 import os
 
 import matplotlib.pyplot as plt
 
 SAVE_IMAGE_DIR = "./outputs"
+
+
+class ModelType(enum.Enum):
+    VANILLA_GAN = 0,
+    WASSERSTEIN_GAN = 1
+
+
+def model_type_values():
+    return [i.name for i in ModelType]
+
+
+class DatasetType(enum.Enum):
+    MNIST = 0,
+    FASION_MNIST = 1
+    CIFAR10 = 2
+
+
+def dataset_type_values():
+    return [i.name for i in DatasetType]
 
 
 def generate_and_save_images(generator_model, epoch, test_input):
