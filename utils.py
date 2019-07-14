@@ -3,6 +3,8 @@ import os
 
 import matplotlib.pyplot as plt
 
+from data_loaders import mnist
+
 SAVE_IMAGE_DIR = "./outputs"
 
 
@@ -24,6 +26,17 @@ class DatasetType(enum.Enum):
 
 def dataset_type_values():
     return [i.name for i in DatasetType]
+
+
+def dataset_factory(dataset_type: DatasetType):
+    if dataset_type == DatasetType.MNIST:
+        return mnist.load_data()
+    if dataset_type == DatasetType.FASION_MNIST:
+        raise NotImplementedError
+    elif dataset_type == DatasetType.CIFAR10:
+        raise NotImplementedError
+    else:
+        raise NotImplementedError
 
 
 def generate_and_save_images(generator_model, epoch, test_input):
