@@ -19,6 +19,7 @@ class DatasetType(enum.Enum):
     MNIST = 0,
     FASION_MNIST = 1
     CIFAR10 = 2
+    COCO = 3
 
 
 def dataset_type_values():

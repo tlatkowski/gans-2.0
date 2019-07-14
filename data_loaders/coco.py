@@ -15,7 +15,7 @@ def load_json_captions(path: str):
     return caption_json
 
 
-def load_data(captions_path: str, images_path: str):
+def load_data(captions_path=CAPTIONS_DIR, images_path=IMAGES_DIR):
     captions_json = load_json_captions(captions_path)
     annotations = captions_json["annotations"]
     
@@ -35,7 +35,7 @@ def load_data(captions_path: str, images_path: str):
     return images_paths, captions_texts
 
 
-def load_vactorized_data(captions_path: str, images_path: str):
+def load_vactorized_data(captions_path=CAPTIONS_DIR, images_path=IMAGES_DIR):
     captions_json = load_json_captions(captions_path)
     
     annotations = captions_json["annotations"]
@@ -57,7 +57,3 @@ def load_vactorized_data(captions_path: str, images_path: str):
     captions_texts = np.array(captions_texts)
     
     return images_paths, captions_texts
-
-
-load_data(CAPTIONS_DIR, IMAGES_DIR)
-load_vactorized_data(CAPTIONS_DIR, IMAGES_DIR)

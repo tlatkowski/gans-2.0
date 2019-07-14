@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from data_loaders import mnist
+from data_loaders import coco
 from models import discriminators, generators
 from models.gan_trainer import GANTrainer
 
@@ -28,6 +28,6 @@ class Text2ImageGAN:
         self.num_epochs = 10
     
     def fit(self):
-        dataset = mnist.load_data(self.batch_size)
+        dataset = coco.load_data(self.batch_size)
         gan_trainer = GANTrainer(self.batch_size, self.generator, self.discriminator)
         gan_trainer.train(dataset, self.num_epochs)
