@@ -1,10 +1,12 @@
 import argparse
+from easydict import EasyDict as edict
 
 import utils
 
 
-def run_experiment(dataset, gan_type):
-    pass
+def run_experiment(dataset_type, gan_type):
+    input_params = edict({'batch_size': 4, 'buffer_size': 60000})
+    dataset = utils.dataset_factory(input_params, dataset_type)
 
 
 if __name__ == '__main__':
@@ -22,4 +24,4 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     
-    run_experiment(argparse.dataset_type, argparse.gan_type)
+    run_experiment(args.dataset_type, args.gan_type)

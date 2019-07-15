@@ -33,7 +33,7 @@ class Random2ImageGAN:
         # to visualize progress in the animated GIF)
         seed = tf.random.normal([num_examples_to_generate, noise_dim])
         
-    def fit(self):
-        dataset = mnist.load_data(self.batch_size)
+    def fit(self, dataset):
+        # dataset = mnist.load_data(self.batch_size)
         gan_trainer = GANTrainer(self.batch_size, self.generator, self.d)
         gan_trainer.train(dataset, self.num_epochs)

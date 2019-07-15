@@ -2,6 +2,7 @@ import enum
 import os
 
 import matplotlib.pyplot as plt
+from easydict import EasyDict as edict
 
 from data_loaders import mnist
 
@@ -28,12 +29,12 @@ def dataset_type_values():
     return [i.name for i in DatasetType]
 
 
-def dataset_factory(dataset_type: DatasetType):
-    if dataset_type == DatasetType.MNIST:
-        return mnist.load_data()
-    if dataset_type == DatasetType.FASION_MNIST:
+def dataset_factory(input_params: edict, dataset_type: DatasetType):
+    if dataset_type == DatasetType.MNIST.name:
+        return mnist.load_data(input_params)
+    if dataset_type == DatasetType.FASION_MNIST.name:
         raise NotImplementedError
-    elif dataset_type == DatasetType.CIFAR10:
+    elif dataset_type == DatasetType.CIFAR10.name:
         raise NotImplementedError
     else:
         raise NotImplementedError
