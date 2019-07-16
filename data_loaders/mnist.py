@@ -4,7 +4,6 @@ from easydict import EasyDict as edict
 BUFFER_SIZE = 60000
 
 
-# def load_data(batch_size, buffer_size=BUFFER_SIZE):
 def load_data(input_params: edict):
     (train_images, train_labels), (_, _) = tf.keras.datasets.mnist.load_data()
     train_images = train_images.reshape(train_images.shape[0], 28, 28, 1).astype('float32')

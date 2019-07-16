@@ -3,6 +3,8 @@ import os
 
 import matplotlib.pyplot as plt
 from easydict import EasyDict as edict
+from models import vanilla_gan
+
 
 from data_loaders import mnist
 
@@ -35,6 +37,15 @@ def dataset_factory(input_params: edict, dataset_type: DatasetType):
     if dataset_type == DatasetType.FASION_MNIST.name:
         raise NotImplementedError
     elif dataset_type == DatasetType.CIFAR10.name:
+        raise NotImplementedError
+    else:
+        raise NotImplementedError
+
+
+def model_factory(input_params: edict, model_type: ModelType):
+    if model_type == ModelType.VANILLA_GAN.name:
+        return vanilla_gan.Random2ImageGAN()
+    if model_type == ModelType.WASSERSTEIN_GAN.name:
         raise NotImplementedError
     else:
         raise NotImplementedError
