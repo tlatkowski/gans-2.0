@@ -7,6 +7,9 @@ from models import vanilla_gan
 
 
 from data_loaders import mnist
+from data_loaders import fashion_mnist
+from data_loaders import cifar10
+
 
 SAVE_IMAGE_DIR = "./outputs"
 
@@ -35,9 +38,9 @@ def dataset_factory(input_params: edict, dataset_type: DatasetType):
     if dataset_type == DatasetType.MNIST.name:
         return mnist.load_data(input_params)
     if dataset_type == DatasetType.FASION_MNIST.name:
-        raise NotImplementedError
+        return fashion_mnist.load_data()
     elif dataset_type == DatasetType.CIFAR10.name:
-        raise NotImplementedError
+        return cifar10.load_data()
     else:
         raise NotImplementedError
 
