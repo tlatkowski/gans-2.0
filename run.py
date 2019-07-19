@@ -1,4 +1,5 @@
 import argparse
+
 from easydict import EasyDict as edict
 
 import utils
@@ -8,6 +9,7 @@ def run_experiment(dataset_type, gan_type):
     input_params = edict({'batch_size': 4, 'buffer_size': 60000})
     dataset = utils.dataset_factory(input_params, dataset_type)
     gan_model = utils.model_factory(input_params, gan_type)
+    gan_model.fit(dataset)
 
 
 if __name__ == '__main__':

@@ -47,7 +47,7 @@ def dataset_factory(input_params: edict, dataset_type: DatasetType):
 
 def model_factory(input_params: edict, model_type: ModelType):
     if model_type == ModelType.VANILLA_GAN.name:
-        return vanilla_gan.Random2ImageGAN()
+        return vanilla_gan.Random2ImageGAN(input_params)
     if model_type == ModelType.WASSERSTEIN_GAN.name:
         raise NotImplementedError
     else:
