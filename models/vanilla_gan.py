@@ -9,19 +9,20 @@ class Random2ImageGAN:
     
     def __init__(self, input_params: edict):
         self.batch_size = input_params.batch_size
-        self.num_epochs = 10
-        hidden_size = 100
+        self.num_epochs = input_params.num_epochs  # 10
+        self.hidden_size = input_params.hidden_size  # 100
         
-        img_height = 28
-        img_width = 28
-        num_channels = 1
+        self.img_height = input_params.img_height  # 28
+        self.img_width = input_params.img_width  # 28
+        self.num_channels = input_params.num_channels  # 1
         
-        self.generator = generators.RandomToImageGenerator(hidden_size)
-        z = tf.random.normal(shape=[self.batch_size, hidden_size])
+        self.generator = generators.RandomToImageGenerator(self.hidden_size)
+        z = tf.random.normal(shape=[self.batch_size, self.hidden_size])
         
         generated_image = self.generator(z)
         
-        self.discriminator = discriminators.Discriminator(img_height, img_width, num_channels)
+        self.discriminator = discriminators.Discriminator(self.img_height, self.img_width,
+                                                          self.num_channels)
         decision = self.discriminator(generated_image)
         
         noise_dim = 100
