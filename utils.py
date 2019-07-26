@@ -34,7 +34,7 @@ def dataset_type_values():
     return [i.name for i in DatasetType]
 
 
-def dataset_factory(input_params: edict, dataset_type: DatasetType):
+def dataset_factory(input_params, dataset_type: DatasetType):
     if dataset_type == DatasetType.MNIST.name:
         return mnist.load_data(input_params)
     if dataset_type == DatasetType.FASION_MNIST.name:
