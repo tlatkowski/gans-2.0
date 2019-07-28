@@ -1,8 +1,6 @@
 import tensorflow as tf
 from easydict import EasyDict as edict
 
-BUFFER_SIZE = 60000
-
 
 def load_data(input_params: edict):
     (train_images, train_labels), (_, _) = tf.keras.datasets.mnist.load_data()

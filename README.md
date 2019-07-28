@@ -13,7 +13,17 @@ in case of GPU usage:
 ```bash
 ./bin/install-gpu.sh
 ```
+
+Current version of pipeline supports the following datasets:
+ * MNIST
+ * FASHION MNIST
+ * CIFAR10 
+
 ## Running pipeline
+In order to run GAN training on specific problem you have to provide two mandatory parameters:
+ * **--dataset_type**
+ * **--gan_type**
+ 
 ```bash
 python run.py --dataset_type MNIST --gan_type VANILLA_GAN
 ```
