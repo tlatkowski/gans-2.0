@@ -1,4 +1,9 @@
 {
   "batch_size": 4,
-  "buffer_size": 60000
+  "buffer_size": 60000,
+  "num_epochs": 10,
+  "hidden_size": 100,
+  "img_height": 28,
+  "img_width": 28,
+  "num_channels": 1
 }
