@@ -10,7 +10,7 @@ class RandomToImageGenerator:
         self._model = self.create_model()
     
     def __call__(self, inputs, **kwargs):
-        return self._model(inputs)
+        return self._model(inputs=inputs, **kwargs)
     
     def create_model(self):
         z = Input(shape=[self.hidden_size])

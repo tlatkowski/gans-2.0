@@ -19,18 +19,15 @@ class Random2ImageGAN:
         self.generator = generators.RandomToImageGenerator(self.hidden_size)
         z = tf.random.normal(shape=[self.batch_size, self.hidden_size])
         
-        generated_image = self.generator(z)
+        generated_image = self.generator(z, training=False)
         
         self.discriminator = discriminators.Discriminator(self.img_height, self.img_width,
                                                           self.num_channels)
-        decision = self.discriminator(generated_image)
-        
-        noise_dim = 100
-        num_examples_to_generate = 16
+        # decision = self.discriminator(generated_image)
         
         # We will reuse this seed overtime (so it's easier)
         # to visualize progress in the animated GIF)
-        seed = tf.random.normal([num_examples_to_generate, noise_dim])
+        # seed = tf.random.normal([num_examples_to_generate, noise_dim])
     
     def fit(self, dataset):
         gan_trainer = GANTrainer(self.batch_size, self.generator, self.discriminator)

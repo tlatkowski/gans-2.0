@@ -2,14 +2,13 @@ import enum
 import os
 
 import matplotlib.pyplot as plt
+from IPython import display
 from easydict import EasyDict as edict
-from models import vanilla_gan
 
-
-from data_loaders import mnist
-from data_loaders import fashion_mnist
 from data_loaders import cifar10
-
+from data_loaders import fashion_mnist
+from data_loaders import mnist
+from models import vanilla_gan
 
 SAVE_IMAGE_DIR = "./outputs"
 
@@ -54,13 +53,16 @@ def model_factory(input_params: edict, model_type: ModelType):
         raise NotImplementedError
 
 
-def generate_and_save_images(generator_model, epoch, test_input):
-    # Notice `training` is set to False.
+def generate_and_save_images(generator_model, epoch, test_input, num_examples_to_display=16):
     # This is so all layers run in inference mode (batchnorm).
+    display.clear_output(wait=True)
     predictions = generator_model(test_input, training=False)
+    if predictions.shape[0] < num_examples_to_display:
+        raise ValueError("Input batch size cannot be less than number of example to display.")
+    # Notice `training` is set to False.
     
     # fig = plt.figure(figsize=(4, 4))
-    for i in range(predictions.shape[0]):
+    for i in range(num_examples_to_display):
         plt.subplot(4, 4, i + 1)
         plt.imshow(predictions[i, :, :, 0] * 127.5 + 127.5, cmap='gray')
         plt.axis('off')

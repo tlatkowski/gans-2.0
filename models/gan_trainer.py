@@ -26,14 +26,14 @@ class GANTrainer:
     
     def train(self, dataset, epochs):
         i = 0
+        seed = tf.random.normal([self.batch_size, 100])
         for epoch in range(epochs):
             print(epoch)
             for image_batch in dataset:
                 i += 1
                 self.train_step(image_batch)
                 print(i)
-            dataset_utils.generate_and_save_images(self.generator, epoch + 1,
-                                                   tf.random.normal([self.batch_size, 100]))
+            dataset_utils.generate_and_save_images(self.generator, epoch + 1, seed)
             
             if (epoch + 1) % self.checkpoint_step == 0:
                 # self.checkpoint.save(file_prefix=self.checkpoint_prefix)
