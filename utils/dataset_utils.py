@@ -25,7 +25,7 @@ def model_type_values():
 
 class DatasetType(enum.Enum):
     MNIST = 0,
-    FASION_MNIST = 1
+    FASHION_MNIST = 1
     CIFAR10 = 2
     COCO = 3
 
@@ -37,8 +37,8 @@ def dataset_type_values():
 def dataset_factory(input_params, dataset_type: DatasetType):
     if dataset_type == DatasetType.MNIST.name:
         return mnist.load_data(input_params)
-    if dataset_type == DatasetType.FASION_MNIST.name:
-        return fashion_mnist.load_data()
+    if dataset_type == DatasetType.FASHION_MNIST.name:
+        return fashion_mnist.load_data(input_params)
     elif dataset_type == DatasetType.CIFAR10.name:
         return cifar10.load_data()
     else:

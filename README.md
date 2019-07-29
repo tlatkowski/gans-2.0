@@ -1,3 +1,5 @@
+![](https://img.shields.io/badge/Python-3.6-blue.svg) ![](https://img.shields.io/badge/TensorFlow-2.0.0-blue.svg) ![](https://img.shields.io/badge/License-MIT-blue.svg)
+
 # Set of basic Generative Adversarial Networks experiments
 
 ## Installation

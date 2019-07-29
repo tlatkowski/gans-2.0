@@ -1,7 +1,7 @@
 import tensorflow as tf
 
-import utils
 from layers import losses
+from utils import dataset_utils
 
 SEED = 0
 CHECKPOINT_DIR = './training_checkpoints'
@@ -32,8 +32,8 @@ class GANTrainer:
                 i += 1
                 self.train_step(image_batch)
                 print(i)
-            utils.generate_and_save_images(self.generator, epoch + 1,
-                                           tf.random.normal([self.batch_size, 100]))
+            dataset_utils.generate_and_save_images(self.generator, epoch + 1,
+                                                   tf.random.normal([self.batch_size, 100]))
             
             if (epoch + 1) % self.checkpoint_step == 0:
                 # self.checkpoint.save(file_prefix=self.checkpoint_prefix)
