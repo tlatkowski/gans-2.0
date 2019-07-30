@@ -109,3 +109,4 @@ venv.bak/
 val2017
 !config/fashion_mnist.json
 !config/mnist.json
+!config/cifar10.json

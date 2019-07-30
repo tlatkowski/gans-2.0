@@ -8,7 +8,11 @@ class Discriminator:
         self._model = create_model(img_height, img_width, num_channels)
     
     def __call__(self, inputs, **kwargs):
-        return self._model(inputs)
+        return self._model(inputs=inputs, **kwargs)
+    
+    @property
+    def trainable_vars(self):
+        return self._model.trainable_variables
 
 
 def create_model(img_height, img_width, num_channels):

@@ -9,11 +9,12 @@ CHECKPOINT_DIR = './training_checkpoints'
 
 class GANTrainer:
     
-    def __init__(self, batch_size, generator, discriminator, checkpoint_step=15):
+    def __init__(self, batch_size, generator, discriminator, dataset_type, checkpoint_step=15):
         self.batch_size = batch_size
         self.generator = generator
         self.discriminator = discriminator
         self.checkpoint_step = checkpoint_step
+        self.dataset_type = dataset_type
         
         self.generator_optimizer = tf.keras.optimizers.Adam(1e-4)
         self.discriminator_optimizer = tf.keras.optimizers.Adam(1e-4)
@@ -33,7 +34,8 @@ class GANTrainer:
                 i += 1
                 self.train_step(image_batch)
                 print(i)
-            dataset_utils.generate_and_save_images(self.generator, epoch + 1, seed)
+            dataset_utils.generate_and_save_images(self.generator, epoch + 1, seed,
+                                                   self.dataset_type)
             
             if (epoch + 1) % self.checkpoint_step == 0:
                 # self.checkpoint.save(file_prefix=self.checkpoint_prefix)
@@ -54,11 +56,11 @@ class GANTrainer:
             disc_loss = losses.discriminator_loss(real_output, fake_output)
         
         gradients_of_generator = gen_tape.gradient(gen_loss,
-                                                   self.generator._model.trainable_variables)
+                                                   self.generator.trainable_variables)
         gradients_of_discriminator = disc_tape.gradient(disc_loss,
-                                                        self.discriminator._model.trainable_variables)
+                                                        self.discriminator.trainable_variables)
         
         self.generator_optimizer.apply_gradients(
-            zip(gradients_of_generator, self.generator._model.trainable_variables))
+            zip(gradients_of_generator, self.generator.trainable_variables))
         self.discriminator_optimizer.apply_gradients(
-            zip(gradients_of_discriminator, self.discriminator._model.trainable_variables))
+            zip(gradients_of_discriminator, self.discriminator.trainable_variables))

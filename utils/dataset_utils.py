@@ -44,30 +44,29 @@ def dataset_factory(input_params, dataset_type: DatasetType):
         raise NotImplementedError
 
 
-def model_factory(input_params: edict, model_type: ModelType):
+def model_factory(input_params: edict, model_type: ModelType, dataset_type):
     if model_type == ModelType.VANILLA_GAN.name:
-        return vanilla_gan.Random2ImageGAN(input_params)
+        return vanilla_gan.Random2ImageGAN(input_params, dataset_type)
     if model_type == ModelType.WASSERSTEIN_GAN.name:
         raise NotImplementedError
     else:
         raise NotImplementedError
 
 
-def generate_and_save_images(generator_model, epoch, test_input, num_examples_to_display=16):
-    # This is so all layers run in inference mode (batchnorm).
+def generate_and_save_images(generator_model, epoch, test_input, dataset_name,
+                             num_examples_to_display=16):
     display.clear_output(wait=True)
     predictions = generator_model(test_input, training=False)
     if predictions.shape[0] < num_examples_to_display:
         raise ValueError("Input batch size cannot be less than number of example to display.")
-    # Notice `training` is set to False.
     
-    # fig = plt.figure(figsize=(4, 4))
     for i in range(num_examples_to_display):
         plt.subplot(4, 4, i + 1)
         plt.imshow(predictions[i, :, :, 0] * 127.5 + 127.5, cmap='gray')
         plt.axis('off')
-    os.makedirs(SAVE_IMAGE_DIR, exist_ok=True)
-    plt.savefig(os.path.join(SAVE_IMAGE_DIR, 'image_at_epoch_{:04d}.png'.format(epoch)))
+    save_path = os.path.join(SAVE_IMAGE_DIR, dataset_name)
+    os.makedirs(save_path, exist_ok=True)
+    plt.savefig(os.path.join(save_path, 'image_at_epoch_{:04d}.png'.format(epoch)))
 
 
 def plot_image_grid(generated_image):

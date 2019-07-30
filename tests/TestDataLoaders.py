@@ -1,11 +1,22 @@
 import tensorflow as tf
 from tensorflow.python.keras import Input
+from easydict import EasyDict as edict
 
-from data_loaders import coco
+from data_loaders import cifar10
 
 
 class TestDataLoaders(tf.test.TestCase):
     
     def testCocoDataLoader(self):
-        images_paths, captions_texts = coco.load_data()
-        print(images_paths)
+        raise NotImplementedError
+        
+    def testMnistDataLoader(self):
+        raise NotImplementedError
+
+    def testFashionMnistDataLoader(self):
+        raise NotImplementedError
+    
+    def testCifar10DataLoader(self):
+        input_params = edict({'batch_size': 4, 'buffer_size': 60000})
+        dataset = cifar10.load_data(input_params)
+        print('pass')
