@@ -1,10 +1,11 @@
 from easydict import EasyDict as edict
 
-from models import discriminators, generators
-from models.gan_trainer import GANTrainer
+from models import discriminators
+from models.gan_trainer import VanillaGANTrainer
+from utils import dataset_utils
 
 
-class Random2ImageGAN:
+class VanillaGAN:
     
     def __init__(self, input_params: edict, dataset_type):
         self.batch_size = input_params.batch_size
@@ -16,11 +17,13 @@ class Random2ImageGAN:
         self.num_channels = input_params.num_channels
         self.dataset_type = dataset_type
         
-        self.generator = generators.RandomToImageGenerator(self.hidden_size)
+        self.generator = dataset_utils.generator_model_factory(input_params, dataset_type)
         self.discriminator = discriminators.Discriminator(self.img_height,
                                                           self.img_width,
                                                           self.num_channels)
+        self.vanilla_gan_trainer = VanillaGANTrainer(self.batch_size, self.generator,
+                                                     self.discriminator,
+                                                     self.dataset_type)
     
     def fit(self, dataset):
-        gan_trainer = GANTrainer(self.batch_size, self.generator, self.discriminator, self.dataset_type)
-        gan_trainer.train(dataset, self.num_epochs)
+        self.vanilla_gan_trainer.train(dataset, self.num_epochs)

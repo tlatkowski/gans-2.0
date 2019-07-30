@@ -8,6 +8,7 @@ from easydict import EasyDict as edict
 from data_loaders import cifar10
 from data_loaders import fashion_mnist
 from data_loaders import mnist
+from models import generators
 from models import vanilla_gan
 
 SAVE_IMAGE_DIR = "./outputs"
@@ -39,16 +40,28 @@ def dataset_factory(input_params, dataset_type: DatasetType):
     if dataset_type == DatasetType.FASHION_MNIST.name:
         return fashion_mnist.load_data(input_params)
     elif dataset_type == DatasetType.CIFAR10.name:
-        return cifar10.load_data()
+        return cifar10.load_data(input_params)
     else:
         raise NotImplementedError
 
 
 def model_factory(input_params: edict, model_type: ModelType, dataset_type):
     if model_type == ModelType.VANILLA_GAN.name:
-        return vanilla_gan.Random2ImageGAN(input_params, dataset_type)
+        return vanilla_gan.VanillaGAN(input_params, dataset_type)
     if model_type == ModelType.WASSERSTEIN_GAN.name:
         raise NotImplementedError
+    else:
+        raise NotImplementedError
+
+
+def generator_model_factory(input_params, dataset_type: DatasetType):
+    if dataset_type == DatasetType.MNIST.name:
+        return generators.RandomToImageGenerator(input_params)
+    if dataset_type == DatasetType.FASHION_MNIST.name:
+        return generators.RandomToImageGenerator(input_params)
+    elif dataset_type == DatasetType.CIFAR10.name:
+        # return generators.RandomToImageCifar10Generator(input_params)
+        return generators.RandomToImageCifar10NearestNeighborUpSamplingGenerator(input_params)
     else:
         raise NotImplementedError
 
@@ -62,7 +75,11 @@ def generate_and_save_images(generator_model, epoch, test_input, dataset_name,
     
     for i in range(num_examples_to_display):
         plt.subplot(4, 4, i + 1)
-        plt.imshow(predictions[i, :, :, 0] * 127.5 + 127.5, cmap='gray')
+        if generator_model.num_channels == 3:
+            img_to_plot = predictions[i, :, :, :] * 127.5 + 127.5
+        else:
+            img_to_plot = predictions[i, :, :, 0] * 127.5 + 127.5
+        plt.imshow(img_to_plot, cmap='gray')
         plt.axis('off')
     save_path = os.path.join(SAVE_IMAGE_DIR, dataset_name)
     os.makedirs(save_path, exist_ok=True)

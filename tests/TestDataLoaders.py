@@ -1,5 +1,4 @@
 import tensorflow as tf
-from tensorflow.python.keras import Input
 from easydict import EasyDict as edict
 
 from data_loaders import cifar10
@@ -7,12 +6,9 @@ from data_loaders import cifar10
 
 class TestDataLoaders(tf.test.TestCase):
     
-    def testCocoDataLoader(self):
-        raise NotImplementedError
-        
     def testMnistDataLoader(self):
         raise NotImplementedError
-
+    
     def testFashionMnistDataLoader(self):
         raise NotImplementedError
     

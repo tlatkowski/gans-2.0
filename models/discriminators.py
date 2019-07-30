@@ -11,7 +11,7 @@ class Discriminator:
         return self._model(inputs=inputs, **kwargs)
     
     @property
-    def trainable_vars(self):
+    def trainable_variables(self):
         return self._model.trainable_variables
 
 
