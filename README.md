@@ -1,6 +1,6 @@
 ![](https://img.shields.io/badge/Python-3.6-blue.svg) ![](https://img.shields.io/badge/TensorFlow-2.0.0-blue.svg) ![](https://img.shields.io/badge/License-MIT-blue.svg)
 
-# Set of basic Generative Adversarial Networks experiments
+# GANs 2.0: a set of basic Generative Adversarial Networks implemented in TensorFlow 2.0
 
 ## Installation
 
