@@ -108,7 +108,7 @@ venv.bak/
 *.zip
 val2017
 outputs
-!config/fashion_mnist.json
-!config/mnist.json
-!config/cifar10.json
+!config/vanilla_fashion_mnist.json
+!config/vanilla_mnist.json
+!config/vanilla_cifar10.json
 TODO.md

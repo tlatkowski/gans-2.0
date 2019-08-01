@@ -27,14 +27,14 @@ class VanillaGANTrainer:
     
     def train(self, dataset, epochs):
         i = 0
-        seed = tf.random.normal([self.batch_size, 100])
+        test_seed = tf.random.normal([self.batch_size, 100])
         for epoch in range(epochs):
             print(epoch)
             for image_batch in dataset:
                 i += 1
                 self.train_step(image_batch)
                 print(i)
-            dataset_utils.generate_and_save_images(self.generator, epoch + 1, seed,
+            dataset_utils.generate_and_save_images(self.generator, epoch + 1, test_seed,
                                                    self.dataset_type)
             
             if (epoch + 1) % self.checkpoint_step == 0:
@@ -86,14 +86,16 @@ class ConditionalGANTrainer:
     
     def train(self, dataset, epochs):
         i = 0
-        seed = tf.random.normal([self.batch_size, 100])
         for epoch in range(epochs):
             print(epoch)
             for image_batch in dataset:
                 i += 1
                 self.train_step(image_batch)
                 print(i)
-            dataset_utils.generate_and_save_images(self.generator, epoch + 1, seed,
+            
+            test_seed = [tf.random.normal([self.batch_size, 100]),
+                         tf.one_hot(indices=[1] * self.batch_size, depth=10)]
+            dataset_utils.generate_and_save_images(self.generator, epoch + 1, test_seed,
                                                    self.dataset_type)
             
             if (epoch + 1) % self.checkpoint_step == 0:
@@ -101,15 +103,17 @@ class ConditionalGANTrainer:
                 print('ok')
     
     @tf.function
-    def train_step(self, real_images, generator_inputs=None):
-        if generator_inputs is None:
-            generator_inputs = tf.random.normal([self.batch_size, 100])
+    def train_step(self, real_images):
+        real_images, class_ids = real_images
+        
+        batch_size = real_images.shape[0]
+        generator_inputs = tf.random.normal([batch_size, 100])
         
         with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
-            fake_images = self.generator(generator_inputs, training=True)
+            fake_images = self.generator([generator_inputs, class_ids], training=True)
             
-            real_output = self.discriminator(real_images, training=True)
-            fake_output = self.discriminator(fake_images, training=True)
+            real_output = self.discriminator([real_images, class_ids], training=True)
+            fake_output = self.discriminator([fake_images, class_ids], training=True)
             
             gen_loss = losses.generator_loss(fake_output)
             disc_loss = losses.discriminator_loss(real_output, fake_output)
@@ -123,6 +127,7 @@ class ConditionalGANTrainer:
             zip(gradients_of_generator, self.generator.trainable_variables))
         self.discriminator_optimizer.apply_gradients(
             zip(gradients_of_discriminator, self.discriminator.trainable_variables))
+
 
 class WassersteinGANTrainer:
     

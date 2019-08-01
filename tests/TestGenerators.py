@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import tensorflow as tf
+from easydict import EasyDict as edict
 
 from models import generators
 
@@ -18,6 +19,18 @@ class TestModels(tf.test.TestCase):
         g = generators.TextToImageGenerator(max_sequence_length=50, embedding_size=64)
         z = tf.random_normal(shape=[1, 100])
         output_img = g(z)
+        expected_shape = (1, 28, 28, 1)
+        self.assertEqual(output_img.shape, expected_shape)
+    
+    def testRandomToImageConditionalGeneratorOutputShape(self):
+        input_params = edict({
+            'hidden_size': 100,
+            'num_classes': 10
+        })
+        g = generators.RandomToImageConditionalGenerator(input_params)
+        z = tf.random.normal(shape=[1, 100])
+        class_id = tf.one_hot(indices=[1], depth=10)
+        output_img = g([z, class_id])
         expected_shape = (1, 28, 28, 1)
         self.assertEqual(output_img.shape, expected_shape)
     
