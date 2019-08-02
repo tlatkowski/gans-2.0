@@ -4,7 +4,7 @@ import os
 import matplotlib.pyplot as plt
 from IPython import display
 from easydict import EasyDict as edict
-
+import math
 from data_loaders import cifar10
 from data_loaders import fashion_mnist
 from data_loaders import mnist
@@ -81,8 +81,10 @@ def generate_and_save_images(generator_model, epoch, test_input, dataset_name,
     if predictions.shape[0] < num_examples_to_display:
         raise ValueError("Input batch size cannot be less than number of example to display.")
     
+    n = int(math.sqrt(num_examples_to_display))
+    
     for i in range(num_examples_to_display):
-        plt.subplot(4, 4, i + 1)
+        plt.subplot(n, n, i + 1)
         if generator_model.num_channels == 3:
             img_to_plot = predictions[i, :, :, :] * 127.5 + 127.5
         else:

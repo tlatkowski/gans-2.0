@@ -9,6 +9,7 @@ class Discriminator:
         self.img_height = input_params.img_height
         self.img_width = input_params.img_width
         self.num_channels = input_params.num_channels
+        self.num_classes = input_params.num_classes
         self._model = self.create_model()
     
     def __call__(self, inputs, **kwargs):
@@ -55,13 +56,15 @@ class ConditionalDiscriminator:
     
     def create_model(self):
         input_img = Input(shape=(self.img_height, self.img_width, self.num_channels))
-        class_id = Input(shape=[self.num_classes])
+        # class_id = Input(shape=[self.num_classes])
+        class_id = Input(shape=[1])
         
-        x = layers.Flatten()(input_img)
-        x = layers.Concatenate(axis=1)([x, class_id])
-        x = layers.Dense(units=256, activation='relu')(x)
+        embedded_id = layers.Embedding(input_dim=10, output_dim=50)(class_id)
+        embedded_id = layers.Dense(units=input_img.shape[1] * input_img.shape[2])(embedded_id)
+        embedded_id = layers.Reshape(target_shape=(input_img.shape[1], input_img.shape[2], 1))(
+            embedded_id)
         
-        x = layers.Reshape(target_shape=(16, 16, 1))(x)
+        x = layers.Concatenate(axis=3)([input_img, embedded_id])
         
         x = layers.Conv2D(filters=64, kernel_size=(5, 5), strides=(2, 2), padding='same')(x)
         x = layers.LeakyReLU()(x)

@@ -1,5 +1,5 @@
 import tensorflow as tf
-
+import numpy as np
 from layers import losses
 from utils import dataset_utils
 
@@ -31,9 +31,9 @@ class VanillaGANTrainer:
         for epoch in range(epochs):
             print(epoch)
             for image_batch in dataset:
-                i += 1
+                # i += 1
                 self.train_step(image_batch)
-                print(i)
+                # print(i)
             dataset_utils.generate_and_save_images(self.generator, epoch + 1, test_seed,
                                                    self.dataset_type)
             
@@ -92,11 +92,13 @@ class ConditionalGANTrainer:
                 i += 1
                 self.train_step(image_batch)
                 print(i)
-            
-            test_seed = [tf.random.normal([self.batch_size, 100]),
-                         tf.one_hot(indices=[1] * self.batch_size, depth=10)]
+            test_batch = 100
+            labels = [0] * 10 + [1] * 10 + [2] * 10 + [3] * 10 + [4] * 10 + [5] * 10 + [6] * 10 + [7] * 10 + [8] * 10 + [9] * 10
+            test_seed = [tf.random.normal([test_batch, 100]),
+                         np.array(labels)]
+                         # tf.one_hot(indices=[1] * self.batch_size, depth=10)]
             dataset_utils.generate_and_save_images(self.generator, epoch + 1, test_seed,
-                                                   self.dataset_type)
+                                                   self.dataset_type, num_examples_to_display=test_batch)
             
             if (epoch + 1) % self.checkpoint_step == 0:
                 # self.checkpoint.save(file_prefix=self.checkpoint_prefix)
@@ -104,16 +106,17 @@ class ConditionalGANTrainer:
     
     @tf.function
     def train_step(self, real_images):
-        real_images, class_ids = real_images
+        real_images, real_labels = real_images
         
         batch_size = real_images.shape[0]
         generator_inputs = tf.random.normal([batch_size, 100])
-        
+        # fake_labels = tf.one_hot(indices=np.random.randint(0, 10, batch_size), depth=10)
+        fake_labels = np.random.randint(0, 10, batch_size)
         with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
-            fake_images = self.generator([generator_inputs, class_ids], training=True)
+            fake_images = self.generator([generator_inputs, fake_labels], training=True)
             
-            real_output = self.discriminator([real_images, class_ids], training=True)
-            fake_output = self.discriminator([fake_images, class_ids], training=True)
+            real_output = self.discriminator([real_images, real_labels], training=True)
+            fake_output = self.discriminator([fake_images, fake_labels], training=True)
             
             gen_loss = losses.generator_loss(fake_output)
             disc_loss = losses.discriminator_loss(real_output, fake_output)

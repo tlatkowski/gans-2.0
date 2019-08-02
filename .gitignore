@@ -111,4 +111,5 @@ outputs
 !config/vanilla_fashion_mnist.json
 !config/vanilla_mnist.json
 !config/vanilla_cifar10.json
+!config/conditional_mnist.json
 TODO.md

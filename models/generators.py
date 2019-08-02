@@ -145,16 +145,22 @@ class RandomToImageConditionalGenerator:
     
     def create_model(self):
         z = Input(shape=[self.hidden_size])
-        class_id = Input(shape=[self.num_classes])
+        # class_id = Input(shape=[self.num_classes])
+        class_id = Input(shape=[1])
         
-        inputs = layers.Concatenate(axis=1)([z, class_id])
+        embedded_id = layers.Embedding(input_dim=10, output_dim=50)(class_id)
+        embedded_id = layers.Dense(units=7 * 7)(embedded_id)
+        embedded_id = layers.Reshape(target_shape=(7, 7, 1))(embedded_id)
         
-        x = layers.Dense(units=7 * 7 * 256, use_bias=False)(inputs)
+        x = layers.Dense(units=7 * 7 * 256, use_bias=False)(z)
         x = layers.BatchNormalization()(x)
         x = layers.LeakyReLU()(x)
         
         x = layers.Reshape((7, 7, 256))(x)
-        x = layers.Conv2DTranspose(128, (5, 5), strides=(1, 1), padding='same', use_bias=False)(x)
+        
+        inputs = layers.Concatenate(axis=3)([x, embedded_id])
+        
+        x = layers.Conv2DTranspose(128, (5, 5), strides=(1, 1), padding='same', use_bias=False)(inputs)
         x = layers.BatchNormalization()(x)
         x = layers.LeakyReLU()(x)
         
