@@ -4,10 +4,10 @@ import numpy as np
 import tensorflow as tf
 
 from layers import losses
+from utils import constants
 from utils import dataset_utils
 
 SEED = 0
-CHECKPOINT_DIR = './training_checkpoints'
 
 
 class VanillaGANTrainer:
@@ -22,7 +22,8 @@ class VanillaGANTrainer:
         self.generator_optimizer = tf.keras.optimizers.Adam(1e-4)
         self.discriminator_optimizer = tf.keras.optimizers.Adam(1e-4)
         
-        self.checkpoint_prefix = os.path.join(CHECKPOINT_DIR, "ckpt")
+        self.checkpoint_prefix = os.path.join(constants.SAVE_IMAGE_DIR, dataset_type,
+                                              constants.CHECKPOINT_DIR, "ckpt")
         self.checkpoint = tf.train.Checkpoint(generator_optimizer=self.generator_optimizer,
                                               discriminator_optimizer=self.discriminator_optimizer,
                                               generator=self.generator._model,
@@ -77,7 +78,8 @@ class ConditionalGANTrainer:
         self.generator_optimizer = tf.keras.optimizers.Adam(1e-4)
         self.discriminator_optimizer = tf.keras.optimizers.Adam(1e-4)
         
-        self.checkpoint_prefix = os.path.join(CHECKPOINT_DIR, "ckpt")
+        self.checkpoint_prefix = os.path.join(constants.SAVE_IMAGE_DIR, dataset_type,
+                                              constants.CHECKPOINT_DIR, "ckpt")
         self.checkpoint = tf.train.Checkpoint(generator_optimizer=self.generator_optimizer,
                                               discriminator_optimizer=self.discriminator_optimizer,
                                               generator=self.generator._model,

@@ -1,18 +1,18 @@
 import enum
+import math
 import os
 
 import matplotlib.pyplot as plt
 from IPython import display
 from easydict import EasyDict as edict
-import math
+
 from data_loaders import cifar10
 from data_loaders import fashion_mnist
 from data_loaders import mnist
+from models import conditional_gan
 from models import generators
 from models import vanilla_gan
-from models import conditional_gan
-
-SAVE_IMAGE_DIR = "./outputs"
+from utils import constants
 
 
 class ModelType(enum.Enum):
@@ -91,7 +91,7 @@ def generate_and_save_images(generator_model, epoch, test_input, dataset_name,
             img_to_plot = predictions[i, :, :, 0] * 127.5 + 127.5
         plt.imshow(img_to_plot, cmap='gray')
         plt.axis('off')
-    save_path = os.path.join(SAVE_IMAGE_DIR, dataset_name)
+    save_path = os.path.join(constants.SAVE_IMAGE_DIR, dataset_name)
     os.makedirs(save_path, exist_ok=True)
     plt.savefig(os.path.join(save_path, 'image_at_epoch_{:04d}.png'.format(epoch)))
 
