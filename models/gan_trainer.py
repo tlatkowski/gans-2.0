@@ -68,7 +68,7 @@ class VanillaGANTrainer:
 
 class ConditionalGANTrainer:
     
-    def __init__(self, batch_size, generator, discriminator, dataset_type, checkpoint_step=15):
+    def __init__(self, batch_size, generator, discriminator, dataset_type, checkpoint_step=1):
         self.batch_size = batch_size
         self.generator = generator
         self.discriminator = discriminator

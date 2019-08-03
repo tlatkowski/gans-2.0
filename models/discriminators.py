@@ -19,6 +19,10 @@ class Discriminator:
     def trainable_variables(self):
         return self._model.trainable_variables
     
+    @property
+    def model(self):
+        return self._model
+    
     def create_model(self):
         input_img = Input(shape=(self.img_height, self.img_width, self.num_channels))
         
@@ -53,6 +57,10 @@ class ConditionalDiscriminator:
     @property
     def trainable_variables(self):
         return self._model.trainable_variables
+    
+    @property
+    def model(self):
+        return self._model
     
     def create_model(self):
         input_img = Input(shape=(self.img_height, self.img_width, self.num_channels))

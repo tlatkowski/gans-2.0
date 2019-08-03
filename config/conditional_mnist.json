@@ -6,5 +6,6 @@
   "img_height": 28,
   "img_width": 28,
   "num_channels": 1,
-  "num_classes": 10
+  "num_classes": 10,
+  "checkpoint_step": 10
 }
