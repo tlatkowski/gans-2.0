@@ -4,6 +4,8 @@ from utils import config
 from utils import dataset_utils
 
 
+# visualization.make_gif_from_images('outputs/CONDITIONAL_MNIST')
+
 def run_experiment(dataset_type, gan_type):
     input_params = config.read_config(dataset_type)
     dataset = dataset_utils.dataset_factory(input_params, dataset_type)

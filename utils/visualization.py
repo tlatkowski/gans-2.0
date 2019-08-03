@@ -1,11 +1,13 @@
-import PIL
 import glob
+import os
+
+import PIL
 import imageio
 
 
-def make_gif_from_images(anim_file='dcgan.gif'):
+def make_gif_from_images(path, anim_file='dcgan.gif'):
     with imageio.get_writer(anim_file, mode='I') as writer:
-        filenames = glob.glob('image*.png')
+        filenames = glob.glob(os.path.join(path, 'image*.png'))
         filenames = sorted(filenames)
         last = -1
         for i, filename in enumerate(filenames):
