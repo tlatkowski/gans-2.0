@@ -18,7 +18,7 @@ class ConditionalGAN:
         self.num_channels = input_params.num_channels
         self.dataset_type = dataset_type
         
-        self.generator = generators.RandomToImageConditionalGenerator(input_params)
+        self.generator = generators.RandomToImageNNUpSamplingConditionalGenerator(input_params)
         self.discriminator = discriminators.ConditionalDiscriminator(input_params)
         self.conditional_gan_trainer = ConditionalGANTrainer(self.batch_size, self.generator,
                                                              self.discriminator,

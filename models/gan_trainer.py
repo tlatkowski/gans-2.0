@@ -89,9 +89,9 @@ class ConditionalGANTrainer:
         for epoch in range(epochs):
             print(epoch)
             for image_batch in dataset:
-                i += 1
+                # i += 1
                 self.train_step(image_batch)
-                print(i)
+                # print(i)
             test_batch = 100
             labels = [0] * 10 + [1] * 10 + [2] * 10 + [3] * 10 + [4] * 10 + [5] * 10 + [6] * 10 + [7] * 10 + [8] * 10 + [9] * 10
             test_seed = [tf.random.normal([test_batch, 100]),
