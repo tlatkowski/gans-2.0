@@ -17,6 +17,10 @@ class RandomToImageGenerator:
         return self._model.trainable_variables
     
     @property
+    def model(self):
+        return self._model
+    
+    @property
     def num_channels(self):
         return self._model.output_shape[-1]
     
@@ -57,6 +61,10 @@ class RandomToImageCifar10Generator:
         return self._model.trainable_variables
     
     @property
+    def model(self):
+        return self._model
+    
+    @property
     def num_channels(self):
         return self._model.output_shape[-1]
     
@@ -95,6 +103,10 @@ class RandomToImageCifar10NearestNeighborUpSamplingGenerator:
     @property
     def trainable_variables(self):
         return self._model.trainable_variables
+    
+    @property
+    def model(self):
+        return self._model
     
     @property
     def num_channels(self):
@@ -140,6 +152,10 @@ class RandomToImageConditionalGenerator:
         return self._model.trainable_variables
     
     @property
+    def model(self):
+        return self._model
+    
+    @property
     def num_channels(self):
         return self._model.output_shape[-1]
     
@@ -160,7 +176,8 @@ class RandomToImageConditionalGenerator:
         
         inputs = layers.Concatenate(axis=3)([x, embedded_id])
         
-        x = layers.Conv2DTranspose(128, (5, 5), strides=(1, 1), padding='same', use_bias=False)(inputs)
+        x = layers.Conv2DTranspose(128, (5, 5), strides=(1, 1), padding='same', use_bias=False)(
+            inputs)
         x = layers.BatchNormalization()(x)
         x = layers.LeakyReLU()(x)
         
@@ -190,6 +207,10 @@ class RandomToImageNNUpSamplingConditionalGenerator:
         return self._model.trainable_variables
     
     @property
+    def model(self):
+        return self._model
+    
+    @property
     def num_channels(self):
         return self._model.output_shape[-1]
     
@@ -215,7 +236,7 @@ class RandomToImageNNUpSamplingConditionalGenerator:
         x = layers.BatchNormalization()(x)
         x = layers.LeakyReLU()(x)
         x = layers.UpSampling2D()(x)
-
+        
         x = layers.Conv2D(64, (5, 5), strides=(1, 1), padding='same', use_bias=False)(x)
         x = layers.BatchNormalization()(x)
         x = layers.LeakyReLU()(x)
@@ -223,7 +244,7 @@ class RandomToImageNNUpSamplingConditionalGenerator:
         x = layers.UpSampling2D()(x)
         
         x = layers.Conv2D(1, (5, 5), strides=(1, 1), padding='same', use_bias=False,
-                                   activation='tanh')(x)
+                          activation='tanh')(x)
         
         model = Model(name='Generator', inputs=[z, class_id], outputs=x)
         return model

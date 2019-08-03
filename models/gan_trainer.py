@@ -12,7 +12,7 @@ SEED = 0
 
 class VanillaGANTrainer:
     
-    def __init__(self, batch_size, generator, discriminator, dataset_type, checkpoint_step=15):
+    def __init__(self, batch_size, generator, discriminator, dataset_type, checkpoint_step=1):
         self.batch_size = batch_size
         self.generator = generator
         self.discriminator = discriminator
@@ -26,8 +26,8 @@ class VanillaGANTrainer:
                                               constants.CHECKPOINT_DIR, "ckpt")
         self.checkpoint = tf.train.Checkpoint(generator_optimizer=self.generator_optimizer,
                                               discriminator_optimizer=self.discriminator_optimizer,
-                                              generator=self.generator._model,
-                                              discriminator=self.discriminator._model)
+                                              generator=self.generator.model,
+                                              discriminator=self.discriminator.model)
     
     def train(self, dataset, epochs):
         test_seed = tf.random.normal([self.batch_size, 100])
@@ -82,8 +82,8 @@ class ConditionalGANTrainer:
                                               constants.CHECKPOINT_DIR, "ckpt")
         self.checkpoint = tf.train.Checkpoint(generator_optimizer=self.generator_optimizer,
                                               discriminator_optimizer=self.discriminator_optimizer,
-                                              generator=self.generator._model,
-                                              discriminator=self.discriminator._model)
+                                              generator=self.generator.model,
+                                              discriminator=self.discriminator.model)
     
     def train(self, dataset, epochs):
         for epoch in range(epochs):
