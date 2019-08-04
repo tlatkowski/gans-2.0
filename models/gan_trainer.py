@@ -5,7 +5,7 @@ import tensorflow as tf
 
 from layers import losses
 from utils import constants
-from utils import dataset_utils
+from utils import visualization
 
 SEED = 0
 
@@ -35,7 +35,7 @@ class VanillaGANTrainer:
             print(epoch)
             for image_batch in dataset:
                 self.train_step(image_batch)
-            dataset_utils.generate_and_save_images(self.generator, epoch + 1, test_seed,
+            visualization.generate_and_save_images(self.generator, epoch + 1, test_seed,
                                                    self.dataset_type)
             
             if (epoch + 1) % self.checkpoint_step == 0:
@@ -95,7 +95,7 @@ class ConditionalGANTrainer:
                 7] * 10 + [8] * 10 + [9] * 10
             test_seed = [tf.random.normal([test_batch, 100]),
                          np.array(labels)]
-            dataset_utils.generate_and_save_images(self.generator, epoch + 1, test_seed,
+            visualization.generate_and_save_images(self.generator, epoch + 1, test_seed,
                                                    self.dataset_type,
                                                    num_examples_to_display=test_batch)
             
@@ -147,7 +147,7 @@ class WassersteinGANTrainer:
             print(epoch)
             for real_images in dataset:
                 self.train_step(real_images)
-            dataset_utils.generate_and_save_images(self.generator, epoch + 1, seed,
+            visualization.generate_and_save_images(self.generator, epoch + 1, seed,
                                                    self.dataset_type)
             
             if (epoch + 1) % self.checkpoint_step == 0:
