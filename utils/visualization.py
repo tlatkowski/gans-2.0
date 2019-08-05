@@ -5,6 +5,7 @@ import os
 import PIL
 import imageio
 import matplotlib.pyplot as plt
+import numpy as np
 from IPython import display
 
 from utils import constants
@@ -48,9 +49,13 @@ def generate_and_save_images(generator_model, epoch, test_input, dataset_name,
             img_to_plot = predictions[i, :, :, 0] * 127.5 + 127.5
         plt.imshow(img_to_plot, cmap='gray')
         plt.axis('off')
+    
     save_path = os.path.join(constants.SAVE_IMAGE_DIR, dataset_name)
     os.makedirs(save_path, exist_ok=True)
     plt.savefig(os.path.join(save_path, 'image_at_epoch_{:04d}.png'.format(epoch)))
+    im = np.asarray(
+        PIL.Image.open(os.path.join(save_path, 'image_at_epoch_{:04d}.png'.format(epoch))))
+    return im
 
 
 def plot_image_grid(generated_image):

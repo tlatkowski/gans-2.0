@@ -12,7 +12,7 @@ SEED = 0
 
 class VanillaGANTrainer:
     
-    def __init__(self, batch_size, generator, discriminator, dataset_type, checkpoint_step=1):
+    def __init__(self, batch_size, generator, discriminator, dataset_type, checkpoint_step=10):
         self.batch_size = batch_size
         self.generator = generator
         self.discriminator = discriminator
@@ -68,7 +68,7 @@ class VanillaGANTrainer:
 
 class ConditionalGANTrainer:
     
-    def __init__(self, batch_size, generator, discriminator, dataset_type, checkpoint_step=1):
+    def __init__(self, batch_size, generator, discriminator, dataset_type, checkpoint_step=10):
         self.batch_size = batch_size
         self.generator = generator
         self.discriminator = discriminator
@@ -78,27 +78,44 @@ class ConditionalGANTrainer:
         self.generator_optimizer = tf.keras.optimizers.Adam(1e-4)
         self.discriminator_optimizer = tf.keras.optimizers.Adam(1e-4)
         
-        self.checkpoint_prefix = os.path.join(constants.SAVE_IMAGE_DIR, dataset_type,
-                                              constants.CHECKPOINT_DIR, "ckpt")
+        self.checkpoint_path = os.path.join(constants.SAVE_IMAGE_DIR, dataset_type,
+                                            constants.CHECKPOINT_DIR)
+        
+        self.checkpoint_prefix = os.path.join(self.checkpoint_path, "ckpt")
+        
         self.checkpoint = tf.train.Checkpoint(generator_optimizer=self.generator_optimizer,
                                               discriminator_optimizer=self.discriminator_optimizer,
                                               generator=self.generator.model,
                                               discriminator=self.discriminator.model)
+        self.summary_writer = tf.summary.create_file_writer(self.checkpoint_path)
     
     def train(self, dataset, epochs):
-        for epoch in range(epochs):
+        
+        latest_checkpoint = tf.train.latest_checkpoint(self.checkpoint_path)
+        latest_checkpoint_epoch = int(latest_checkpoint[latest_checkpoint.index("-") + 1:])
+        self.checkpoint.restore(latest_checkpoint)
+        train_step = 0
+        epochs += latest_checkpoint_epoch
+        for epoch in range(latest_checkpoint_epoch, epochs):
             print(epoch)
             for image_batch in dataset:
-                self.train_step(image_batch)
+                train_step += 1
+                gen_loss, dis_loss = self.train_step(image_batch)
+                with self.summary_writer.as_default():
+                    tf.summary.scalar("generator_loss", gen_loss, step=train_step)
+                    tf.summary.scalar("discriminator_loss", dis_loss, step=train_step)
+                    
             test_batch = 100
             labels = [0] * 10 + [1] * 10 + [2] * 10 + [3] * 10 + [4] * 10 + [5] * 10 + [6] * 10 + [
                 7] * 10 + [8] * 10 + [9] * 10
             test_seed = [tf.random.normal([test_batch, 100]),
                          np.array(labels)]
-            visualization.generate_and_save_images(self.generator, epoch + 1, test_seed,
+            
+            img_to_plot = visualization.generate_and_save_images(self.generator, epoch + 1, test_seed,
                                                    self.dataset_type,
                                                    num_examples_to_display=test_batch)
-            
+            with self.summary_writer.as_default():
+                tf.summary.image('test_images', np.reshape(img_to_plot, newshape=(1, 480, 640, 4)), step=epoch)
             if (epoch + 1) % self.checkpoint_step == 0:
                 self.checkpoint.save(file_prefix=self.checkpoint_prefix)
     
@@ -127,6 +144,8 @@ class ConditionalGANTrainer:
             zip(gradients_of_generator, self.generator.trainable_variables))
         self.discriminator_optimizer.apply_gradients(
             zip(gradients_of_discriminator, self.discriminator.trainable_variables))
+        
+        return gen_loss, disc_loss
 
 
 class WassersteinGANTrainer:

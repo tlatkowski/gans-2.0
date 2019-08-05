@@ -22,6 +22,8 @@ Current version of pipeline supports the following datasets:
  * CIFAR10 
 
 ## Running pipeline
+
+#### Model training from scratch
 In order to run GAN training on specific problem you have to provide two mandatory parameters:
  * **--dataset_type**
  * **--gan_type**
@@ -29,3 +31,8 @@ In order to run GAN training on specific problem you have to provide two mandato
 ```bash
 python run.py --dataset_type MNIST --gan_type VANILLA_GAN
 ```
+
+#### Restoring model training
+
+## Monitoring model training
+
