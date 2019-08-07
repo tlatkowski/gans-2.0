@@ -6,26 +6,32 @@ from utils import dataset_utils
 
 # visualization.make_gif_from_images('outputs/CONDITIONAL_MNIST')
 
-def run_experiment(dataset_type, gan_type):
-    input_params = config.read_config(dataset_type)
-    dataset = dataset_utils.dataset_factory(input_params, dataset_type)
-    gan_model = dataset_utils.model_factory(input_params, gan_type, dataset_type)
+def run_experiment(input_args):
+    problem_type = input_args.problem_type
+    gan_type = input_args.gan_type
+    problem_params = config.read_config(problem_type)
+    dataset = dataset_utils.problem_factory(problem_params, problem_type)
+    gan_model = dataset_utils.model_factory(problem_params, input_args)
     gan_model.fit(dataset)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     
-    parser.add_argument('--dataset_type',
+    parser.add_argument('--problem_type',
                         required=True,
-                        help='The path to training images',
+                        help='The problem type',
                         choices=dataset_utils.dataset_type_values())
     
     parser.add_argument('--gan_type',
                         required=True,
-                        help='The path to training images',
+                        help='The GAN type',
                         choices=dataset_utils.model_type_values())
+    
+    parser.add_argument('-continue_training',
+                        action='store_true',
+                        help='If set the training process will be continued')
     
     args = parser.parse_args()
     
-    run_experiment(args.dataset_type, args.gan_type)
+    run_experiment(args)

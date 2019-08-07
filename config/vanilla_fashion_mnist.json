@@ -1,7 +1,7 @@
 {
   "batch_size": 256,
   "buffer_size": 60000,
-  "num_epochs": 50,
+  "num_epochs": 100,
   "hidden_size": 100,
   "img_height": 28,
   "img_width": 28,

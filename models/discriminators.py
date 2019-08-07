@@ -9,7 +9,6 @@ class Discriminator:
         self.img_height = input_params.img_height
         self.img_width = input_params.img_width
         self.num_channels = input_params.num_channels
-        self.num_classes = input_params.num_classes
         self._model = self.create_model()
     
     def __call__(self, inputs, **kwargs):

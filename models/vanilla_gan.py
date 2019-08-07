@@ -7,23 +7,18 @@ from utils import dataset_utils
 
 class VanillaGAN:
     
-    def __init__(self, input_params: edict, dataset_type):
+    def __init__(self, input_params: edict, input_args):
         self.batch_size = input_params.batch_size
         self.num_epochs = input_params.num_epochs
-        self.hidden_size = input_params.hidden_size
+        self.problem_type = input_args.problem_type
         
-        self.img_height = input_params.img_height
-        self.img_width = input_params.img_width
-        self.num_channels = input_params.num_channels
-        self.dataset_type = dataset_type
-        
-        self.generator = dataset_utils.generator_model_factory(input_params, dataset_type)
-        self.discriminator = discriminators.Discriminator(self.img_height,
-                                                          self.img_width,
-                                                          self.num_channels)
-        self.vanilla_gan_trainer = VanillaGANTrainer(self.batch_size, self.generator,
+        self.generator = dataset_utils.generator_model_factory(input_params, self.problem_type)
+        self.discriminator = discriminators.Discriminator(input_params)
+        self.vanilla_gan_trainer = VanillaGANTrainer(self.batch_size,
+                                                     self.generator,
                                                      self.discriminator,
-                                                     self.dataset_type)
+                                                     self.problem_type,
+                                                     input_args.continue_training)
     
     def fit(self, dataset):
         self.vanilla_gan_trainer.train(dataset, self.num_epochs)
