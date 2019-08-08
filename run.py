@@ -8,7 +8,6 @@ from utils import dataset_utils
 
 def run_experiment(input_args):
     problem_type = input_args.problem_type
-    gan_type = input_args.gan_type
     problem_params = config.read_config(problem_type)
     dataset = dataset_utils.problem_factory(problem_params, problem_type)
     gan_model = dataset_utils.model_factory(problem_params, input_args)
