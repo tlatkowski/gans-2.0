@@ -34,7 +34,7 @@ In order to run GAN training on specific problem you have to provide two mandato
  * **--gan_type**
  
 ```bash
-python run.py --dataset_type MNIST --gan_type VANILLA_GAN
+python run.py --problem_type VANILLA_MNIST --gan_type VANILLA_GAN
 ```
 
 #### Restoring model training

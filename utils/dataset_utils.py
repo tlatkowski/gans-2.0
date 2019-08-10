@@ -29,5 +29,7 @@ def problem_factory(input_params, dataset_type: ProblemType):
         return mnist.load_data_with_labels(input_params)
     elif dataset_type == ProblemType.CONDITIONAL_FASHION_MNIST.name:
         return fashion_mnist.load_data_with_labels(input_params)
+    elif dataset_type == ProblemType.CONDITIONAL_CIFAR10.name:
+        return cifar10.load_data_with_labels(input_params)
     else:
         raise NotImplementedError
