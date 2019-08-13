@@ -63,7 +63,6 @@ class ConditionalDiscriminator:
     
     def create_model(self):
         input_img = Input(shape=(self.img_height, self.img_width, self.num_channels))
-        # class_id = Input(shape=[self.num_classes])
         class_id = Input(shape=[1])
         
         embedded_id = layers.Embedding(input_dim=10, output_dim=50)(class_id)

@@ -18,7 +18,6 @@ class ConditionalGAN:
         self.problem_type = input_args.problem_type
         
         self.generator = model_utils.generator_model_factory(input_params, self.problem_type)
-        # self.generator = generators.RandomToImageConditionalGenerator(input_params)
         self.discriminator = discriminators.ConditionalDiscriminator(input_params)
         self.conditional_gan_trainer = ConditionalGANTrainer(self.batch_size,
                                                              self.generator,
