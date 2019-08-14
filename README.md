@@ -3,6 +3,7 @@
 # GANs 2.0: a set of basic Generative Adversarial Networks implemented in TensorFlow 2.0
 ![cfashion_mnist](./pics/conditional_fashion_mnist.gif)
 ![cfashion_mnist](./pics/conditional_mnist.gif)
+![cfashion_mnist](./pics/conditional_cifar10.gif)
 ## Installation
 
 In order to install all required dependencies, execute the following command:
