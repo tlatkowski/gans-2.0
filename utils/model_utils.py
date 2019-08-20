@@ -42,6 +42,6 @@ def generator_model_factory(input_params, dataset_type: ProblemType):
     elif dataset_type == ProblemType.CONDITIONAL_FASHION_MNIST.name:
         return generators.RandomToImageConditionalGenerator(input_params)
     elif dataset_type == ProblemType.CONDITIONAL_CIFAR10.name:
-        return generators.RandomToImageNNUpsamplingCifar10CConditionalGenerator(input_params)
+        return generators.RandomToImageCifar10CConditionalGenerator(input_params)
     else:
         raise NotImplementedError

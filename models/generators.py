@@ -278,24 +278,40 @@ class RandomToImageCifar10CConditionalGenerator:
         embedded_id = layers.Reshape(target_shape=(8, 8, 1))(embedded_id)
         
         x = layers.Dense(units=8 * 8 * 256, use_bias=False)(z)
-        x = layers.BatchNormalization()(x)
-        x = layers.LeakyReLU()(x)
-        
+        x = layers.BatchNormalization(momentum=0.9)(x)
+        x = layers.LeakyReLU(alpha=0.1)(x)
         x = layers.Reshape((8, 8, 256))(x)
         
         inputs = layers.Concatenate(axis=3)([x, embedded_id])
         
-        x = layers.Conv2DTranspose(128, (5, 5), strides=(1, 1), padding='same', use_bias=False)(
+        x = layers.Conv2DTranspose(128, kernel_size=(4, 4), strides=(2, 2), padding='same',
+                                   use_bias=False)(
             inputs)
-        x = layers.BatchNormalization()(x)
-        x = layers.LeakyReLU()(x)
+        x = layers.BatchNormalization(momentum=0.9)(x)
+        x = layers.LeakyReLU(alpha=0.1)(x)
         
-        x = layers.Conv2DTranspose(64, (5, 5), strides=(2, 2), padding='same', use_bias=False)(x)
-        x = layers.BatchNormalization()(x)
-        x = layers.LeakyReLU()(x)
+        x = layers.Conv2D(128, kernel_size=(5, 5), strides=(1, 1), padding='same', use_bias=False)(
+            x)
+        x = layers.BatchNormalization(momentum=0.9)(x)
+        x = layers.LeakyReLU(alpha=0.1)(x)
         
-        x = layers.Conv2DTranspose(3, (5, 5), strides=(2, 2), padding='same', use_bias=False,
-                                   activation='tanh')(x)
+        x = layers.Conv2DTranspose(128, kernel_size=(4, 4), strides=(2, 2), padding='same',
+                                   use_bias=False)(x)
+        x = layers.BatchNormalization(momentum=0.9)(x)
+        x = layers.LeakyReLU(alpha=0.1)(x)
+        
+        x = layers.Conv2D(128, kernel_size=(5, 5), strides=(1, 1), padding='same', use_bias=False)(
+            x)
+        x = layers.BatchNormalization(momentum=0.9)(x)
+        x = layers.LeakyReLU(alpha=0.1)(x)
+        
+        x = layers.Conv2D(128, kernel_size=(5, 5), strides=(1, 1), padding='same', use_bias=False)(
+            x)
+        x = layers.BatchNormalization(momentum=0.9)(x)
+        x = layers.LeakyReLU(alpha=0.1)(x)
+        
+        x = layers.Conv2D(3, kernel_size=(5, 5), strides=(1, 1), padding='same', use_bias=False,
+                          activation='tanh')(x)
         
         model = Model(name='Generator', inputs=[z, class_id], outputs=x)
         return model
@@ -350,7 +366,7 @@ class RandomToImageNNUpsamplingCifar10CConditionalGenerator:
         x = layers.UpSampling2D()(x)
         
         x = layers.Conv2D(3, (5, 5), strides=(1, 1), padding='same', use_bias=False,
-                                   activation='tanh')(x)
+                          activation='tanh')(x)
         
         model = Model(name='Generator', inputs=[z, class_id], outputs=x)
         return model
