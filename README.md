@@ -1,9 +1,9 @@
 ![](https://img.shields.io/badge/Python-3.6-blue.svg) ![](https://img.shields.io/badge/TensorFlow-2.0.0-blue.svg) ![](https://img.shields.io/badge/License-MIT-blue.svg)
 
 # GANs 2.0: a set of basic Generative Adversarial Networks implemented in TensorFlow 2.0
-![cfashion_mnist](./pics/conditional_fashion_mnist.gif)
-![cfashion_mnist](./pics/conditional_mnist.gif)
-![cfashion_mnist](./pics/conditional_cifar10.gif)
+![conditional_fashion_mnist](./pics/conditional_fashion_mnist.gif)
+![conditional_mnist](./pics/conditional_mnist.gif)
+![conditional_cifar10](./pics/conditional_cifar10.gif)
 ## Installation
 
 In order to install all required dependencies, execute the following command:
@@ -56,4 +56,5 @@ It will lunch TensorBoard. To follow the training process go to the following ad
 The below picture presents the TensorBoard view lunched after 3 experiments (CONDITIONAL_FASION_MNIST, CONDITIONAL_MNIST and CIFAR-10)
 
 ## References
+1. Deep Convolutional Generative Adversarial Network Tutorial in TensorFlow (https://www.tensorflow.org/beta/tutorials/generative/dcgan)
 
