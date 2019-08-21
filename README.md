@@ -1,8 +1,10 @@
 ![](https://img.shields.io/badge/Python-3.6-green.svg) ![](https://img.shields.io/badge/TensorFlow-2.0.0-green.svg) ![](https://img.shields.io/badge/License-MIT-green.svg)
 
 # GANs 2.0: a set of basic Generative Adversarial Networks implemented in TensorFlow 2.0
-![conditional_fashion_mnist](./pics/conditional_fashion_mnist.gif)
-![conditional_mnist](./pics/conditional_mnist.gif)
+Solarized dark             |  Solarized Ocean
+:-------------------------:|:-------------------------:
+![conditional_mnist](./pics/conditional_mnist.gif)  |  ![conditional_fashion_mnist](./pics/conditional_fashion_mnist.gif)
+
 ![conditional_cifar10](./pics/conditional_cifar10.gif)
 ## Installation
 
