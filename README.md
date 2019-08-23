@@ -3,7 +3,7 @@
 # GANs 2.0: a set of basic Generative Adversarial Networks implemented in TensorFlow 2.0
 Vanilla GAN (MNIST)            |  Vanilla GAN (FASHION_MNIST)
 :-------------------------:|:-------------------------:
-![conditional_mnist](./pics/vanilla_mnist.gif)  |  ![conditional_fashion_mnist](./pics/vanilla_fashion_mnist.gif)
+![vanilla_mnist](./pics/vanilla_mnist.gif)  |  ![vanilla_fashion_mnist](./pics/vanilla_fashion_mnist.gif)
 
 
 Conditional GAN (MNIST)            |  Conditional GAN (FASHION_MNIST)

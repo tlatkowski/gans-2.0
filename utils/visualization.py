@@ -32,7 +32,7 @@ def display_image(epoch_no):
     return PIL.Image.open('image_at_epoch_{:04d}.png'.format(epoch_no))
 
 
-def generate_and_save_images(generator_model, epoch, test_input, dataset_name,
+def generate_and_save_images(generator_model, epoch, test_input, dataset_name, cmap=None,
                              num_examples_to_display=16):
     display.clear_output(wait=True)
     predictions = generator_model(test_input, training=False)
@@ -47,8 +47,7 @@ def generate_and_save_images(generator_model, epoch, test_input, dataset_name,
             img_to_plot = predictions[i, :, :, :] * 127.5 + 127.5
         else:
             img_to_plot = predictions[i, :, :, 0] * 127.5 + 127.5
-        # plt.imshow(img_to_plot, cmap='gray')
-        plt.imshow(img_to_plot)
+        plt.imshow(img_to_plot, cmap=cmap)
         plt.axis('off')
     
     save_path = os.path.join(constants.SAVE_IMAGE_DIR, dataset_name)

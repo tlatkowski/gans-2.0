@@ -60,7 +60,8 @@ class VanillaGANTrainer(GANTrainer):
             img_to_plot = visualization.generate_and_save_images(self.generator,
                                                                  epoch + 1,
                                                                  test_seed,
-                                                                 self.dataset_type)
+                                                                 self.dataset_type,
+                                                                 cmap='gray')
             with self.summary_writer.as_default():
                 tf.summary.image('test_images', np.reshape(img_to_plot, newshape=(1, 480, 640, 4)),
                                  step=epoch)
