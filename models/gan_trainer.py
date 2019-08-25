@@ -51,8 +51,9 @@ class VanillaGANTrainer(GANTrainer):
             latest_checkpoint = tf.train.latest_checkpoint(self.checkpoint_path)
             latest_checkpoint_epoch = int(latest_checkpoint[latest_checkpoint.index("-") + 1:])
             self.checkpoint.restore(latest_checkpoint)
-        epochs += latest_checkpoint_epoch
-        for epoch in range(latest_checkpoint_epoch, epochs):
+        latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
+        epochs += latest_epoch
+        for epoch in range(latest_epoch, epochs):
             print(epoch)
             for image_batch in dataset:
                 self.train_step(image_batch)
