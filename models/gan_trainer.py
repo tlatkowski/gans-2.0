@@ -49,8 +49,11 @@ class VanillaGANTrainer(GANTrainer):
         latest_checkpoint_epoch = 0
         if self.continue_training:
             latest_checkpoint = tf.train.latest_checkpoint(self.checkpoint_path)
-            latest_checkpoint_epoch = int(latest_checkpoint[latest_checkpoint.index("-") + 1:])
-            self.checkpoint.restore(latest_checkpoint)
+            if latest_checkpoint is not None:
+                latest_checkpoint_epoch = int(latest_checkpoint[latest_checkpoint.index("-") + 1:])
+                self.checkpoint.restore(latest_checkpoint)
+            else:
+                print('No checkpoints found. Starting training from scratch.')
         latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
         epochs += latest_epoch
         for epoch in range(latest_epoch, epochs):
