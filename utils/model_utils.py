@@ -9,21 +9,21 @@ from utils.dataset_utils import ProblemType
 
 
 class ModelType(enum.Enum):
-    VANILLA_GAN = 0,
-    CONDITIONAL_GAN = 1,
-    WASSERSTEIN_GAN = 2
+    VANILLA = 0,
+    CONDITIONAL = 1,
+    WASSERSTEIN = 2
 
 
 def model_type_values():
     return [i.name for i in ModelType]
 
 
-def model_factory(input_params: edict, input_args):
-    if input_args.gan_type == ModelType.VANILLA_GAN.name:
+def model_factory(input_params: edict, gan_type, input_args):
+    if gan_type == ModelType.VANILLA.name:
         return vanilla_gan.VanillaGAN(input_params, input_args)
-    elif input_args.gan_type == ModelType.CONDITIONAL_GAN.name:
+    elif gan_type == ModelType.CONDITIONAL.name:
         return conditional_gan.ConditionalGAN(input_params, input_args)
-    elif input_args.gan_type == ModelType.WASSERSTEIN_GAN.name:
+    elif gan_type == ModelType.WASSERSTEIN.name:
         raise NotImplementedError
     else:
         raise NotImplementedError

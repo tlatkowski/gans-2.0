@@ -6,10 +6,11 @@ from utils import model_utils
 
 
 def run_experiment(input_args):
+    gan_type = input_args.problem_type.split('_')[0]
     problem_type = input_args.problem_type
     problem_params = config.read_config(problem_type)
     dataset = dataset_utils.problem_factory(problem_params, problem_type)
-    gan_model = model_utils.model_factory(problem_params, input_args)
+    gan_model = model_utils.model_factory(problem_params, gan_type, input_args)
     gan_model.fit(dataset)
 
 
@@ -20,11 +21,6 @@ def main():
                         required=True,
                         help='The problem type',
                         choices=dataset_utils.dataset_type_values())
-    
-    parser.add_argument('--gan_type',
-                        required=True,
-                        help='The GAN type',
-                        choices=model_utils.model_type_values())
     
     parser.add_argument('-continue_training',
                         action='store_true',
