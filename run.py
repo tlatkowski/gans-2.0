@@ -5,8 +5,6 @@ from utils import dataset_utils
 from utils import model_utils
 
 
-# visualization.make_gif_from_images('outputs/CONDITIONAL_MNIST')
-
 def run_experiment(input_args):
     problem_type = input_args.problem_type
     problem_params = config.read_config(problem_type)
@@ -15,7 +13,7 @@ def run_experiment(input_args):
     gan_model.fit(dataset)
 
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser()
     
     parser.add_argument('--problem_type',
@@ -35,3 +33,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     run_experiment(args)
+
+
+if __name__ == '__main__':
+    main()
