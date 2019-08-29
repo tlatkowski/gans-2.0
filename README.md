@@ -39,15 +39,14 @@ Supported Generative Adversarial Networks:
 #### Model training from scratch
 In order to run GAN training on specific problem you have to provide two mandatory parameters:
  * **--problem_type**
- * **--gan_type**
  
 ```bash
-python run.py --problem_type VANILLA_MNIST --gan_type VANILLA_GAN
+python run.py --problem_type VANILLA_MNIST
 ```
 
 In order to restore training from the latest checkpoint use **-continue_training** input argument, e.g.
 ```bash
-python run.py --problem_type VANILLA_MNIST --gan_type VANILLA_GAN -continue_training
+python run.py --problem_type VANILLA_MNIST -continue_training
 ```
 
 #### Restoring model training
