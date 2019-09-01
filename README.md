@@ -45,12 +45,13 @@ The below command runs Vanilla GAN on MNIST dataset:
 python run.py --problem_type VANILLA_MNIST
 ```
 
+#### Restoring model training
+
 In order to restore training from the latest checkpoint use **-continue_training** input argument, e.g.
 ```bash
 python run.py --problem_type VANILLA_MNIST -continue_training
 ```
-
-#### Restoring model training
+#### GAN problem configuration
 
 ## Monitoring model training
 In order to visualize a training process (loss values, generated outputs) run the following command in project directory:
