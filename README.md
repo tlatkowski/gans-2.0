@@ -24,7 +24,7 @@ in case of GPU usage:
 ./bin/install-gpu.sh
 ```
 
-Current version of pipeline supports the following datasets:
+The current version of pipeline supports the following datasets:
  * MNIST
  * FASHION MNIST
  * CIFAR10 
@@ -37,9 +37,10 @@ Supported Generative Adversarial Networks:
 ## Running pipeline
 
 #### Model training from scratch
-In order to run GAN training on specific problem you have to provide two mandatory parameters:
+In order to run GAN training on specific problem you have to provide one mandatory parameter:
  * **--problem_type**
  
+The below command runs Vanilla GAN on MNIST dataset:
 ```bash
 python run.py --problem_type VANILLA_MNIST
 ```
