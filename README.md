@@ -1,6 +1,6 @@
-![](https://img.shields.io/badge/Python-3.6-green.svg) ![](https://img.shields.io/badge/TensorFlow-2.0.0-green.svg) ![](https://img.shields.io/badge/License-MIT-green.svg)
+![](https://img.shields.io/badge/Python-3.6.8-blue.svg) ![](https://img.shields.io/badge/TensorFlow-2.0.0-blue.svg) ![](https://img.shields.io/badge/License-MIT-blue.svg)
 
-# GANs 2.0: a set of basic Generative Adversarial Networks implemented in TensorFlow 2.0
+# GANs 2.0: Generative Adversarial Networks in TensorFlow 2.0
 Vanilla GAN (MNIST)            |  Vanilla GAN (FASHION_MNIST)
 :-------------------------:|:-------------------------:
 ![vanilla_mnist](./pics/vanilla_mnist.gif)  |  ![vanilla_fashion_mnist](./pics/vanilla_fashion_mnist.gif)
@@ -37,7 +37,7 @@ Supported Generative Adversarial Networks:
 ## Running pipeline
 
 #### Model training from scratch
-In order to run GAN training on specific problem you have to provide one mandatory parameter:
+In order to run GAN training on a specific problem you have to provide one mandatory parameter:
  * **--problem_type**
  
 The below command runs Vanilla GAN on MNIST dataset:
@@ -52,6 +52,22 @@ In order to restore training from the latest checkpoint use **-continue_training
 python run.py --problem_type VANILLA_MNIST -continue_training
 ```
 #### GAN problem configuration
+
+The GAN problem configurations are placed at **./config**. If you want you can tweak those parameters, below is the example of VANILLA_MNIST problem configuration:
+```json
+{
+  "batch_size": 256,
+  "buffer_size": 60000,
+  "num_epochs": 100,
+  "hidden_size": 100,
+  "img_height": 28,
+  "img_width": 28,
+  "num_channels": 1,
+  "checkpoint_step": 10
+} 
+```
+ 
+ 
 
 ## Monitoring model training
 In order to visualize a training process (loss values, generated outputs) run the following command in project directory:
