@@ -1,4 +1,4 @@
-![](https://img.shields.io/badge/Python-3.6.8-blue.svg) ![](https://img.shields.io/badge/TensorFlow-2.0.0-blue.svg) ![](https://img.shields.io/badge/License-MIT-blue.svg)
+![](https://img.shields.io/badge/Python-3.6.8-blue.svg) ![](https://img.shields.io/badge/TensorFlow-2.0.0b1-blue.svg) ![](https://img.shields.io/badge/License-MIT-blue.svg)
 
 # GANs 2.0: Generative Adversarial Networks in TensorFlow 2.0
 Vanilla GAN (MNIST)            |  Vanilla GAN (FASHION_MNIST)
@@ -14,12 +14,11 @@ Conditional GAN (MNIST)            |  Conditional GAN (FASHION_MNIST)
 
 In order to install all required dependencies, execute the following command:
 
-in case of CPU usage:
+in case of **CPU** usage:
 ```bash
 ./bin/install-cpu.sh
 ```
-
-in case of GPU usage:
+in case of **GPU** usage:
 ```bash
 ./bin/install-gpu.sh
 ```
@@ -29,7 +28,7 @@ The current version of pipeline supports the following datasets:
  * FASHION MNIST
  * CIFAR10 
  
-Supported Generative Adversarial Networks:
+The set of supported Generative Adversarial Networks:
  * Vanilla GAN
  * Conditional GAN
  * Wasserstein GAN (TBD)
@@ -67,16 +66,14 @@ The GAN problem configurations are placed at **./config**. If you want you can t
 } 
 ```
  
- 
-
 ## Monitoring model training
-In order to visualize a training process (loss values, generated outputs) run the following command in project directory:
+In order to visualize a training process (loss values, generated outputs) run the following command in the project directory:
 ```bash
 tensorboard --logdir outputs
 ```
-It will lunch TensorBoard. To follow the training process go to the following address **http://your-workstation-name:6006/** 
+To follow the training process go to the default browser and type the following address **http://your-workstation-name:6006/** 
 
-The below picture presents the TensorBoard view lunched after 3 experiments (CONDITIONAL_FASION_MNIST, CONDITIONAL_MNIST and CIFAR-10)
+The below picture presents the TensorBoard view lunched after two experiments: **VANILLA_MNIST** and **VANILLA_FASION_MNIST**.
 
 ## References
 1. Deep Convolutional Generative Adversarial Network Tutorial in TensorFlow (https://www.tensorflow.org/beta/tutorials/generative/dcgan)
