@@ -44,6 +44,7 @@ class VanillaGANTrainer(GANTrainer):
                                                 dataset_type, continue_training, checkpoint_step)
     
     def train(self, dataset, epochs):
+        train_step = 0
         test_seed = tf.random.normal([self.batch_size, 100])
         
         latest_checkpoint_epoch = 0
@@ -59,7 +60,11 @@ class VanillaGANTrainer(GANTrainer):
         for epoch in range(latest_epoch, epochs):
             print(epoch)
             for image_batch in dataset:
-                self.train_step(image_batch)
+                train_step += 1
+                gen_loss, dis_loss = self.train_step(image_batch)
+                with self.summary_writer.as_default():
+                    tf.summary.scalar("generator_loss", gen_loss, step=train_step)
+                    tf.summary.scalar("discriminator_loss", dis_loss, step=train_step)
             
             img_to_plot = visualization.generate_and_save_images(self.generator,
                                                                  epoch + 1,
@@ -96,6 +101,8 @@ class VanillaGANTrainer(GANTrainer):
             zip(gradients_of_generator, self.generator.trainable_variables))
         self.discriminator_optimizer.apply_gradients(
             zip(gradients_of_discriminator, self.discriminator.trainable_variables))
+        
+        return gen_loss, disc_loss
 
 
 class ConditionalGANTrainer(GANTrainer):
