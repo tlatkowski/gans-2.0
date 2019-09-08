@@ -73,7 +73,7 @@ tensorboard --logdir outputs
 ```
 To follow the training process go to the default browser and type the following address **http://your-workstation-name:6006/** 
 
-The below picture presents the TensorBoard view lunched after two experiments: **VANILLA_MNIST** and **VANILLA_FASION_MNIST**.
+The below picture presents the TensorBoard view lunched for two experiments: **VANILLA_MNIST** and **VANILLA_FASION_MNIST**.
 ![](./pics/tensorboard.png) 
 ## References
 1. Deep Convolutional Generative Adversarial Network Tutorial in TensorFlow (https://www.tensorflow.org/beta/tutorials/generative/dcgan)
