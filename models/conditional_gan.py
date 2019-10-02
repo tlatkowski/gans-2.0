@@ -1,7 +1,7 @@
 from easydict import EasyDict as edict
 
 from models import discriminators
-from models.gan_trainer import ConditionalGANTrainer
+from trainers.gan_trainer import ConditionalGANTrainer
 from utils import model_utils
 
 
