@@ -1,7 +1,7 @@
 from easydict import EasyDict as edict
 
 from models import discriminators
-from trainers.gan_trainer import ConditionalGANTrainer
+from trainers import conditional_gan_trainer
 from utils import model_utils
 
 
@@ -18,12 +18,15 @@ class ConditionalGAN:
         self.problem_type = input_args.problem_type
         
         self.generator = model_utils.generator_model_factory(input_params, self.problem_type)
-        self.discriminator = discriminators.ConditionalDiscriminator(input_params)
-        self.conditional_gan_trainer = ConditionalGANTrainer(self.batch_size,
-                                                             self.generator,
-                                                             self.discriminator,
-                                                             self.problem_type,
-                                                             input_args.continue_training)
+        self.discriminator = discriminators.ConditionalDiscriminatorCifar10(input_params)
+        self.conditional_gan_trainer = conditional_gan_trainer.ConditionalGANTrainer(
+            self.batch_size,
+            self.generator,
+            self.discriminator,
+            self.problem_type,
+            input_params.learning_rate_generator,
+            input_params.learning_rate_discriminator,
+            input_args.continue_training)
     
     def fit(self, dataset):
         self.conditional_gan_trainer.train(dataset, self.num_epochs)
