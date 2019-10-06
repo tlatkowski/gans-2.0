@@ -1,5 +1,5 @@
 {
-  "batch_size": 32,
+  "batch_size": 128,
   "buffer_size": 50000,
   "num_epochs": 100,
   "hidden_size": 100,
