@@ -18,8 +18,7 @@ class ConditionalGAN:
         self.problem_type = input_args.problem_type
         
         self.generator = model_utils.generator_model_factory(input_params, self.problem_type)
-        self.discriminator = basic_conditional_discriminator.ConditionalDiscriminator(
-            input_params)
+        self.discriminator = model_utils.discriminator_model_factory(input_params, self.problem_type)
         self.conditional_gan_trainer = conditional_gan_trainer.ConditionalGANTrainer(
             self.batch_size,
             self.generator,

@@ -13,7 +13,7 @@ class VanillaGAN:
         self.problem_type = input_args.problem_type
         
         self.generator = model_utils.generator_model_factory(input_params, self.problem_type)
-        self.discriminator = basic_discriminator.Discriminator(input_params)
+        self.discriminator = model_utils.discriminator_model_factory(input_params, self.problem_type)
         self.vanilla_gan_trainer = vanilla_gan_trainer.VanillaGANTrainer(self.batch_size,
                                                                          self.generator,
                                                                          self.discriminator,
