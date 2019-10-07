@@ -1,4 +1,4 @@
-![](https://img.shields.io/badge/Python-3.6.8-blue.svg) ![](https://img.shields.io/badge/TensorFlow-2.0.0b1-blue.svg) ![](https://img.shields.io/badge/License-MIT-blue.svg)
+![](https://img.shields.io/badge/Python-3.6.8-blue.svg) ![](https://img.shields.io/badge/TensorFlow-2.0.0-blue.svg) ![](https://img.shields.io/badge/License-MIT-blue.svg)
 
 # GANs 2.0: Generative Adversarial Networks in TensorFlow 2.0
 Vanilla GAN (MNIST)            |  Vanilla GAN (FASHION_MNIST)
