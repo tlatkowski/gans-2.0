@@ -7,6 +7,6 @@
   "img_width": 32,
   "num_channels": 3,
   "checkpoint_step": 10,
-  "learning_rate_generator": 0.0002,
-  "learning_rate_discriminator": 0.0002
+  "learning_rate_generator": 0.001,
+  "learning_rate_discriminator": 0.001
 }

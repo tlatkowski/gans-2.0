@@ -1,6 +1,6 @@
 from easydict import EasyDict as edict
 
-from models import discriminators
+from models.discriminators import basic_discriminator
 from trainers import vanilla_gan_trainer
 from utils import model_utils
 
@@ -13,7 +13,7 @@ class VanillaGAN:
         self.problem_type = input_args.problem_type
         
         self.generator = model_utils.generator_model_factory(input_params, self.problem_type)
-        self.discriminator = discriminators.Discriminator(input_params)
+        self.discriminator = basic_discriminator.Discriminator(input_params)
         self.vanilla_gan_trainer = vanilla_gan_trainer.VanillaGANTrainer(self.batch_size,
                                                                          self.generator,
                                                                          self.discriminator,
