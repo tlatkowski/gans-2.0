@@ -19,9 +19,15 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
                                                     checkpoint_step)
     
     def train(self, dataset, epochs):
-        train_step = 0
+        test_batch_size = 100
+        labels = [0] * 10 + [1] * 10 + [2] * 10 + [3] * 10 + [4] * 10 + [5] * 10 + [6] * 10 + [
+            7] * 10 + [8] * 10 + [9] * 10
+        test_seed = [tf.random.normal([test_batch_size, 100]),
+                     np.array(labels)]
         
+        train_step = 0
         latest_checkpoint_epoch = 0
+        
         if self.continue_training:
             latest_checkpoint = tf.train.latest_checkpoint(self.checkpoint_path)
             self.checkpoint.restore(latest_checkpoint)
@@ -41,17 +47,11 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
                         tf.summary.scalar("discriminator_loss", dis_loss, step=train_step)
 
                     progress_bar.update(1)
-                    
-                test_batch = 100
-                labels = [0] * 10 + [1] * 10 + [2] * 10 + [3] * 10 + [4] * 10 + [5] * 10 + [6] * 10 + [
-                    7] * 10 + [8] * 10 + [9] * 10
-                test_seed = [tf.random.normal([test_batch, 100]),
-                             np.array(labels)]
                 
                 img_to_plot = visualization.generate_and_save_images(self.generator, epoch + 1,
                                                                      test_seed,
                                                                      self.dataset_type,
-                                                                     num_examples_to_display=test_batch)
+                                                                     num_examples_to_display=test_batch_size)
                 with self.summary_writer.as_default():
                     tf.summary.image('test_images', np.reshape(img_to_plot, newshape=(1, 480, 640, 4)),
                                      step=epoch)
