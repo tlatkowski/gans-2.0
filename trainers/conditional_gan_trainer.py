@@ -29,7 +29,7 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
         latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
         epochs += latest_epoch
         for epoch in tqdm(range(latest_epoch, epochs), desc='Epochs'):
-            num_batches = 1562
+            num_batches = 390
             tqdm_batch_iter = tqdm(range(num_batches), total=num_batches, desc="Batches", leave=False)
             # for image_batch in dataset:
             with tqdm_batch_iter as progress_bar:
