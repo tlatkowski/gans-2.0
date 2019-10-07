@@ -1,6 +1,6 @@
 from easydict import EasyDict as edict
 
-from models.discriminators import cifar10_conditional_discriminator
+from models.discriminators import basic_conditional_discriminator
 from trainers import conditional_gan_trainer
 from utils import model_utils
 
@@ -18,7 +18,7 @@ class ConditionalGAN:
         self.problem_type = input_args.problem_type
         
         self.generator = model_utils.generator_model_factory(input_params, self.problem_type)
-        self.discriminator = cifar10_conditional_discriminator.ConditionalDiscriminatorCifar10(
+        self.discriminator = basic_conditional_discriminator.ConditionalDiscriminator(
             input_params)
         self.conditional_gan_trainer = conditional_gan_trainer.ConditionalGANTrainer(
             self.batch_size,

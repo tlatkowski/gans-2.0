@@ -49,3 +49,22 @@ def generator_model_factory(input_params, dataset_type: ProblemType):
             input_params)
     else:
         raise NotImplementedError
+
+
+def discriminator_model_factory(input_params, dataset_type: ProblemType):
+    if dataset_type == ProblemType.VANILLA_MNIST.name:
+        return random_to_image.RandomToImageGenerator(input_params)
+    if dataset_type == ProblemType.VANILLA_FASHION_MNIST.name:
+        return random_to_image.RandomToImageGenerator(input_params)
+    elif dataset_type == ProblemType.VANILLA_CIFAR10.name:
+        # return generators.RandomToImageCifar10Generator(input_params)
+        return random_to_image_cifar10.RandomToImageCifar10Generator(input_params)
+    elif dataset_type == ProblemType.CONDITIONAL_MNIST.name:
+        return conditional_random_to_image.RandomToImageConditionalGenerator(input_params)
+    elif dataset_type == ProblemType.CONDITIONAL_FASHION_MNIST.name:
+        return conditional_random_to_image.RandomToImageConditionalGenerator(input_params)
+    elif dataset_type == ProblemType.CONDITIONAL_CIFAR10.name:
+        return conditional_random_to_image_cifar10.RandomToImageCifar10CConditionalGenerator(
+            input_params)
+    else:
+        raise NotImplementedError
