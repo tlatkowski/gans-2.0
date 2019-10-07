@@ -47,7 +47,7 @@ def generate_and_save_images(generator_model, epoch, test_input, dataset_name, c
             img_to_plot = predictions[i, :, :, :] * 127.5 + 127.5
         else:
             img_to_plot = predictions[i, :, :, 0] * 127.5 + 127.5
-        plt.imshow(img_to_plot, cmap=cmap)
+        plt.imshow(img_to_plot/255, cmap=cmap)
         plt.axis('off')
     
     save_path = os.path.join(constants.SAVE_IMAGE_DIR, dataset_name)
