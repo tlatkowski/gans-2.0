@@ -46,18 +46,18 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
                     tf.summary.scalar("discriminator_loss", dis_loss, step=train_step)
                     # progress_bar.update(1)
                 
-                img_to_plot = visualization.generate_and_save_images(self.generator,
-                                                                     epoch + 1,
-                                                                     test_seed,
-                                                                     self.dataset_type,
-                                                                     cmap='gray')
-                with self.summary_writer.as_default():
-                    tf.summary.image('test_images',
-                                     np.reshape(img_to_plot, newshape=(1, 480, 640, 4)),
-                                     step=epoch)
-                
-                if (epoch + 1) % self.checkpoint_step == 0:
-                    self.checkpoint.save(file_prefix=self.checkpoint_prefix)
+            img_to_plot = visualization.generate_and_save_images(self.generator,
+                                                                 epoch + 1,
+                                                                 test_seed,
+                                                                 self.dataset_type,
+                                                                 cmap='gray')
+            with self.summary_writer.as_default():
+                tf.summary.image('test_images',
+                                 np.reshape(img_to_plot, newshape=(1, 480, 640, 4)),
+                                 step=epoch)
+            
+            if (epoch + 1) % self.checkpoint_step == 0:
+                self.checkpoint.save(file_prefix=self.checkpoint_prefix)
     
     @tf.function
     def train_step(self, real_images, generator_inputs=None):
