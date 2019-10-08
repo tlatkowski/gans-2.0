@@ -23,8 +23,8 @@ class TestGenerators(tf.test.TestCase):
             'num_classes': 10
         })
         g = conditional_random_to_image.RandomToImageConditionalGenerator(input_params)
-        z = tf.random.normal(shape=[1, 100])
-        class_id = tf.one_hot(indices=[1], depth=10)
+        z = tf.random.normal(shape=(1, 100))
+        class_id = tf.zeros(shape=(1,))
         output_img = g([z, class_id])
         expected_shape = (1, 28, 28, 1)
         self.assertEqual(output_img.shape, expected_shape)
