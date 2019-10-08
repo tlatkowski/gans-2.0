@@ -48,7 +48,7 @@ class ConditionalDiscriminatorCifar10:
         x = layers.Concatenate()([x, embedded_id])
         x = layers.Dense(units=512, activation='relu')(x)
         
-        x = layers.Dense(units=1, activation='sigmoid')(x)
+        x = layers.Dense(units=1)(x)
         
         model = Model(name='discriminator', inputs=[input_img, class_id], outputs=x)
         
