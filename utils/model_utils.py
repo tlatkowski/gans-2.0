@@ -24,11 +24,16 @@ def model_type_values():
     return [i.name for i in ModelType]
 
 
-def model_factory(input_params: edict, gan_type, input_args):
+def gan_model_factory(input_params: edict, gan_type, input_args):
+    generator = generator_model_factory(input_params, input_args.problem_type)
+    discriminator = discriminator_model_factory(input_params, input_args.problem_type)
+    
     if gan_type == ModelType.VANILLA.name:
-        return vanilla_gan.VanillaGAN(input_params, input_args)
+        return vanilla_gan.VanillaGAN(input_params, generator, discriminator,
+                                      input_args.problem_type, input_args.continue_training)
     elif gan_type == ModelType.CONDITIONAL.name:
-        return conditional_gan.ConditionalGAN(input_params, input_args)
+        return conditional_gan.ConditionalGAN(input_params, generator, discriminator,
+                                              input_args.problem_type, input_args.continue_training)
     elif gan_type == ModelType.WASSERSTEIN.name:
         raise NotImplementedError
     else:
