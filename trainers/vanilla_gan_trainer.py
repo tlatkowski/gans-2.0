@@ -31,19 +31,20 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
                 print('No checkpoints found. Starting training from scratch.')
         latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
         epochs += latest_epoch
-        for epoch in tqdm(range(latest_epoch, epochs), desc='Epochs'):
+        # for epoch in tqdm(range(latest_epoch, epochs), desc='Epochs'):
+        for epoch in range(latest_epoch, epochs):
             num_batches = 390
-            tqdm_batch_iter = tqdm(range(num_batches), total=num_batches, desc="Batches",
-                                   leave=False)
+            # tqdm_batch_iter = tqdm(range(num_batches), total=num_batches, desc="Batches",
+            #                        leave=False)
             # for image_batch in dataset:
-            with tqdm_batch_iter as progress_bar:
-                for image_batch in dataset:
-                    train_step += 1
-                    gen_loss, dis_loss = self.train_step(image_batch)
-                    with self.summary_writer.as_default():
-                        tf.summary.scalar("generator_loss", gen_loss, step=train_step)
-                        tf.summary.scalar("discriminator_loss", dis_loss, step=train_step)
-                    progress_bar.update(1)
+            # with tqdm_batch_iter as progress_bar:
+            for image_batch in dataset:
+                train_step += 1
+                gen_loss, dis_loss = self.train_step(image_batch)
+                with self.summary_writer.as_default():
+                    tf.summary.scalar("generator_loss", gen_loss, step=train_step)
+                    tf.summary.scalar("discriminator_loss", dis_loss, step=train_step)
+                    # progress_bar.update(1)
                 
                 img_to_plot = visualization.generate_and_save_images(self.generator,
                                                                      epoch + 1,
