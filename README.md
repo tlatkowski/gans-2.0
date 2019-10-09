@@ -67,8 +67,10 @@ The GAN problem configurations are placed at **./config**. If you want you can t
   "img_height": 28,
   "img_width": 28,
   "num_channels": 1,
-  "checkpoint_step": 10
-} 
+  "checkpoint_step": 10,
+  "learning_rate_generator": 0.0002,
+  "learning_rate_discriminator": 0.0002
+}
 ```
  
 ## Monitoring model training
