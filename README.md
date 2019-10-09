@@ -13,7 +13,7 @@ Vanilla GAN (FASHION_MNIST)            |  Conditional GAN (FASHION_MNIST)
 
 Vanilla GAN (CIFAR10)            |  Conditional GAN (CIFAR10)
 :-------------------------:|:-------------------------:
-![vanilla_cifar10](./pics/vanilla_cifar10.gif)  |  ![conditional_fashion_mnist](./pics/conditional_fashion_mnist.gif)
+![vanilla_cifar10](./pics/vanilla_cifar10.gif)  |  ![conditional_cifar10](./pics/conditional_cifar10.gif)
 
 ## Installation
 
