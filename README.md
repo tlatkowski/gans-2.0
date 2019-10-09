@@ -1,14 +1,19 @@
-![](https://img.shields.io/badge/Python-3.6.8-blue.svg) ![](https://img.shields.io/badge/TensorFlow-2.0.0b1-blue.svg) ![](https://img.shields.io/badge/License-MIT-blue.svg)
+![](https://img.shields.io/badge/Python-3.6.8-blue.svg) ![](https://img.shields.io/badge/TensorFlow-2.0.0-blue.svg) ![](https://img.shields.io/badge/License-MIT-blue.svg) [![Build Status](https://travis-ci.com/tlatkowski/gans-2.0.svg?branch=cifar10-model)](https://travis-ci.com/tlatkowski/gans-2.0)
 
 # GANs 2.0: Generative Adversarial Networks in TensorFlow 2.0
-Vanilla GAN (MNIST)            |  Vanilla GAN (FASHION_MNIST)
+Vanilla GAN (MNIST)            |  Conditional GAN (MNIST)
 :-------------------------:|:-------------------------:
-![vanilla_mnist](./pics/vanilla_mnist.gif)  |  ![vanilla_fashion_mnist](./pics/vanilla_fashion_mnist.gif)
+![vanilla_mnist](./pics/vanilla_mnist.gif)  |  ![conditional_mnist](./pics/conditional_mnist.gif)
 
 
-Conditional GAN (MNIST)            |  Conditional GAN (FASHION_MNIST)
+Vanilla GAN (FASHION_MNIST)            |  Conditional GAN (FASHION_MNIST)
 :-------------------------:|:-------------------------:
-![conditional_mnist](./pics/conditional_mnist.gif)  |  ![conditional_fashion_mnist](./pics/conditional_fashion_mnist.gif)
+![vanilla_fashion_mnist](./pics/vanilla_fashion_mnist.gif)  |  ![conditional_fashion_mnist](./pics/conditional_fashion_mnist.gif)
+
+
+Vanilla GAN (CIFAR10)            |  Conditional GAN (CIFAR10)
+:-------------------------:|:-------------------------:
+![vanilla_cifar10](./pics/vanilla_cifar10.gif)  |  ![conditional_cifar10](./pics/conditional_cifar10.gif)
 
 ## Installation
 
