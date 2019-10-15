@@ -24,12 +24,12 @@ def problem_factory(input_params, dataset_type: ProblemType):
     elif dataset_type == ProblemType.VANILLA_FASHION_MNIST.name:
         return fashion_mnist.load_data(input_params)
     elif dataset_type == ProblemType.VANILLA_CIFAR10.name:
-        return cifar10.load_data(input_params)
+        return cifar10.Cifar10Dataset(input_params)
     elif dataset_type == ProblemType.CONDITIONAL_MNIST.name:
         return mnist.load_data_with_labels(input_params)
     elif dataset_type == ProblemType.CONDITIONAL_FASHION_MNIST.name:
         return fashion_mnist.load_data_with_labels(input_params)
     elif dataset_type == ProblemType.CONDITIONAL_CIFAR10.name:
-        return cifar10.load_data_with_labels(input_params)
+        return cifar10.Cifar10Dataset(input_params, with_labels=True)
     else:
         raise NotImplementedError

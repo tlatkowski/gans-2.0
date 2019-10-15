@@ -16,7 +16,7 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
                                                 dataset_type, lr_generator, lr_discriminator,
                                                 continue_training, checkpoint_step)
     
-    def train(self, dataset, epochs):
+    def train(self, dataset, num_epochs):
         train_step = 0
         test_seed = tf.random.normal([self.batch_size, 100])
         
@@ -29,9 +29,9 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
             else:
                 print('No checkpoints found. Starting training from scratch.')
         latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
-        epochs += latest_epoch
-        for epoch in range(latest_epoch, epochs):
-            for image_batch in dataset:
+        num_epochs += latest_epoch
+        for epoch in range(latest_epoch, num_epochs):
+            for image_batch in dataset.train_dataset:
                 train_step += 1
                 gen_loss, dis_loss = self.train_step(image_batch)
                 with self.summary_writer.as_default():
