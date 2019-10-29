@@ -1,8 +1,8 @@
 import enum
 
-from data_loaders import cifar10
-from data_loaders import fashion_mnist
-from data_loaders import mnist
+from datasets import cifar10
+from datasets import fashion_mnist
+from datasets import mnist
 
 
 class ProblemType(enum.Enum):
@@ -18,17 +18,17 @@ def dataset_type_values():
     return [i.name for i in ProblemType]
 
 
-def problem_factory(input_params, dataset_type: ProblemType):
+def get_dataset(input_params, dataset_type: ProblemType):
     if dataset_type == ProblemType.VANILLA_MNIST.name:
-        return mnist.load_data(input_params)
+        return mnist.MnistDataset(input_params)
     elif dataset_type == ProblemType.VANILLA_FASHION_MNIST.name:
-        return fashion_mnist.load_data(input_params)
+        return fashion_mnist.FashionMnistDataset(input_params)
     elif dataset_type == ProblemType.VANILLA_CIFAR10.name:
         return cifar10.Cifar10Dataset(input_params)
     elif dataset_type == ProblemType.CONDITIONAL_MNIST.name:
-        return mnist.load_data_with_labels(input_params)
+        return mnist.MnistDataset(input_params, with_labels=True)
     elif dataset_type == ProblemType.CONDITIONAL_FASHION_MNIST.name:
-        return fashion_mnist.load_data_with_labels(input_params)
+        return fashion_mnist.FashionMnistDataset(input_params, with_labels=True)
     elif dataset_type == ProblemType.CONDITIONAL_CIFAR10.name:
         return cifar10.Cifar10Dataset(input_params, with_labels=True)
     else:

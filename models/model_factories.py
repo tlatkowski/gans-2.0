@@ -11,7 +11,7 @@ from models.generators import conditional_random_to_image
 from models.generators import conditional_random_to_image_cifar10
 from models.generators import random_to_image
 from models.generators import random_to_image_cifar10
-from utils.dataset_utils import ProblemType
+from datasets.dataset_factory import ProblemType
 
 
 class ModelType(enum.Enum):

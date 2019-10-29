@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow.python.keras import datasets
 
-from data_loaders import abstract_dataset
+from datasets import abstract_dataset
 from utils import data_utils
 
 

@@ -3,7 +3,7 @@ from abc import abstractmethod
 
 import tensorflow as tf
 
-from data_loaders import abstract_dataset
+from datasets import abstract_dataset
 from utils import constants
 
 SEED = 0
