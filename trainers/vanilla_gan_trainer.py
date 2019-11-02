@@ -33,6 +33,7 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
         for epoch in range(latest_epoch, num_epochs):
             for image_batch in dataset.train_dataset:
                 train_step += 1
+
                 gen_loss, dis_loss = self.train_step(image_batch)
                 with self.summary_writer.as_default():
                     tf.summary.scalar("generator_loss", gen_loss, step=train_step)

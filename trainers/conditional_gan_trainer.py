@@ -34,7 +34,7 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
         latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
         epochs += latest_epoch
         for epoch in range(latest_epoch, epochs):
-            for image_batch in dataset:
+            for image_batch in dataset.train_dataset:
                 train_step += 1
                 gen_loss, dis_loss = self.train_step(image_batch)
                 with self.summary_writer.as_default():
