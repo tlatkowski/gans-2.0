@@ -1,7 +1,9 @@
 import os
+from abc import abstractmethod
 
 import tensorflow as tf
 
+from datasets import abstract_dataset
 from utils import constants
 
 SEED = 0
@@ -33,3 +35,7 @@ class GANTrainer:
                                               generator=self.generator.model,
                                               discriminator=self.discriminator.model)
         self.summary_writer = tf.summary.create_file_writer(self.checkpoint_path)
+    
+    @abstractmethod
+    def train(self, dataset: abstract_dataset.Dataset, num_epochs: int):
+        raise NotImplementedError

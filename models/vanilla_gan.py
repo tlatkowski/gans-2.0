@@ -21,3 +21,6 @@ class VanillaGAN:
     
     def fit(self, dataset):
         self.vanilla_gan_trainer.train(dataset, self.num_epochs)
+        
+    def predict(self):
+        pass
