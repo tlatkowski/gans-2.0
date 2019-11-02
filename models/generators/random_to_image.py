@@ -5,7 +5,10 @@ from tensorflow.python.keras import layers
 
 class RandomToImageGenerator:
     
-    def __init__(self, input_params: edict):
+    def __init__(
+            self,
+            input_params: edict,
+    ):
         self.hidden_size = input_params.hidden_size
         self._model = self.create_model()
     

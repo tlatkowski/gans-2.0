@@ -5,7 +5,10 @@ from tensorflow.python.keras import layers
 
 class RandomToImageNNUpSamplingConditionalGenerator:
     
-    def __init__(self, input_params: edict):
+    def __init__(
+            self,
+            input_params: edict,
+    ):
         self.hidden_size = input_params.hidden_size
         self.num_classes = input_params.num_classes
         self._model = self.create_model()

@@ -23,8 +23,10 @@ def gradient_penalty_loss(predicted_output, averaged_samples):
     gradient_penalty_weight = 10
     gradients = tf.gradients(predicted_output, averaged_samples)[0]
     gradients_sqr = tf.square(gradients)
-    gradients_sqr_sum = tf.reduce_sum(gradients_sqr,
-                                      axis=np.arange(1, len(gradients_sqr.shape)))
+    gradients_sqr_sum = tf.reduce_sum(
+        gradients_sqr,
+        axis=np.arange(1, len(gradients_sqr.shape))
+    )
     gradient_l2_norm = tf.sqrt(gradients_sqr_sum)
     gradient_penalty = gradient_penalty_weight * tf.square(1 - gradient_l2_norm)
     return tf.reduce_mean(gradient_penalty)

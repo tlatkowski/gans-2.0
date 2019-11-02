@@ -32,8 +32,14 @@ def display_image(epoch_no):
     return PIL.Image.open('image_at_epoch_{:04d}.png'.format(epoch_no))
 
 
-def generate_and_save_images(generator_model, epoch, test_input, dataset_name, cmap=None,
-                             num_examples_to_display=16):
+def generate_and_save_images(
+        generator_model,
+        epoch,
+        test_input,
+        dataset_name,
+        cmap=None,
+        num_examples_to_display=16,
+):
     display.clear_output(wait=True)
     predictions = generator_model(test_input, training=False)
     if predictions.shape[0] < num_examples_to_display:

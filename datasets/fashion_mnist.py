@@ -7,7 +7,11 @@ from utils import data_utils
 
 class FashionMnistDataset(abstract_dataset.Dataset):
     
-    def __init__(self, input_params, with_labels=False):
+    def __init__(
+            self,
+            input_params,
+            with_labels=False,
+    ):
         super(FashionMnistDataset, self).__init__(input_params, with_labels)
     
     def __call__(self, *args, **kwargs):

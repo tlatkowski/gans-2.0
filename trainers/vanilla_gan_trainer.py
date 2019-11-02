@@ -10,11 +10,27 @@ SEED = 0
 
 class VanillaGANTrainer(gan_trainer.GANTrainer):
     
-    def __init__(self, batch_size, generator, discriminator, dataset_type, lr_generator,
-                 lr_discriminator, continue_training, checkpoint_step=10):
-        super(VanillaGANTrainer, self).__init__(batch_size, generator, discriminator,
-                                                dataset_type, lr_generator, lr_discriminator,
-                                                continue_training, checkpoint_step)
+    def __init__(
+            self,
+            batch_size,
+            generator,
+            discriminator,
+            dataset_type,
+            lr_generator,
+            lr_discriminator,
+            continue_training,
+            checkpoint_step=10,
+    ):
+        super(VanillaGANTrainer, self).__init__(
+            batch_size,
+            generator,
+            discriminator,
+            dataset_type,
+            lr_generator,
+            lr_discriminator,
+            continue_training,
+            checkpoint_step,
+        )
     
     def train(self, dataset, num_epochs):
         train_step = 0

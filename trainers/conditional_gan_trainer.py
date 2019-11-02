@@ -10,8 +10,17 @@ SEED = 0
 
 class ConditionalGANTrainer(gan_trainer.GANTrainer):
     
-    def __init__(self, batch_size, generator, discriminator, dataset_type, lr_generator,
-                 lr_discriminator, continue_training, checkpoint_step=10):
+    def __init__(
+            self,
+            batch_size,
+            generator,
+            discriminator,
+            dataset_type,
+            lr_generator,
+            lr_discriminator,
+            continue_training,
+            checkpoint_step=10,
+    ):
         super(ConditionalGANTrainer, self).__init__(batch_size, generator, discriminator,
                                                     dataset_type, lr_generator,
                                                     lr_discriminator, continue_training,

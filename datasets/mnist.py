@@ -6,7 +6,11 @@ from utils import data_utils
 
 class MnistDataset(abstract_dataset.Dataset):
     
-    def __init__(self, input_params, with_labels=False):
+    def __init__(
+            self,
+            input_params,
+            with_labels=False,
+    ):
         super(MnistDataset, self).__init__(input_params, with_labels)
     
     def __call__(self, *args, **kwargs):

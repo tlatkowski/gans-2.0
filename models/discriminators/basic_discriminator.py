@@ -5,7 +5,10 @@ from tensorflow.python.keras import layers
 
 class Discriminator:
     
-    def __init__(self, input_params: edict):
+    def __init__(
+            self,
+            input_params: edict,
+    ):
         self.img_height = input_params.img_height
         self.img_width = input_params.img_width
         self.num_channels = input_params.num_channels

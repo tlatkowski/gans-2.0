@@ -8,7 +8,14 @@ SEED = 0
 
 class WassersteinGANTrainer:
     
-    def __init__(self, batch_size, generator, discriminator, dataset_type, checkpoint_step=15):
+    def __init__(
+            self,
+            batch_size,
+            generator,
+            discriminator,
+            dataset_type,
+            checkpoint_step=15,
+    ):
         self.batch_size = batch_size
         self.generator = generator
         self.discriminator = discriminator
@@ -24,8 +31,12 @@ class WassersteinGANTrainer:
             print(epoch)
             for real_images in dataset:
                 self.train_step(real_images)
-            visualization.generate_and_save_images(self.generator, epoch + 1, seed,
-                                                   self.dataset_type)
+            visualization.generate_and_save_images(
+                self.generator,
+                epoch + 1,
+                seed,
+                self.dataset_type,
+            )
             
             if (epoch + 1) % self.checkpoint_step == 0:
                 pass
@@ -48,10 +59,14 @@ class WassersteinGANTrainer:
             generator_loss = losses.generator_loss(fake_output)
             discriminator_loss = losses.discriminator_loss(real_output, fake_output)
         
-        gradients_of_generator = gen_tape.gradient(generator_loss,
-                                                   self.generator.trainable_variables)
-        gradients_of_discriminator = disc_tape.gradient(discriminator_loss,
-                                                        self.discriminator.trainable_variables)
+        gradients_of_generator = gen_tape.gradient(
+            generator_loss,
+            self.generator.trainable_variables,
+        )
+        gradients_of_discriminator = disc_tape.gradient(
+            discriminator_loss,
+            self.discriminator.trainable_variables,
+        )
         
         self.generator_optimizer.apply_gradients(
             zip(gradients_of_generator, self.generator.trainable_variables))
