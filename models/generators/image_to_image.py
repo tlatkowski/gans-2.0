@@ -66,7 +66,64 @@ class RandomToImageCifar10Generator:
             use_bias=False,
         )(x)
         
+        x = layers.Conv2DTranspose(
+            filters=128,
+            kernel_size=(3, 3),
+            strides=(2, 2),
+            padding='same',
+            use_bias=False,
+        )(x)
+        x = layers.BatchNormalization(momentum=0.9)(x)
+        x = layers.LeakyReLU(alpha=0.1)(x)
         
+        x = layers.Conv2DTranspose(
+            filters=128,
+            kernel_size=(3, 3),
+            strides=(1, 1),
+            padding='same',
+            use_bias=False,
+        )(x)
+        x = layers.BatchNormalization(momentum=0.9)(x)
+        x = layers.LeakyReLU(alpha=0.1)(x)
+        
+        x = layers.Conv2DTranspose(
+            filters=128,
+            kernel_size=(3, 3),
+            strides=(2, 2),
+            padding='same',
+            use_bias=False,
+        )(x)
+        x = layers.BatchNormalization(momentum=0.9)(x)
+        x = layers.LeakyReLU(alpha=0.1)(x)
+        
+        x = layers.Conv2DTranspose(
+            filters=128,
+            kernel_size=(3, 3),
+            strides=(1, 1),
+            padding='same',
+            use_bias=False,
+        )(x)
+        x = layers.BatchNormalization(momentum=0.9)(x)
+        x = layers.LeakyReLU(alpha=0.1)(x)
+        
+        x = layers.Conv2D(
+            filters=128,
+            kernel_size=(5, 5),
+            strides=(1, 1),
+            padding='same',
+            use_bias=False,
+        )(x)
+        x = layers.BatchNormalization(momentum=0.9)(x)
+        x = layers.LeakyReLU(alpha=0.1)(x)
+        
+        x = layers.Conv2D(
+            filters=3,
+            kernel_size=(5, 5),
+            strides=(1, 1),
+            padding='same',
+            use_bias=False,
+            activation='tanh',
+        )(x)
         
         model = Model(name='Generator', inputs=input_images, outputs=x)
         return model
