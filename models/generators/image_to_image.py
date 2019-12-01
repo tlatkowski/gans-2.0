@@ -1,15 +1,12 @@
-from easydict import EasyDict as edict
 from tensorflow.python.keras import Input, Model
 from tensorflow.python.keras import layers
 
 
-class RandomToImageCifar10Generator:
+class CycleGenerator:
     
     def __init__(
             self,
-            input_params: edict,
     ):
-        self.hidden_size = input_params.hidden_size
         self._model = self.create_model()
     
     def __call__(self, inputs, **kwargs):

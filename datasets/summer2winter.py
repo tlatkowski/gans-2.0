@@ -16,16 +16,17 @@ class SummerToWinterDataset():
     
     def __init__(
             self,
-            input_params,
+            # input_params,
             with_labels=False,
     ):
-        self.input_params = input_params
+        # self.input_params = input_params
         self.buffer_size = 10
         self.batch_size = 4
         # super(SummerToWinterDataset, self).__init__(input_params, with_labels)
     
     def __call__(self, *args, **kwargs):
-        return self.train_dataset
+        # return self.train_dataset
+        return self.load_data()
     
     def load_data(self):
         summer_dataset = create_tf_dataset(
@@ -38,7 +39,7 @@ class SummerToWinterDataset():
             self.batch_size,
             self.buffer_size,
         )
-        return summer_dataset, winter_dataset
+        return zip(summer_dataset, winter_dataset)
     
     def load_data_with_labels(self):
         cifar10 = datasets.cifar10
@@ -130,10 +131,5 @@ def resize_img(img, img_width, img_height):
     )
 
 
-a = SummerToWinterDataset(
-    input_params={
-        'batch_size': 4,
-        'buffer_size': 10,
-    }
-)
+a = SummerToWinterDataset()
 a.load_data()
