@@ -35,7 +35,7 @@ class SummerToWinterDataset():
             self.buffer_size,
         )
         winter_dataset = create_tf_dataset(
-            SUMMER_IMAGES_PATH,
+            WINTER_IMAGES_PATH,
             self.batch_size,
             self.buffer_size,
         )

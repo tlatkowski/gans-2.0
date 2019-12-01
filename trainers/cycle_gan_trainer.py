@@ -7,6 +7,7 @@ from utils import visualization
 
 SEED = 0
 
+
 class CycleGANTrainer(gan_trainer.GANTrainer):
     
     def __init__(
@@ -39,51 +40,59 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
         latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
         num_epochs += latest_epoch
         for epoch in range(latest_epoch, num_epochs):
-            for first_image_batch, second_image_batch in dataset():
+            for first_second_image_batch in dataset():
                 train_step += 1
-                
-                gen_loss, dis_loss = self.train_step(first_image_batch)
+                print(train_step)
+                gen_loss, dis_loss = self.train_step(first_second_image_batch)
                 with self.summary_writer.as_default():
                     tf.summary.scalar("generator_loss", gen_loss, step=train_step)
                     tf.summary.scalar("discriminator_loss", dis_loss, step=train_step)
             
-            img_to_plot = visualization.generate_and_save_images(self.generator,
-                                                                 epoch + 1,
-                                                                 test_seed,
-                                                                 self.dataset_type,
-                                                                 cmap='gray')
+                img_to_plot = visualization.generate_and_save_images(
+                    generator_model=self.generator,
+                    epoch=epoch + 1,
+                    test_input=first_second_image_batch[0],
+                    dataset_name=self.dataset_type,
+                    cmap='gray',
+                    num_examples_to_display=1,
+                )
             with self.summary_writer.as_default():
-                tf.summary.image('test_images',
-                                 np.reshape(img_to_plot, newshape=(1, 480, 640, 4)),
-                                 step=epoch)
+                tf.summary.image(
+                    name='test_images',
+                    data=np.reshape(img_to_plot, newshape=(1, 480, 640, 4)),
+                    step=epoch,
+                )
             
             if (epoch + 1) % self.checkpoint_step == 0:
                 self.checkpoint.save(file_prefix=self.checkpoint_prefix)
     
     @tf.function
-    def train_step(self, real_images, generator_inputs=None):
-        if generator_inputs is None:
-            generator_inputs = tf.random.normal([self.batch_size, 100])
-        
+    def train_step(self, train_batch):
+        first_dataset_batch, second_dataset_first = train_batch
         with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
-            fake_images = self.generator(generator_inputs, training=True)
+            fake_images = self.generator(first_dataset_batch, training=True)
             
-            real_output = self.discriminator(real_images, training=True)
+            real_output = self.discriminator(second_dataset_first, training=True)
             fake_output = self.discriminator(fake_images, training=True)
             
-            gen_loss = losses.generator_loss(fake_output)
-            disc_loss = losses.discriminator_loss(real_output, fake_output)
+            generator_loss = losses.generator_loss(fake_output)
+            discriminator_loss = losses.discriminator_loss(real_output, fake_output)
         
-        gradients_of_generator = gen_tape.gradient(gen_loss, self.generator.trainable_variables)
-        gradients_of_discriminator = disc_tape.gradient(disc_loss,
-                                                        self.discriminator.trainable_variables)
+        gradients_of_generator = gen_tape.gradient(
+            generator_loss,
+            self.generator.trainable_variables,
+        )
+        gradients_of_discriminator = disc_tape.gradient(
+            discriminator_loss,
+            self.discriminator.trainable_variables,
+        )
         
         self.generator_optimizer.apply_gradients(
             zip(gradients_of_generator, self.generator.trainable_variables))
         self.discriminator_optimizer.apply_gradients(
             zip(gradients_of_discriminator, self.discriminator.trainable_variables))
         
-        return gen_loss, disc_loss
+        return generator_loss, discriminator_loss
     
     def regenerate_training(self):
         latest_checkpoint_epoch = 0

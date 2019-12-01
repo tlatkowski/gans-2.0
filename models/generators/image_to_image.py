@@ -76,7 +76,7 @@ class CycleGenerator:
         x = layers.Conv2DTranspose(
             filters=128,
             kernel_size=(3, 3),
-            strides=(1, 1),
+            strides=(2, 2),
             padding='same',
             use_bias=False,
         )(x)
@@ -94,9 +94,9 @@ class CycleGenerator:
         x = layers.LeakyReLU(alpha=0.1)(x)
         
         x = layers.Conv2DTranspose(
-            filters=128,
+            filters=64,
             kernel_size=(3, 3),
-            strides=(1, 1),
+            strides=(2, 2),
             padding='same',
             use_bias=False,
         )(x)
@@ -104,7 +104,7 @@ class CycleGenerator:
         x = layers.LeakyReLU(alpha=0.1)(x)
         
         x = layers.Conv2D(
-            filters=128,
+            filters=32,
             kernel_size=(5, 5),
             strides=(1, 1),
             padding='same',
