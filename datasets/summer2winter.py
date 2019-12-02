@@ -7,8 +7,8 @@ from tensorflow.python.keras import datasets
 
 from utils import data_utils
 
-SUMMER_IMAGES_PATH = '../data/summer2winter_yosemite/trainA'
-WINTER_IMAGES_PATH = '../data/summer2winter_yosemite/trainB'
+SUMMER_IMAGES_PATH = 'data/summer2winter_yosemite/trainA'
+WINTER_IMAGES_PATH = 'data/summer2winter_yosemite/trainB'
 
 
 # class SummerToWinterDataset(abstract_dataset.Dataset):
