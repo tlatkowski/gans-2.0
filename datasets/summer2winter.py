@@ -2,7 +2,7 @@ import os
 import re
 
 import tensorflow as tf
-from tensorflow.image import ResizeMethod
+# from tensorflow.image import ResizeMethod
 from tensorflow.python.keras import datasets
 
 from utils import data_utils
@@ -128,8 +128,9 @@ def resize_img(img, img_width, img_height):
     return tf.image.resize(
         images=img,
         size=(img_width, img_height),
-        method=ResizeMethod.NEAREST_NEIGHBOR,
+        method=tf.image.ResizeMethod.NEAREST_NEIGHBOR,
     )
+
 
 
 a = SummerToWinterDataset()

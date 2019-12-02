@@ -104,3 +104,5 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
             else:
                 print('No checkpoints found. Starting training from scratch.')
         return latest_checkpoint_epoch
+
+

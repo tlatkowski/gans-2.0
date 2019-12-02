@@ -1,3 +1,4 @@
+import tensorflow_addons as tfa
 from tensorflow.python.keras import Input, Model
 from tensorflow.python.keras import layers
 
@@ -28,27 +29,26 @@ class CycleGenerator:
         input_images = Input(shape=[256, 256, 3])
         
         x = layers.Conv2D(
-            filters=32,
-            kernel_size=(3, 3),
-            strides=(2, 2),
+            filters=64,
+            kernel_size=(7, 7),
             padding='same',
             use_bias=False,
         )(input_images)
-        x = layers.BatchNormalization()(x)
-        x = layers.LeakyReLU()(x)
+        x = tfa.layers.InstanceNormalization()(x)
+        x = layers.ReLU()(x)
         
         x = layers.Conv2D(
-            filters=64,
+            filters=128,
             kernel_size=(3, 3),
             strides=(2, 2),
             padding='same',
             use_bias=False,
         )(x)
-        x = layers.BatchNormalization()(x)
-        x = layers.LeakyReLU()(x)
+        x = tfa.layers.InstanceNormalization()(x)
+        x = layers.ReLU()(x)
         
         x = layers.Conv2D(
-            filters=128,
+            filters=256,
             kernel_size=(3, 3),
             strides=(2, 2),
             padding='same',
@@ -62,6 +62,9 @@ class CycleGenerator:
             padding='same',
             use_bias=False,
         )(x)
+        n_resnet = 6
+        for _ in range(n_resnet):
+            x = resnet_block(256, x)
         
         x = layers.Conv2DTranspose(
             filters=128,
@@ -70,8 +73,8 @@ class CycleGenerator:
             padding='same',
             use_bias=False,
         )(x)
-        x = layers.BatchNormalization(momentum=0.9)(x)
-        x = layers.LeakyReLU(alpha=0.1)(x)
+        x = tfa.layers.InstanceNormalization()(x)
+        x = layers.ReLU()(x)
         
         x = layers.Conv2DTranspose(
             filters=128,
@@ -80,18 +83,8 @@ class CycleGenerator:
             padding='same',
             use_bias=False,
         )(x)
-        x = layers.BatchNormalization(momentum=0.9)(x)
-        x = layers.LeakyReLU(alpha=0.1)(x)
-        
-        x = layers.Conv2DTranspose(
-            filters=128,
-            kernel_size=(3, 3),
-            strides=(2, 2),
-            padding='same',
-            use_bias=False,
-        )(x)
-        x = layers.BatchNormalization(momentum=0.9)(x)
-        x = layers.LeakyReLU(alpha=0.1)(x)
+        x = tfa.layers.InstanceNormalization()(x)
+        x = layers.ReLU()(x)
         
         x = layers.Conv2DTranspose(
             filters=64,
@@ -100,8 +93,8 @@ class CycleGenerator:
             padding='same',
             use_bias=False,
         )(x)
-        x = layers.BatchNormalization(momentum=0.9)(x)
-        x = layers.LeakyReLU(alpha=0.1)(x)
+        x = tfa.layers.InstanceNormalization()(x)
+        x = layers.ReLU()(x)
         
         x = layers.Conv2D(
             filters=32,
@@ -110,12 +103,12 @@ class CycleGenerator:
             padding='same',
             use_bias=False,
         )(x)
-        x = layers.BatchNormalization(momentum=0.9)(x)
-        x = layers.LeakyReLU(alpha=0.1)(x)
+        x = tfa.layers.InstanceNormalization()(x)
+        x = layers.ReLU()(x)
         
         x = layers.Conv2D(
             filters=3,
-            kernel_size=(5, 5),
+            kernel_size=(7, 7),
             strides=(1, 1),
             padding='same',
             use_bias=False,
@@ -124,3 +117,22 @@ class CycleGenerator:
         
         model = Model(name='Generator', inputs=input_images, outputs=x)
         return model
+
+
+def resnet_block(n_filters, input_layer):
+    g = layers.Conv2D(
+        filters=n_filters,
+        kernel_size=(3, 3),
+        padding='same',
+    )(input_layer)
+    g = tfa.layers.InstanceNormalization()(g)
+    g = layers.ReLU()(g)
+    g = layers.Conv2D(
+        filters=n_filters,
+        kernel_size=(3, 3),
+        padding='same',
+    )(g)
+    g = tfa.layers.InstanceNormalization()(g)
+    # concatenate merge channel-wise with input layer
+    g = layers.Concatenate()([g, input_layer])
+    return g

@@ -1,6 +1,6 @@
 from tensorflow.python.keras import Input, Model
 from tensorflow.python.keras import layers
-
+import tensorflow_addons as tfa
 
 class Discriminator:
     
@@ -28,19 +28,22 @@ class Discriminator:
         
         x = layers.Conv2D(filters=64, kernel_size=(3, 3), strides=(2, 2), padding='same')(input_img)
         x = layers.LeakyReLU()(x)
-        x = layers.Dropout(0.3)(x)
         
         x = layers.Conv2D(filters=128, kernel_size=(3, 3), strides=(2, 2), padding='same')(x)
+        x = tfa.layers.InstanceNormalization(axis=-1)(x)
         x = layers.LeakyReLU()(x)
-        x = layers.Dropout(rate=0.3)(x)
-        
-        x = layers.Conv2D(filters=128, kernel_size=(3, 3), strides=(2, 2), padding='same')(x)
-        x = layers.LeakyReLU()(x)
-        x = layers.Dropout(rate=0.3)(x)
         
         x = layers.Conv2D(filters=256, kernel_size=(3, 3), strides=(2, 2), padding='same')(x)
+        x = tfa.layers.InstanceNormalization(axis=-1)(x)
         x = layers.LeakyReLU()(x)
-        x = layers.Dropout(rate=0.3)(x)
+        
+        x = layers.Conv2D(filters=512, kernel_size=(3, 3), strides=(2, 2), padding='same')(x)
+        x = tfa.layers.InstanceNormalization(axis=-1)(x)
+        x = layers.LeakyReLU()(x)
+        
+        x = layers.Conv2D(filters=512, kernel_size=(3, 3), strides=(2, 2), padding='same')(x)
+        x = tfa.layers.InstanceNormalization(axis=-1)(x)
+        x = layers.LeakyReLU()(x)
         
         x = layers.Flatten()(x)
         x = layers.Dense(units=1)(x)

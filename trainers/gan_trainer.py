@@ -31,8 +31,8 @@ class GANTrainer:
         self.lr_discriminator = lr_discriminator
         self.continue_training = continue_training
         
-        self.generator_optimizer = tf.keras.optimizers.Adam(self.lr_generator)
-        self.discriminator_optimizer = tf.keras.optimizers.Adam(self.lr_discriminator)
+        self.generator_optimizer = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
+        self.discriminator_optimizer = tf.keras.optimizers.Adam(self.lr_discriminator, beta_1=0.5)
         
         self.checkpoint_path = os.path.join(
             constants.SAVE_IMAGE_DIR,
