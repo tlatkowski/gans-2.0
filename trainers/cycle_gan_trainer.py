@@ -68,11 +68,11 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
     
     @tf.function
     def train_step(self, train_batch):
-        first_dataset_batch, second_dataset_first = train_batch
+        first_dataset_batch, second_dataset_batch = train_batch
         with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
             fake_images = self.generator(first_dataset_batch, training=True)
             
-            real_output = self.discriminator(second_dataset_first, training=True)
+            real_output = self.discriminator(second_dataset_batch, training=True)
             fake_output = self.discriminator(fake_images, training=True)
             
             generator_loss = losses.generator_loss(fake_output)
