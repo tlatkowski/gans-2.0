@@ -114,6 +114,7 @@ def read_img(file_path):
 def decode_img(img):
     img = tf.image.decode_jpeg(img, channels=3)
     img = tf.image.convert_image_dtype(img, tf.float32)
+    img = (img - 0.5) * 2
     return img
 
 
