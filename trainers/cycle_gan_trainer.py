@@ -82,19 +82,17 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
         first_dataset_batch, second_dataset_batch = train_batch
         # generator_a, generator_b = self.generator
         # discriminator_a, discriminator_b = self.discriminator
-        with tf.GradientTape() as gen_tape_b, tf.GradientTape() as disc_tape_b, \
-                tf.GradientTape() as gen_tape_a, tf.GradientTape() as disc_tape_a:
+        with tf.GradientTape(persistent=True) as tape:
             fake_images_b = self.generator[1](first_dataset_batch, training=True)
-            fake_images_a = self.generator[0](second_dataset_batch, training=True)
-            
             real_output_b = self.discriminator[1](second_dataset_batch, training=True)
             fake_output_b = self.discriminator[1](fake_images_b, training=True)
+            cycle_image_a = self.generator[0](fake_images_b, training=True)
             
+            fake_images_a = self.generator[0](second_dataset_batch, training=True)
             real_output_a = self.discriminator[0](first_dataset_batch, training=True)
             fake_output_a = self.discriminator[0](fake_images_a, training=True)
-            
-            cycle_image_a = self.generator[0](fake_images_b, training=True)
             cycle_image_b = self.generator[1](fake_images_a, training=True)
+            
             
             generator_loss_b = losses.generator_loss(fake_output_b)
             discriminator_loss_b = losses.discriminator_loss(real_output_b, fake_output_b)
@@ -107,31 +105,23 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
             
             total_cycle_loss = cycle_loss_a + cycle_loss_b
         
-        gradients_of_generator_b = gen_tape_b.gradient(
+        gradients_of_generator_b = tape.gradient(
             generator_loss_b + total_cycle_loss,
             self.generator[1].trainable_variables,
         )
-        gradients_of_discriminator_b = disc_tape_b.gradient(
+        gradients_of_discriminator_b = tape.gradient(
             discriminator_loss_b,
             self.discriminator[1].trainable_variables,
         )
-        # gradients_of_cycle_b = disc_tape_b.gradient(
-        #     total_cycle_loss,
-        #     self.generator[1].trainable_variables,
-        # )
         
-        gradients_of_generator_a = gen_tape_a.gradient(
+        gradients_of_generator_a = tape.gradient(
             generator_loss_a + total_cycle_loss,
             self.generator[0].trainable_variables,
         )
-        gradients_of_discriminator_a = disc_tape_a.gradient(
+        gradients_of_discriminator_a = tape.gradient(
             discriminator_loss_a,
             self.discriminator[0].trainable_variables,
         )
-        # gradients_of_cycle_a = gen_tape_a.gradient(
-        #     total_cycle_loss,
-        #     self.generator[1].trainable_variables,
-        # )
         
         self.generator_optimizer_b.apply_gradients(
             zip(gradients_of_generator_b, self.generator[1].trainable_variables))
