@@ -110,11 +110,11 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
         
         gradients_of_generator_b = gen_tape_b.gradient(
             generator_loss_b + total_cycle_loss,
-            self.generator[1].trainable_variables,
+            generator_b.trainable_variables,
         )
         gradients_of_discriminator_b = disc_tape_b.gradient(
             discriminator_loss_b,
-            self.discriminator[1].trainable_variables,
+            discriminator_b.trainable_variables,
         )
         # gradients_of_cycle_b = disc_tape_b.gradient(
         #     total_cycle_loss,
@@ -123,11 +123,11 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
         
         gradients_of_generator_a = gen_tape_a.gradient(
             generator_loss_a + total_cycle_loss,
-            self.generator[0].trainable_variables,
+            generator_a.trainable_variables,
         )
         gradients_of_discriminator_a = disc_tape_a.gradient(
             discriminator_loss_a,
-            self.discriminator[0].trainable_variables,
+            discriminator_a.trainable_variables,
         )
         # gradients_of_cycle_a = gen_tape_a.gradient(
         #     total_cycle_loss,
@@ -135,14 +135,14 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
         # )
         
         self.generator_optimizer_b.apply_gradients(
-            zip(gradients_of_generator_b, self.generator[1].trainable_variables))
+            zip(gradients_of_generator_b, generator_b.trainable_variables))
         self.discriminator_optimizer_b.apply_gradients(
-            zip(gradients_of_discriminator_b, self.discriminator[1].trainable_variables))
+            zip(gradients_of_discriminator_b, discriminator_b.trainable_variables))
         
         self.generator_optimizer_a.apply_gradients(
-            zip(gradients_of_generator_a, self.generator[0].trainable_variables))
+            zip(gradients_of_generator_a, generator_a.trainable_variables))
         self.discriminator_optimizer_a.apply_gradients(
-            zip(gradients_of_discriminator_a, self.discriminator[0].trainable_variables))
+            zip(gradients_of_discriminator_a, discriminator_a.trainable_variables))
         
         return generator_loss_b, discriminator_loss_b, generator_loss_a, discriminator_loss_a
     
