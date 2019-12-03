@@ -15,6 +15,15 @@ def generator_loss(fake_output):
     return cross_entropy(tf.ones_like(fake_output), fake_output)
 
 
+def cycle_loss(real_image, cycled_image, weight=10):
+    loss = l1_loss(real_image, cycled_image)
+    return weight * loss
+
+
+def l1_loss(x, y):
+    return tf.reduce_mean(tf.abs(x - y))
+
+
 def wasserstein_loss(true_output, predicted_output):
     return tf.reduce_mean(true_output * predicted_output)
 

@@ -31,8 +31,10 @@ class GANTrainer:
         self.lr_discriminator = lr_discriminator
         self.continue_training = continue_training
         
-        self.generator_optimizer = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
-        self.discriminator_optimizer = tf.keras.optimizers.Adam(self.lr_discriminator, beta_1=0.5)
+        self.generator_optimizer_a = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
+        self.generator_optimizer_b = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
+        self.discriminator_optimizer_a = tf.keras.optimizers.Adam(self.lr_discriminator, beta_1=0.5)
+        self.discriminator_optimizer_b = tf.keras.optimizers.Adam(self.lr_discriminator, beta_1=0.5)
         
         self.checkpoint_path = os.path.join(
             constants.SAVE_IMAGE_DIR,
@@ -43,8 +45,10 @@ class GANTrainer:
         self.checkpoint_prefix = os.path.join(self.checkpoint_path, "ckpt")
         
         self.checkpoint = tf.train.Checkpoint(
-            generator_optimizer=self.generator_optimizer,
-            discriminator_optimizer=self.discriminator_optimizer,
+            generator_optimizer_a=self.generator_optimizer_a,
+            generator_optimizer_b=self.generator_optimizer_b,
+            discriminator_optimizer_a=self.discriminator_optimizer_a,
+            discriminator_optimizer_b=self.discriminator_optimizer_b,
             generator_a=self.generator[0].model,
             generator_b=self.generator[1].model,
             discriminator_a=self.discriminator[0].model,
