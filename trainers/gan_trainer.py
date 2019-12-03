@@ -31,10 +31,10 @@ class GANTrainer:
         self.lr_discriminator = lr_discriminator
         self.continue_training = continue_training
         
-        self.generator_optimizer_a = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
-        self.generator_optimizer_b = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
-        self.discriminator_optimizer_a = tf.keras.optimizers.Adam(self.lr_discriminator, beta_1=0.5)
-        self.discriminator_optimizer_b = tf.keras.optimizers.Adam(self.lr_discriminator, beta_1=0.5)
+        self.generator_optimizer_f = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
+        self.generator_optimizer_g = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
+        self.discriminator_optimizer_x = tf.keras.optimizers.Adam(self.lr_discriminator, beta_1=0.5)
+        self.discriminator_optimizer_y = tf.keras.optimizers.Adam(self.lr_discriminator, beta_1=0.5)
         
         self.checkpoint_path = os.path.join(
             constants.SAVE_IMAGE_DIR,
@@ -43,16 +43,17 @@ class GANTrainer:
         )
         
         self.checkpoint_prefix = os.path.join(self.checkpoint_path, "ckpt")
-        
+        self.discriminator_f, self.discriminator_g = self.discriminator
+        self.generator_f, self.generator_g = self.generator
         self.checkpoint = tf.train.Checkpoint(
-            generator_optimizer_a=self.generator_optimizer_a,
-            generator_optimizer_b=self.generator_optimizer_b,
-            discriminator_optimizer_a=self.discriminator_optimizer_a,
-            discriminator_optimizer_b=self.discriminator_optimizer_b,
-            generator_a=self.generator[0].model,
-            generator_b=self.generator[1].model,
-            discriminator_a=self.discriminator[0].model,
-            discriminator_b=self.discriminator[1].model,
+            generator_optimizer_f=self.generator_optimizer_f,
+            generator_optimizer_g=self.generator_optimizer_g,
+            discriminator_optimizer_x=self.discriminator_optimizer_x,
+            discriminator_optimizer_y=self.discriminator_optimizer_y,
+            generator_f=self.generator_f.model,
+            generator_g=self.generator_g.model,
+            discriminator_f=self.discriminator_f.model,
+            discriminator_g=self.discriminator_g.model,
         )
         self.summary_writer = tf.summary.create_file_writer(self.checkpoint_path)
     
