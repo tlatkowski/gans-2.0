@@ -47,7 +47,7 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
                 with self.summary_writer.as_default():
                     tf.summary.scalar("generator_loss", gen_loss, step=train_step)
                     tf.summary.scalar("discriminator_loss", dis_loss, step=train_step)
-            
+                
                 img_to_plot = visualization.generate_and_save_images(
                     generator_model=self.generator,
                     epoch=epoch + 1,
@@ -69,30 +69,54 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
     @tf.function
     def train_step(self, train_batch):
         first_dataset_batch, second_dataset_batch = train_batch
-        with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
-            fake_images = self.generator(first_dataset_batch, training=True)
+        generator_a, generator_b = self.generator
+        discriminator_a, discriminator_b = self.discriminator
+        with tf.GradientTape() as gen_tape_b, tf.GradientTape() as disc_tape_b, \
+                tf.GradientTape() as gen_tape_a, tf.GradientTape() as disc_tape_a:
+            fake_images_b = generator_b(first_dataset_batch, training=True)
+            fake_images_a = generator_a(second_dataset_batch, training=True)
             
-            real_output = self.discriminator(second_dataset_batch, training=True)
-            fake_output = self.discriminator(fake_images, training=True)
+            real_output_b = discriminator_b(second_dataset_batch, training=True)
+            fake_output_b = discriminator_b(fake_images_b, training=True)
             
-            generator_loss = losses.generator_loss(fake_output)
-            discriminator_loss = losses.discriminator_loss(real_output, fake_output)
+            real_output_a = discriminator_a(first_dataset_batch, training=True)
+            fake_output_a = discriminator_a(fake_images_a, training=True)
+            
+            generator_loss_b = losses.generator_loss(fake_output_b)
+            discriminator_loss_b = losses.discriminator_loss(real_output_b, fake_output_b)
+            
+            generator_loss_a = losses.generator_loss(fake_output_a)
+            discriminator_loss_a = losses.discriminator_loss(real_output_a, fake_output_a)
         
-        gradients_of_generator = gen_tape.gradient(
-            generator_loss,
-            self.generator.trainable_variables,
+        gradients_of_generator_b = gen_tape_b.gradient(
+            generator_loss_b,
+            self.generator[0].trainable_variables,
         )
-        gradients_of_discriminator = disc_tape.gradient(
-            discriminator_loss,
-            self.discriminator.trainable_variables,
+        gradients_of_discriminator_b = disc_tape_b.gradient(
+            discriminator_loss_b,
+            self.discriminator[0].trainable_variables,
+        )
+        
+        gradients_of_generator_a = gen_tape_a.gradient(
+            generator_loss_a,
+            self.generator[1].trainable_variables,
+        )
+        gradients_of_discriminator_a = disc_tape_a.gradient(
+            discriminator_loss_a,
+            self.discriminator[1].trainable_variables,
         )
         
         self.generator_optimizer.apply_gradients(
-            zip(gradients_of_generator, self.generator.trainable_variables))
+            zip(gradients_of_generator_b, self.generator[0].trainable_variables))
         self.discriminator_optimizer.apply_gradients(
-            zip(gradients_of_discriminator, self.discriminator.trainable_variables))
+            zip(gradients_of_discriminator_b, self.discriminator[0].trainable_variables))
         
-        return generator_loss, discriminator_loss
+        self.generator_optimizer.apply_gradients(
+            zip(gradients_of_generator_a, self.generator[1].trainable_variables))
+        self.discriminator_optimizer.apply_gradients(
+            zip(gradients_of_discriminator_a, self.discriminator[1].trainable_variables))
+        
+        return generator_loss_b, discriminator_loss_b
     
     def regenerate_training(self):
         latest_checkpoint_epoch = 0
@@ -104,5 +128,3 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
             else:
                 print('No checkpoints found. Starting training from scratch.')
         return latest_checkpoint_epoch
-
-

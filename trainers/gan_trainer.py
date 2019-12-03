@@ -45,8 +45,10 @@ class GANTrainer:
         self.checkpoint = tf.train.Checkpoint(
             generator_optimizer=self.generator_optimizer,
             discriminator_optimizer=self.discriminator_optimizer,
-            generator=self.generator.model,
-            discriminator=self.discriminator.model,
+            generator_a=self.generator[0].model,
+            generator_b=self.generator[1].model,
+            discriminator_a=self.discriminator[0].model,
+            discriminator_b=self.discriminator[1].model,
         )
         self.summary_writer = tf.summary.create_file_writer(self.checkpoint_path)
     

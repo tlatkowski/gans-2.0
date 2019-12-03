@@ -26,22 +26,47 @@ class Discriminator:
     def create_model(self):
         input_img = Input(shape=(self.img_height, self.img_width, self.num_channels))
         
-        x = layers.Conv2D(filters=64, kernel_size=(3, 3), strides=(2, 2), padding='same')(input_img)
+        x = layers.Conv2D(
+            filters=64,
+            kernel_size=(3, 3),
+            strides=(2, 2),
+            padding='same',
+        )(input_img)
         x = layers.LeakyReLU()(x)
         
-        x = layers.Conv2D(filters=128, kernel_size=(3, 3), strides=(2, 2), padding='same')(x)
+        x = layers.Conv2D(
+            filters=128,
+            kernel_size=(3, 3),
+            strides=(2, 2),
+            padding='same',
+        )(x)
         x = tfa.layers.InstanceNormalization(axis=-1)(x)
         x = layers.LeakyReLU()(x)
         
-        x = layers.Conv2D(filters=256, kernel_size=(3, 3), strides=(2, 2), padding='same')(x)
+        x = layers.Conv2D(
+            filters=256,
+            kernel_size=(3, 3),
+            strides=(2, 2),
+            padding='same',
+        )(x)
         x = tfa.layers.InstanceNormalization(axis=-1)(x)
         x = layers.LeakyReLU()(x)
         
-        x = layers.Conv2D(filters=512, kernel_size=(3, 3), strides=(2, 2), padding='same')(x)
+        x = layers.Conv2D(
+            filters=512,
+            kernel_size=(3, 3),
+            strides=(2, 2),
+            padding='same',
+        )(x)
         x = tfa.layers.InstanceNormalization(axis=-1)(x)
         x = layers.LeakyReLU()(x)
         
-        x = layers.Conv2D(filters=512, kernel_size=(3, 3), strides=(2, 2), padding='same')(x)
+        x = layers.Conv2D(
+            filters=512,
+            kernel_size=(3, 3),
+            strides=(2, 2),
+            padding='same',
+        )(x)
         x = tfa.layers.InstanceNormalization(axis=-1)(x)
         x = layers.LeakyReLU()(x)
         
