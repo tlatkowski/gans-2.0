@@ -65,31 +65,32 @@ class CycleGenerator:
         n_resnet = 6
         for _ in range(n_resnet):
             x = resnet_block(256, x)
-        
-        x = layers.Conv2DTranspose(
+        x = layers.UpSampling2D()(x)
+        x = layers.Conv2D(
             filters=128,
             kernel_size=(3, 3),
-            strides=(2, 2),
+            strides=(1, 1),
             padding='same',
             use_bias=False,
         )(x)
         x = tfa.layers.InstanceNormalization()(x)
         x = layers.ReLU()(x)
-        
-        x = layers.Conv2DTranspose(
+        x = layers.UpSampling2D()(x)
+        x = layers.Conv2D(
             filters=128,
             kernel_size=(3, 3),
-            strides=(2, 2),
+            strides=(1, 1),
             padding='same',
             use_bias=False,
         )(x)
         x = tfa.layers.InstanceNormalization()(x)
         x = layers.ReLU()(x)
-        
-        x = layers.Conv2DTranspose(
+        x = layers.UpSampling2D()(x)
+
+        x = layers.Conv2D(
             filters=64,
             kernel_size=(3, 3),
-            strides=(2, 2),
+            strides=(1, 1),
             padding='same',
             use_bias=False,
         )(x)
