@@ -20,6 +20,11 @@ def cycle_loss(real_image, cycled_image, weight=10):
     return weight * loss
 
 
+def identity_loss(real_image, same_image, weight=5):
+    loss = tf.reduce_mean(tf.abs(real_image - same_image))
+    return weight * loss
+
+
 def l1_loss(x, y):
     return tf.reduce_mean(tf.abs(x - y))
 

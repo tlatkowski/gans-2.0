@@ -109,8 +109,8 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
             total_cycle_loss = losses.cycle_loss(real_x, cycled_x) + losses.cycle_loss(real_y, cycled_y)
         
             # Total generator loss = adversarial loss + cycle loss
-            total_gen_g_loss = gen_g_loss + total_cycle_loss #+ identity_loss(real_y, same_y)
-            total_gen_f_loss = gen_f_loss + total_cycle_loss #+ identity_loss(real_x, same_x)
+            total_gen_g_loss = gen_g_loss + total_cycle_loss + losses.identity_loss(real_y, same_y)
+            total_gen_f_loss = gen_f_loss + total_cycle_loss + losses.identity_loss(real_x, same_x)
         
             disc_x_loss = losses.discriminator_loss(disc_real_x, disc_fake_x)
             disc_y_loss = losses.discriminator_loss(disc_real_y, disc_fake_y)
