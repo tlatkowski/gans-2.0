@@ -127,18 +127,18 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
                                                   self.discriminator_y.trainable_variables)
     
         # Apply the gradients to the optimizer
-        generator_g_optimizer.apply_gradients(zip(generator_g_gradients,
-                                                  generator_g.trainable_variables))
+        self.generator_optimizer_g.apply_gradients(zip(generator_g_gradients,
+                                                  self.generator_g.trainable_variables))
     
-        generator_f_optimizer.apply_gradients(zip(generator_f_gradients,
-                                                  generator_f.trainable_variables))
+        self.generator_optimizer_f.apply_gradients(zip(generator_f_gradients,
+                                                  self.generator_f.trainable_variables))
     
-        discriminator_x_optimizer.apply_gradients(zip(discriminator_x_gradients,
-                                                      discriminator_x.trainable_variables))
+        self.discriminator_optimizer_x.apply_gradients(zip(discriminator_x_gradients,
+                                                      self.discriminator_x.trainable_variables))
     
-        discriminator_y_optimizer.apply_gradients(zip(discriminator_y_gradients,
-                                                      discriminator_y.trainable_variables))
-        return total_gen_g_loss, total_gen_f_loss, generator_loss_a, discriminator_loss_a
+        self.discriminator_optimizer_y.apply_gradients(zip(discriminator_y_gradients,
+                                                      self.discriminator_y.trainable_variables))
+        return total_gen_g_loss, total_gen_f_loss, disc_x_loss, disc_y_loss
 
     # def train_step(self, train_batch):
     #     first_dataset_batch, second_dataset_batch = train_batch

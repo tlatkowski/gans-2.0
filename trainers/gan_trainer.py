@@ -43,7 +43,7 @@ class GANTrainer:
         )
         
         self.checkpoint_prefix = os.path.join(self.checkpoint_path, "ckpt")
-        self.discriminator_f, self.discriminator_g = self.discriminator
+        self.discriminator_x, self.discriminator_y = self.discriminator
         self.generator_f, self.generator_g = self.generator
         self.checkpoint = tf.train.Checkpoint(
             generator_optimizer_f=self.generator_optimizer_f,
@@ -52,8 +52,8 @@ class GANTrainer:
             discriminator_optimizer_y=self.discriminator_optimizer_y,
             generator_f=self.generator_f.model,
             generator_g=self.generator_g.model,
-            discriminator_f=self.discriminator_f.model,
-            discriminator_g=self.discriminator_g.model,
+            discriminator_x=self.discriminator_x.model,
+            discriminator_y=self.discriminator_y.model,
         )
         self.summary_writer = tf.summary.create_file_writer(self.checkpoint_path)
     
