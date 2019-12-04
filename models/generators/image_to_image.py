@@ -65,6 +65,7 @@ class CycleGenerator:
         n_resnet = 6
         for _ in range(n_resnet):
             x = resnet_block(256, x)
+            
         x = layers.UpSampling2D()(x)
         x = layers.Conv2D(
             filters=128,
