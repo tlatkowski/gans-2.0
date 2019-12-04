@@ -40,23 +40,15 @@ class SummerToWinterDataset():
         test_summer, test_winter = dataset['testA'], dataset['testB']
         
         train_summer = train_summer.map(
-            preprocess_image_train, num_parallel_calls=tf.data.experimental.AUTOTUNE).cache().shuffle(
+            preprocess_image_train,
+            num_parallel_calls=tf.data.experimental.AUTOTUNE).cache().shuffle(
             self.buffer_size).batch(self.batch_size)
         
         train_winter = train_winter.map(
-            preprocess_image_train, num_parallel_calls=tf.data.experimental.AUTOTUNE).cache().shuffle(
+            preprocess_image_train,
+            num_parallel_calls=tf.data.experimental.AUTOTUNE).cache().shuffle(
             self.buffer_size).batch(self.batch_size)
         
-        # summer_dataset = create_tf_dataset(
-        #     SUMMER_IMAGES_PATH,
-        #     self.batch_size,
-        #     self.buffer_size,
-        # )
-        # winter_dataset = create_tf_dataset(
-        #     WINTER_IMAGES_PATH,
-        #     self.batch_size,
-        #     self.buffer_size,
-        # )
         return zip(train_summer, train_winter)
     
     def load_data_with_labels(self):
@@ -82,10 +74,12 @@ def create_tf_dataset(path_to_images, batch_size, buffer_size):
     )
     return dataset
 
+
 def preprocess_image_train(image, label):
     image = tf.cast(image, tf.float32)
     image = (image / 127.5) - 1
     return image
+
 
 def find_all_files_in_dir(root_dir, pattern='/*.jpg'):
     """
