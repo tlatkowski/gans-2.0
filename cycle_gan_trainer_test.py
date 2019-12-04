@@ -1,10 +1,13 @@
 from datasets import summer2winter
 from models.discriminators import cycle_discriminator
-from models.generators import image_to_image
+from models.generators import u_net
+# from models.generators import image_to_image
 from trainers import cycle_gan_trainer
 
-generator_a = image_to_image.CycleGenerator()
-generator_b = image_to_image.CycleGenerator()
+generator_a = u_net.UNetGenerator()
+# generator_a = image_to_image.CycleGenerator()
+# generator_b = image_to_image.CycleGenerator()
+generator_b = u_net.UNetGenerator()
 discriminator_a = cycle_discriminator.Discriminator()
 discriminator_b = cycle_discriminator.Discriminator()
 dataset = summer2winter.SummerToWinterDataset()
