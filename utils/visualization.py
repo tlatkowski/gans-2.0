@@ -53,7 +53,7 @@ def generate_and_save_images(
             img_to_plot = predictions[i, :, :, :] * 127.5 + 127.5
         else:
             img_to_plot = predictions[i, :, :, 0] * 127.5 + 127.5
-        plt.imshow(img_to_plot/255, cmap=cmap)
+        plt.imshow(img_to_plot / 255, cmap=cmap)
         plt.axis('off')
     
     save_path = os.path.join(constants.SAVE_IMAGE_DIR, dataset_name)
@@ -83,10 +83,11 @@ def generate_and_save_images_in(
         plt.subplot(n, n, i + 1)
         if generator_model.num_channels == 3:
             img_to_plot = predictions[i, :, :, :] * 127.5 + 127.5
-            img_to_plot = np.concatenate([img_to_plot, test_input[0, :, :, :]], axis=1)
+            img_to_plot = np.concatenate([img_to_plot, test_input[0, :, :, :] * 127.5 + 127.5],
+                                         axis=1)
         else:
             img_to_plot = predictions[i, :, :, 0] * 127.5 + 127.5
-            
+        
         plt.imshow(img_to_plot / 255, cmap=cmap)
         plt.axis('off')
     
