@@ -2,6 +2,7 @@ import os
 import re
 
 import tensorflow as tf
+import tensorflow_datasets as tfds
 # from tensorflow.image import ResizeMethod
 from tensorflow.python.keras import datasets
 
@@ -29,17 +30,34 @@ class SummerToWinterDataset():
         return self.load_data()
     
     def load_data(self):
-        summer_dataset = create_tf_dataset(
-            SUMMER_IMAGES_PATH,
-            self.batch_size,
-            self.buffer_size,
+        dataset, metadata = tfds.load(
+            'cycle_gan/summer2winter_yosemite',
+            with_info=True,
+            as_supervised=True,
         )
-        winter_dataset = create_tf_dataset(
-            WINTER_IMAGES_PATH,
-            self.batch_size,
-            self.buffer_size,
-        )
-        return zip(summer_dataset, winter_dataset)
+        
+        train_summer, train_winter = dataset['trainA'], dataset['trainB']
+        test_summer, test_winter = dataset['testA'], dataset['testB']
+        
+        train_summer = train_summer.map(
+            preprocess_image_train, num_parallel_calls=tf.data.experimental.AUTOTUNE).cache().shuffle(
+            self.buffer_size).batch(self.batch_size)
+        
+        train_winter = train_winter.map(
+            preprocess_image_train, num_parallel_calls=tf.data.experimental.AUTOTUNE).cache().shuffle(
+            self.buffer_size).batch(self.batch_size)
+        
+        # summer_dataset = create_tf_dataset(
+        #     SUMMER_IMAGES_PATH,
+        #     self.batch_size,
+        #     self.buffer_size,
+        # )
+        # winter_dataset = create_tf_dataset(
+        #     WINTER_IMAGES_PATH,
+        #     self.batch_size,
+        #     self.buffer_size,
+        # )
+        return zip(train_summer, train_winter)
     
     def load_data_with_labels(self):
         cifar10 = datasets.cifar10
@@ -64,6 +82,10 @@ def create_tf_dataset(path_to_images, batch_size, buffer_size):
     )
     return dataset
 
+def preprocess_image_train(image, label):
+    image = tf.cast(image, tf.float32)
+    image = (image / 127.5) - 1
+    return image
 
 def find_all_files_in_dir(root_dir, pattern='/*.jpg'):
     """
@@ -130,7 +152,6 @@ def resize_img(img, img_width, img_height):
         size=(img_width, img_height),
         method=tf.image.ResizeMethod.NEAREST_NEIGHBOR,
     )
-
 
 
 a = SummerToWinterDataset()
