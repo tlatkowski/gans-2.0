@@ -16,7 +16,7 @@ cycle_gan_trainer.CycleGANTrainer(
     generator=[generator_a, generator_b],
     discriminator=[discriminator_a, discriminator_b],
     dataset_type='summer2winter',
-    lr_generator=0.0005,
+    lr_generator=0.0002,
     lr_discriminator=0.0002,
     continue_training=False,
 ).train(dataset, 20)
