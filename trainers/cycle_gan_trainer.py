@@ -39,7 +39,7 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
         latest_checkpoint_epoch = self.regenerate_training()
         latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
         num_epochs += latest_epoch
-        save_image_step = 50
+        save_image_step = 100
         for epoch in range(latest_epoch, num_epochs):
             for first_second_image_batch in dataset():
                 first_image_batch, second_image_batch = first_second_image_batch
@@ -82,8 +82,6 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
     @tf.function
     def train_step(self, real_x, real_y):
         with tf.GradientTape(persistent=True) as tape:
-            # Generator G translates X -> Y
-            # Generator F translates Y -> X.
             
             fake_y = self.generator_g(real_x, training=True)
             cycled_x = self.generator_f(fake_y, training=True)
@@ -112,8 +110,8 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
             total_gen_g_loss = gen_g_loss + total_cycle_loss + losses.identity_loss(real_y, same_y)
             total_gen_f_loss = gen_f_loss + total_cycle_loss + losses.identity_loss(real_x, same_x)
             
-            disc_x_loss = losses.discriminator_loss(disc_real_x, disc_fake_x)
-            disc_y_loss = losses.discriminator_loss(disc_real_y, disc_fake_y)
+            disc_x_loss = 0.5 * losses.discriminator_loss(disc_real_x, disc_fake_x)
+            disc_y_loss = 0.5 * losses.discriminator_loss(disc_real_y, disc_fake_y)
         
         # Calculate the gradients for generator and discriminator
         generator_g_gradients = tape.gradient(total_gen_g_loss,
