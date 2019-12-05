@@ -39,6 +39,7 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
         latest_checkpoint_epoch = self.regenerate_training()
         latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
         num_epochs += latest_epoch
+        save_image_step = 50
         for epoch in range(latest_epoch, num_epochs):
             for first_second_image_batch in dataset():
                 first_image_batch, second_image_batch = first_second_image_batch
@@ -51,23 +52,23 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
                     tf.summary.scalar("discriminator_loss_b", dis_loss_b, step=train_step)
                     tf.summary.scalar("generator_loss_a", gen_loss_a, step=train_step)
                     tf.summary.scalar("discriminator_loss_a", dis_loss_a, step=train_step)
-                
-                img_to_plot = visualization.generate_and_save_images_in(
-                    generator_model=self.generator_g,
-                    epoch=epoch + 1,
-                    test_input=first_image_batch,
-                    dataset_name=self.dataset_type + 'gen_a',
-                    cmap='gray',
-                    num_examples_to_display=1,
-                )
-                img_to_plot = visualization.generate_and_save_images_in(
-                    generator_model=self.generator_f,
-                    epoch=epoch + 1,
-                    test_input=second_image_batch,
-                    dataset_name=self.dataset_type + 'gen_b',
-                    cmap='gray',
-                    num_examples_to_display=1,
-                )
+                if train_step % save_image_step ==0:
+                    img_to_plot = visualization.generate_and_save_images_in(
+                        generator_model=self.generator_g,
+                        epoch=train_step,
+                        test_input=first_image_batch,
+                        dataset_name='summer2winter',
+                        cmap='gray',
+                        num_examples_to_display=1,
+                    )
+                    img_to_plot = visualization.generate_and_save_images_in(
+                        generator_model=self.generator_f,
+                        epoch=train_step,
+                        test_input=second_image_batch,
+                        dataset_name='winter2summer',
+                        cmap='gray',
+                        num_examples_to_display=1,
+                    )
             with self.summary_writer.as_default():
                 tf.summary.image(
                     name='test_images',
