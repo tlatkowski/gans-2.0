@@ -19,4 +19,4 @@ cycle_gan_trainer.CycleGANTrainer(
     lr_generator=0.0005,
     lr_discriminator=0.0002,
     continue_training=False,
-).train(dataset, 10)
+).train(dataset, 20)
