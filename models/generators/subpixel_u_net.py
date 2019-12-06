@@ -69,8 +69,8 @@ class UNetGenerator:
         x4 = tfa.layers.InstanceNormalization()(x4)
         x4 = layers.ReLU()(x4)
         
-        # x5 = layers.UpSampling2D()(x4)
-        x5 = PS(x4, r=2, batch_size=4)
+        x5 = layers.UpSampling2D()(x4)
+        # x5 = PS(x4, r=2, batch_size=4)
         x5 = layers.Concatenate()([x5, x3])
         
         x5 = layers.Conv2D(
@@ -83,8 +83,8 @@ class UNetGenerator:
         x5 = tfa.layers.InstanceNormalization()(x5)
         x5 = layers.LeakyReLU(alpha=0.2)(x5)
         
-        # x6 = layers.UpSampling2D()(x5)
-        x6 = PS(x5, r=2, batch_size=4)
+        x6 = layers.UpSampling2D()(x5)
+        # x6 = PS(x5, r=2, batch_size=4)
 
         x6 = layers.Concatenate()([x6, x2])
         
@@ -98,8 +98,8 @@ class UNetGenerator:
         x6 = tfa.layers.InstanceNormalization()(x6)
         x6 = layers.LeakyReLU(alpha=0.2)(x6)
         
-        # x7 = layers.UpSampling2D()(x6)
-        x7 = PS(x6, r=2, batch_size=4)
+        x7 = layers.UpSampling2D()(x6)
+        # x7 = PS(x6, r=2, batch_size=4)
         x7 = layers.Concatenate()([x7, x1])
         x7 = layers.Conv2D(
             filters=64,
