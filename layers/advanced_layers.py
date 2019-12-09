@@ -17,7 +17,6 @@ def residual_block(n_filters, input_layer):
         padding='same',
     )(g)
     g = tfa.layers.InstanceNormalization()(g)
-    # concatenate merge channel-wise with input layer
     g = layers.Concatenate()([g, input_layer])
     return g
 
@@ -33,16 +32,48 @@ def subpixel_layer(x, r):
     return tf.reshape(X, (-1, h * r, w * r, 1))
 
 
-def subpixel_upsampling(X, r):
-    _, _, _, c = X.get_shape().as_list()
+def subpixel_upsampling(inputs, r):
+    _, _, _, c = inputs.get_shape().as_list()
     size_split = int(c / (r * r))
-    Xc = tf.split(axis=3, num_or_size_splits=size_split, value=X)
-    X = tf.concat(axis=3, values=[subpixel_layer(x, r) for x in Xc])
-    return X
+    Xc = tf.split(
+        axis=3,
+        num_or_size_splits=size_split,
+        value=inputs,
+    )
+    inputs = tf.concat(
+        axis=3,
+        values=[subpixel_layer(x, r) for x in Xc],
+    )
+    return inputs
 
 
-def densely_connected_residual_block():
-    raise NotImplementedError
+def densely_connected_residual_block(inputs):
+    _, _, _, c = inputs.get_shape().as_list()
+    growth_rate = int(c / 2)
+    x1 = layers.Conv2D(
+        filters=growth_rate,
+        kernel_size=(3, 3),
+        strides=(1, 1),
+        padding='same',
+    )(inputs)
+    x1 = layers.PReLU()(x1)
+    x2_inputs = layers.Concatenate()([x1, inputs])
+    x2 = layers.Conv2D(
+        filters=growth_rate,
+        kernel_size=(3, 3),
+        strides=(1, 1),
+        padding='same',
+    )(x2_inputs)
+    x2 = layers.PReLU()(x2)
+    x3_inputs = layers.Concatenate()([x1, x2, inputs])
+    x3 = layers.Conv2D(
+        filters=c,
+        kernel_size=(3, 3),
+        strides=(1, 1),
+        padding='same',
+    )(x3_inputs)
+    x3 = layers.PReLU()(x3)
+    return x3
 
 
 def channel_attention_block():
