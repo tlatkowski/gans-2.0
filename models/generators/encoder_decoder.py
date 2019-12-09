@@ -2,6 +2,8 @@ import tensorflow_addons as tfa
 from tensorflow.python.keras import Input, Model
 from tensorflow.python.keras import layers
 
+from layers import advanced_layers
+
 
 class CycleGenerator:
     
@@ -64,8 +66,8 @@ class CycleGenerator:
         )(x)
         n_resnet = 6
         for _ in range(n_resnet):
-            x = resnet_block(256, x)
-            
+            x = advanced_layers.residual_block(256, x)
+        
         x = layers.UpSampling2D()(x)
         x = layers.Conv2D(
             filters=128,
@@ -87,7 +89,7 @@ class CycleGenerator:
         x = tfa.layers.InstanceNormalization()(x)
         x = layers.ReLU()(x)
         x = layers.UpSampling2D()(x)
-
+        
         x = layers.Conv2D(
             filters=64,
             kernel_size=(3, 3),
@@ -119,22 +121,3 @@ class CycleGenerator:
         
         model = Model(name='Generator', inputs=input_images, outputs=x)
         return model
-
-
-def resnet_block(n_filters, input_layer):
-    g = layers.Conv2D(
-        filters=n_filters,
-        kernel_size=(3, 3),
-        padding='same',
-    )(input_layer)
-    g = tfa.layers.InstanceNormalization()(g)
-    g = layers.ReLU()(g)
-    g = layers.Conv2D(
-        filters=n_filters,
-        kernel_size=(3, 3),
-        padding='same',
-    )(g)
-    g = tfa.layers.InstanceNormalization()(g)
-    # concatenate merge channel-wise with input layer
-    g = layers.Concatenate()([g, input_layer])
-    return g

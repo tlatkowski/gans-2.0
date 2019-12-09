@@ -83,7 +83,7 @@ class UNetGenerator:
         
         x6 = layers.UpSampling2D()(x5)
         x6 = layers.Concatenate()([x6, x2])
-
+        
         x6 = layers.Conv2D(
             filters=128,
             kernel_size=(3, 3),
@@ -129,22 +129,3 @@ class UNetGenerator:
         
         model = Model(name='Generator', inputs=input_images, outputs=x9)
         return model
-
-
-def resnet_block(n_filters, input_layer):
-    g = layers.Conv2D(
-        filters=n_filters,
-        kernel_size=(3, 3),
-        padding='same',
-    )(input_layer)
-    g = tfa.layers.InstanceNormalization()(g)
-    g = layers.ReLU()(g)
-    g = layers.Conv2D(
-        filters=n_filters,
-        kernel_size=(3, 3),
-        padding='same',
-    )(g)
-    g = tfa.layers.InstanceNormalization()(g)
-    # concatenate merge channel-wise with input layer
-    g = layers.Concatenate()([g, input_layer])
-    return g
