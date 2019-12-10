@@ -76,5 +76,22 @@ def densely_connected_residual_block(inputs):
     return x3
 
 
-def channel_attention_block():
-    raise NotImplementedError
+def channel_attention_block(inputs: tf.Tensor, r: int):
+    num_channels = inputs.shape.as_list()[-1]
+    global_pooling = tf.reduce_mean(
+        input_tensor=inputs,
+        axis=[1, 2],
+        keepdims=True,
+    )
+    x = layers.Conv2D(
+        filters=int(num_channels / r),
+        kernel_size=(1, 1),
+    )(global_pooling)
+    x = layers.ReLU()(x)
+    x = layers.Conv2D(
+        filters=num_channels,
+        kernel_size=(1, 1),
+    )(x)
+    attention_weights = layers.Activation('sigmoid')(x)
+    output = inputs * attention_weights
+    return output

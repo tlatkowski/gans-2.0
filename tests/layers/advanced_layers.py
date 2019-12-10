@@ -10,3 +10,9 @@ class TestAdvancedLayers(tf.test.TestCase):
         outputs = advanced_layers.densely_connected_residual_block(inputs)
         expected_shape = (4, 32, 32, 64)
         self.assertEqual(outputs.shape, expected_shape)
+        
+    def test_channel_attention_block_shape(self):
+        inputs = tf.ones(shape=(4, 32, 32, 64))
+        outputs = advanced_layers.channel_attention_block(inputs, r=2)
+        expected_shape = (4, 32, 32, 64)
+        self.assertEqual(outputs.shape, expected_shape)
