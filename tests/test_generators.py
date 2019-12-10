@@ -1,8 +1,7 @@
 import tensorflow as tf
 from easydict import EasyDict as edict
 
-from models.generators import conditional_random_to_image
-from models.generators import random_to_image
+from models.generators.latent_to_image import conditional_random_to_image, random_to_image
 
 
 class TestGenerators(tf.test.TestCase):

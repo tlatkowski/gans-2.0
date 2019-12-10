@@ -2,16 +2,14 @@ import enum
 
 from easydict import EasyDict as edict
 
+from datasets.dataset_factory import ProblemType
 from models import conditional_gan
 from models import vanilla_gan
 from models.discriminators import basic_conditional_discriminator
 from models.discriminators import basic_discriminator
 from models.discriminators import cifar10_conditional_discriminator
-from models.generators import conditional_random_to_image
-from models.generators import conditional_random_to_image_cifar10
-from models.generators import random_to_image
-from models.generators import random_to_image_cifar10
-from datasets.dataset_factory import ProblemType
+from models.generators.latent_to_image import conditional_random_to_image, \
+    conditional_random_to_image_cifar10, random_to_image, random_to_image_cifar10
 
 
 class ModelType(enum.Enum):
@@ -29,11 +27,21 @@ def gan_model_factory(input_params: edict, gan_type, input_args):
     discriminator = discriminator_model_factory(input_params, input_args.problem_type)
     
     if gan_type == ModelType.VANILLA.name:
-        return vanilla_gan.VanillaGAN(input_params, generator, discriminator,
-                                      input_args.problem_type, input_args.continue_training)
+        return vanilla_gan.VanillaGAN(
+            input_params=input_params,
+            generator=generator,
+            discriminator=discriminator,
+            problem_type=input_args.problem_type,
+            continue_training=input_args.continue_training,
+        )
     elif gan_type == ModelType.CONDITIONAL.name:
-        return conditional_gan.ConditionalGAN(input_params, generator, discriminator,
-                                              input_args.problem_type, input_args.continue_training)
+        return conditional_gan.ConditionalGAN(
+            input_params=input_params,
+            generator=generator,
+            discriminator=discriminator,
+            problem_type=input_args.problem_type,
+            continue_training=input_args.continue_training,
+        )
     elif gan_type == ModelType.WASSERSTEIN.name:
         raise NotImplementedError
     else:

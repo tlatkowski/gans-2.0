@@ -1,6 +1,6 @@
 from datasets import summer2winter
 from models.discriminators import patch_discriminator
-from models.generators import dense_net
+from models.generators.image_to_image import dense_net
 # from models.generators import image_to_image
 from trainers import cycle_gan_trainer
 
