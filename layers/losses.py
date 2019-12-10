@@ -15,7 +15,7 @@ def generator_loss(fake_output):
     return cross_entropy(tf.ones_like(fake_output), fake_output)
 
 
-def cycle_loss(real_image, cycled_image, weight=50):
+def cycle_loss(real_image, cycled_image, weight=20):
     loss = l1_loss(real_image, cycled_image)
     return weight * loss
 
