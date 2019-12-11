@@ -3,26 +3,32 @@ import enum
 from easydict import EasyDict as edict
 
 from datasets.dataset_factory import ProblemType
-from models import conditional_gan
-from models import vanilla_gan
+from models.gans import conditional_gan, vanilla_gan, cycle_gan
 from models.discriminators import basic_conditional_discriminator
 from models.discriminators import basic_discriminator
 from models.discriminators import cifar10_conditional_discriminator
-from models.generators.latent_to_image import conditional_random_to_image, \
-    conditional_random_to_image_cifar10, random_to_image, random_to_image_cifar10
+from models.generators.latent_to_image import conditional_random_to_image
+from models.generators.latent_to_image import conditional_random_to_image_cifar10
+from models.generators.latent_to_image import random_to_image
+from models.generators.latent_to_image import random_to_image_cifar10
 
 
 class ModelType(enum.Enum):
     VANILLA = 0,
     CONDITIONAL = 1,
-    WASSERSTEIN = 2
+    WASSERSTEIN = 2,
+    CYCLE = 3
 
 
 def model_type_values():
     return [i.name for i in ModelType]
 
 
-def gan_model_factory(input_params: edict, gan_type, input_args):
+def gan_model_factory(
+        input_params: edict,
+        gan_type,
+        input_args,
+):
     generator = generator_model_factory(input_params, input_args.problem_type)
     discriminator = discriminator_model_factory(input_params, input_args.problem_type)
     
@@ -42,13 +48,24 @@ def gan_model_factory(input_params: edict, gan_type, input_args):
             problem_type=input_args.problem_type,
             continue_training=input_args.continue_training,
         )
+    elif gan_type == ModelType.CYCLE.name:
+        return cycle_gan.CycleGAN(
+            input_params=input_params,
+            generators=generator,
+            discriminators=discriminator,
+            problem_type=input_args.problem_type,
+            continue_training=input_args.continue_training,
+        )
     elif gan_type == ModelType.WASSERSTEIN.name:
         raise NotImplementedError
     else:
         raise NotImplementedError
 
 
-def generator_model_factory(input_params, dataset_type: ProblemType):
+def generator_model_factory(
+        input_params,
+        dataset_type: ProblemType,
+):
     if dataset_type == ProblemType.VANILLA_MNIST.name:
         return random_to_image.RandomToImageGenerator(input_params)
     if dataset_type == ProblemType.VANILLA_FASHION_MNIST.name:
@@ -67,7 +84,10 @@ def generator_model_factory(input_params, dataset_type: ProblemType):
         raise NotImplementedError
 
 
-def discriminator_model_factory(input_params, dataset_type: ProblemType):
+def discriminator_model_factory(
+        input_params,
+        dataset_type: ProblemType,
+):
     if dataset_type == ProblemType.VANILLA_MNIST.name:
         return basic_discriminator.Discriminator(input_params)
     if dataset_type == ProblemType.VANILLA_FASHION_MNIST.name:
