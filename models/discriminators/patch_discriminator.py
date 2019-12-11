@@ -7,10 +7,11 @@ class PatchDiscriminator:
     
     def __init__(
             self,
+            input_params,
     ):
-        self.img_height = 256
-        self.img_width = 256
-        self.num_channels = 3
+        self.img_height = input_params.img_height
+        self.img_width = input_params.img_width
+        self.num_channels = input_params.num_channels
         self._model = self.create_model()
     
     def __call__(self, inputs, **kwargs):

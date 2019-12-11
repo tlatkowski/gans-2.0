@@ -3,10 +3,12 @@ import enum
 from easydict import EasyDict as edict
 
 from datasets.dataset_factory import ProblemType
-from models.gans import conditional_gan, vanilla_gan, cycle_gan
 from models.discriminators import basic_conditional_discriminator
 from models.discriminators import basic_discriminator
 from models.discriminators import cifar10_conditional_discriminator
+from models.discriminators import patch_discriminator
+from models.gans import conditional_gan, vanilla_gan, cycle_gan
+from models.generators.image_to_image import u_net
 from models.generators.latent_to_image import conditional_random_to_image
 from models.generators.latent_to_image import conditional_random_to_image_cifar10
 from models.generators.latent_to_image import random_to_image
@@ -80,6 +82,8 @@ def generator_model_factory(
     elif dataset_type == ProblemType.CONDITIONAL_CIFAR10.name:
         return conditional_random_to_image_cifar10.RandomToImageCifar10CConditionalGenerator(
             input_params)
+    elif dataset_type == ProblemType.CYCLE_SUMMER2WINTER.name:
+        return [u_net.UNetGenerator(input_params), u_net.UNetGenerator(input_params)]
     else:
         raise NotImplementedError
 
@@ -100,5 +104,8 @@ def discriminator_model_factory(
         return basic_conditional_discriminator.ConditionalDiscriminator(input_params)
     elif dataset_type == ProblemType.CONDITIONAL_CIFAR10.name:
         return cifar10_conditional_discriminator.ConditionalDiscriminatorCifar10(input_params)
+    elif dataset_type == ProblemType.CYCLE_SUMMER2WINTER.name:
+        return [patch_discriminator.PatchDiscriminator(input_params),
+                patch_discriminator.PatchDiscriminator(input_params)]
     else:
         raise NotImplementedError

@@ -31,10 +31,8 @@ class GANTrainer:
         self.lr_discriminator = lr_discriminator
         self.continue_training = continue_training
         
-        self.generator_optimizer_f = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
-        self.generator_optimizer_g = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
-        self.discriminator_optimizer_x = tf.keras.optimizers.Adam(self.lr_discriminator, beta_1=0.5)
-        self.discriminator_optimizer_y = tf.keras.optimizers.Adam(self.lr_discriminator, beta_1=0.5)
+        self.generator_optimizer = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
+        self.discriminator_optimizer = tf.keras.optimizers.Adam(self.lr_discriminator, beta_1=0.5)
         
         self.checkpoint_path = os.path.join(
             constants.SAVE_IMAGE_DIR,
@@ -43,17 +41,13 @@ class GANTrainer:
         )
         
         self.checkpoint_prefix = os.path.join(self.checkpoint_path, "ckpt")
-        self.discriminator_x, self.discriminator_y = self.discriminator
-        self.generator_f, self.generator_g = self.generator
+        self.discriminator = self.discriminator
+        self.generator = self.generator
         self.checkpoint = tf.train.Checkpoint(
-            generator_optimizer_f=self.generator_optimizer_f,
-            generator_optimizer_g=self.generator_optimizer_g,
-            discriminator_optimizer_x=self.discriminator_optimizer_x,
-            discriminator_optimizer_y=self.discriminator_optimizer_y,
-            generator_f=self.generator_f.model,
-            generator_g=self.generator_g.model,
-            discriminator_x=self.discriminator_x.model,
-            discriminator_y=self.discriminator_y.model,
+            generator_optimizer_f=self.generator_optimizer,
+            discriminator_optimizer_x=self.discriminator_optimizer,
+            generator=self.generator.model,
+            discriminator=self.discriminator.model,
         )
         self.summary_writer = tf.summary.create_file_writer(self.checkpoint_path)
     

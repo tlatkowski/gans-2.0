@@ -1,14 +1,17 @@
+import os
+
 import numpy as np
 import tensorflow as tf
 
 from layers import losses
-from trainers import gan_trainer
+from utils import constants
 from utils import visualization
 
 SEED = 0
 
 
-class CycleGANTrainer(gan_trainer.GANTrainer):
+# class CycleGANTrainer(gan_trainer.GANTrainer):
+class CycleGANTrainer:
     
     def __init__(
             self,
@@ -21,16 +24,50 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
             continue_training,
             checkpoint_step=10,
     ):
-        super(CycleGANTrainer, self).__init__(
-            batch_size,
-            generator,
-            discriminator,
+        self.batch_size = batch_size
+        self.generator = generator
+        self.discriminator = discriminator
+        self.checkpoint_step = checkpoint_step
+        self.dataset_type = dataset_type
+        self.lr_generator = lr_generator
+        self.lr_discriminator = lr_discriminator
+        self.continue_training = continue_training
+        
+        self.generator_optimizer_f = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
+        self.generator_optimizer_g = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
+        self.discriminator_optimizer_x = tf.keras.optimizers.Adam(self.lr_discriminator, beta_1=0.5)
+        self.discriminator_optimizer_y = tf.keras.optimizers.Adam(self.lr_discriminator, beta_1=0.5)
+        
+        self.checkpoint_path = os.path.join(
+            constants.SAVE_IMAGE_DIR,
             dataset_type,
-            lr_generator,
-            lr_discriminator,
-            continue_training,
-            checkpoint_step,
+            constants.CHECKPOINT_DIR,
         )
+        
+        self.checkpoint_prefix = os.path.join(self.checkpoint_path, "ckpt")
+        self.discriminator_x, self.discriminator_y = self.discriminator
+        self.generator_f, self.generator_g = self.generator
+        self.checkpoint = tf.train.Checkpoint(
+            generator_optimizer_f=self.generator_optimizer_f,
+            generator_optimizer_g=self.generator_optimizer_g,
+            discriminator_optimizer_x=self.discriminator_optimizer_x,
+            discriminator_optimizer_y=self.discriminator_optimizer_y,
+            generator_f=self.generator_f.model,
+            generator_g=self.generator_g.model,
+            discriminator_x=self.discriminator_x.model,
+            discriminator_y=self.discriminator_y.model,
+        )
+        self.summary_writer = tf.summary.create_file_writer(self.checkpoint_path)
+        # super(CycleGANTrainer, self).__init__(
+        #     batch_size,
+        #     generator,
+        #     discriminator,
+        #     dataset_type,
+        #     lr_generator,
+        #     lr_discriminator,
+        #     continue_training,
+        #     checkpoint_step,
+        # )
     
     def train(self, dataset, num_epochs):
         train_step = 0
@@ -52,7 +89,7 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
                     tf.summary.scalar("discriminator_loss_b", dis_loss_b, step=train_step)
                     tf.summary.scalar("generator_loss_a", gen_loss_a, step=train_step)
                     tf.summary.scalar("discriminator_loss_a", dis_loss_a, step=train_step)
-                if train_step % save_image_step ==0:
+                if train_step % save_image_step == 0:
                     img_to_plot = visualization.generate_and_save_images_in(
                         generator_model=self.generator_g,
                         epoch=train_step,
@@ -82,7 +119,6 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
     @tf.function
     def train_step(self, real_x, real_y):
         with tf.GradientTape(persistent=True) as tape:
-            
             fake_y = self.generator_g(real_x, training=True)
             cycled_x = self.generator_f(fake_y, training=True)
             
@@ -107,8 +143,8 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
                                                                                        cycled_y)
             
             # Total generator loss = adversarial loss + cycle loss
-            total_gen_g_loss = gen_g_loss + total_cycle_loss #+ losses.identity_loss(real_y, same_y)
-            total_gen_f_loss = gen_f_loss + total_cycle_loss #+ losses.identity_loss(real_x, same_x)
+            total_gen_g_loss = gen_g_loss + total_cycle_loss  # + losses.identity_loss(real_y, same_y)
+            total_gen_f_loss = gen_f_loss + total_cycle_loss  # + losses.identity_loss(real_x, same_x)
             
             disc_x_loss = 0.5 * losses.discriminator_loss(disc_real_x, disc_fake_x)
             disc_y_loss = 0.5 * losses.discriminator_loss(disc_real_y, disc_fake_y)

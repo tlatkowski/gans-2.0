@@ -3,7 +3,7 @@ import enum
 from datasets import cifar10
 from datasets import fashion_mnist
 from datasets import mnist
-
+from datasets import summer2winter
 
 class ProblemType(enum.Enum):
     VANILLA_MNIST = 0,
@@ -32,5 +32,7 @@ def get_dataset(input_params, dataset_type: ProblemType):
         return fashion_mnist.FashionMnistDataset(input_params, with_labels=True)
     elif dataset_type == ProblemType.CONDITIONAL_CIFAR10.name:
         return cifar10.Cifar10Dataset(input_params, with_labels=True)
+    elif dataset_type == ProblemType.CYCLE_SUMMER2WINTER.name:
+        return summer2winter.SummerToWinterDataset()
     else:
         raise NotImplementedError

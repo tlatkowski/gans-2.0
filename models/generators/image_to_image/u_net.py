@@ -7,7 +7,11 @@ class UNetGenerator:
     
     def __init__(
             self,
+            input_params,
     ):
+        self.img_height = input_params.img_height
+        self.img_width = input_params.img_width
+        self.num_channels = input_params.num_channels
         self._model = self.create_model()
     
     def __call__(self, inputs, **kwargs):
@@ -21,12 +25,8 @@ class UNetGenerator:
     def model(self):
         return self._model
     
-    @property
-    def num_channels(self):
-        return self._model.output_shape[-1]
-    
     def create_model(self):
-        input_images = Input(shape=[256, 256, 3])
+        input_images = Input(shape=[self.img_height, self.img_width, self.num_channels])
         
         x1 = layers.Conv2D(
             filters=64,
