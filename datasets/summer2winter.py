@@ -38,7 +38,7 @@ class SummerToWinterDataset(abstract_dataset.Dataset):
                 img_width=self.img_width,
             ),
             num_parallel_calls=tf.data.experimental.AUTOTUNE,
-        ).cache().shuffle(
+        ).shuffle(
             self.buffer_size,
         ).batch(
             self.batch_size,
@@ -51,7 +51,7 @@ class SummerToWinterDataset(abstract_dataset.Dataset):
                 img_width=self.img_width,
             ),
             num_parallel_calls=tf.data.experimental.AUTOTUNE,
-        ).cache().shuffle(
+        ).shuffle(
             self.buffer_size,
         ).batch(
             self.batch_size,
