@@ -25,6 +25,7 @@ class CycleGAN:
             input_params.learning_rate_generator,
             input_params.learning_rate_discriminator,
             continue_training,
+            input_params.save_images_every_n_steps,
         )
     
     def fit(self, dataset):

@@ -9,5 +9,6 @@
   "num_classes": 10,
   "checkpoint_step": 10,
   "learning_rate_generator": 0.001,
-  "learning_rate_discriminator": 0.001
+  "learning_rate_discriminator": 0.001,
+  "save_images_every_n_steps": 100
 }

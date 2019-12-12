@@ -33,6 +33,6 @@ def get_dataset(input_params, dataset_type: ProblemType):
     elif dataset_type == ProblemType.CONDITIONAL_CIFAR10.name:
         return cifar10.Cifar10Dataset(input_params, with_labels=True)
     elif dataset_type == ProblemType.CYCLE_SUMMER2WINTER.name:
-        return summer2winter.SummerToWinterDataset()
+        return summer2winter.SummerToWinterDataset(input_params)
     else:
         raise NotImplementedError

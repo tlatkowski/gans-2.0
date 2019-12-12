@@ -2,10 +2,11 @@
   "batch_size": 8,
   "buffer_size": 50000,
   "num_epochs": 20,
-  "img_height": 256,
-  "img_width": 256,
+  "img_height": 128,
+  "img_width": 128,
   "num_channels": 3,
   "checkpoint_step": 10,
   "learning_rate_generator": 0.0002,
-  "learning_rate_discriminator": 0.0002
+  "learning_rate_discriminator": 0.0002,
+  "save_images_every_n_steps": 100
 }

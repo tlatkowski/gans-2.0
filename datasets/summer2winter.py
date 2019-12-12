@@ -1,46 +1,61 @@
+from functools import partial
+
 import tensorflow as tf
 import tensorflow_datasets as tfds
 
+from datasets import abstract_dataset
 
-# from tensorflow.image import ResizeMethod
+TFDS_SUMMER2WINTER_PATH = 'cycle_gan/summer2winter_yosemite'
 
 
-# class SummerToWinterDataset(abstract_dataset.Dataset):
-class SummerToWinterDataset():
+class SummerToWinterDataset(abstract_dataset.Dataset):
     
     def __init__(
             self,
-            # input_params,
+            input_params,
             with_labels=False,
     ):
-        # self.input_params = input_params
-        self.buffer_size = 10
-        self.batch_size = 4
-        # super(SummerToWinterDataset, self).__init__(input_params, with_labels)
+        self.img_height = input_params.img_height
+        self.img_width = input_params.img_width
+        super(SummerToWinterDataset, self).__init__(input_params, with_labels)
     
     def __call__(self, *args, **kwargs):
-        # return self.train_dataset
-        return self.load_data()
+        return self.train_dataset
     
     def load_data(self):
         dataset, metadata = tfds.load(
-            'cycle_gan/summer2winter_yosemite',
+            TFDS_SUMMER2WINTER_PATH,
             with_info=True,
             as_supervised=True,
         )
         
         train_summer, train_winter = dataset['trainA'], dataset['trainB']
-        test_summer, test_winter = dataset['testA'], dataset['testB']
         
         train_summer = train_summer.map(
-            preprocess_image_train,
-            num_parallel_calls=tf.data.experimental.AUTOTUNE).cache().shuffle(
-            self.buffer_size).batch(self.batch_size)
+            partial(
+                preprocess_image,
+                img_height=self.img_height,
+                img_width=self.img_width,
+            ),
+            num_parallel_calls=tf.data.experimental.AUTOTUNE,
+        ).cache().shuffle(
+            self.buffer_size,
+        ).batch(
+            self.batch_size,
+        )
         
         train_winter = train_winter.map(
-            preprocess_image_train,
-            num_parallel_calls=tf.data.experimental.AUTOTUNE).cache().shuffle(
-            self.buffer_size).batch(self.batch_size)
+            partial(
+                preprocess_image,
+                img_height=self.img_height,
+                img_width=self.img_width,
+            ),
+            num_parallel_calls=tf.data.experimental.AUTOTUNE,
+        ).cache().shuffle(
+            self.buffer_size,
+        ).batch(
+            self.batch_size,
+        )
         
         return zip(train_summer, train_winter)
     
@@ -48,7 +63,12 @@ class SummerToWinterDataset():
         raise NotImplementedError
 
 
-def preprocess_image_train(image, label):
+def preprocess_image(image, label, img_height, img_width):
     image = tf.cast(image, tf.float32)
     image = (image / 127.5) - 1
+    image = tf.image.resize(
+        images=image,
+        size=(img_height, img_width),
+        method=tf.image.ResizeMethod.NEAREST_NEIGHBOR,
+    )
     return image

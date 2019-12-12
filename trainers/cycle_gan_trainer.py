@@ -10,7 +10,6 @@ from utils import visualization
 SEED = 0
 
 
-# class CycleGANTrainer(gan_trainer.GANTrainer):
 class CycleGANTrainer:
     
     def __init__(
@@ -22,6 +21,7 @@ class CycleGANTrainer:
             lr_generator,
             lr_discriminator,
             continue_training,
+            save_images_every_n_steps,
             checkpoint_step=10,
     ):
         self.batch_size = batch_size
@@ -32,6 +32,7 @@ class CycleGANTrainer:
         self.lr_generator = lr_generator
         self.lr_discriminator = lr_discriminator
         self.continue_training = continue_training
+        self.save_images_every_n_steps = save_images_every_n_steps
         
         self.generator_optimizer_f = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
         self.generator_optimizer_g = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
@@ -58,16 +59,6 @@ class CycleGANTrainer:
             discriminator_y=self.discriminator_y.model,
         )
         self.summary_writer = tf.summary.create_file_writer(self.checkpoint_path)
-        # super(CycleGANTrainer, self).__init__(
-        #     batch_size,
-        #     generator,
-        #     discriminator,
-        #     dataset_type,
-        #     lr_generator,
-        #     lr_discriminator,
-        #     continue_training,
-        #     checkpoint_step,
-        # )
     
     def train(self, dataset, num_epochs):
         train_step = 0
@@ -76,11 +67,9 @@ class CycleGANTrainer:
         latest_checkpoint_epoch = self.regenerate_training()
         latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
         num_epochs += latest_epoch
-        save_image_step = 100
         for epoch in range(latest_epoch, num_epochs):
             for first_second_image_batch in dataset():
                 first_image_batch, second_image_batch = first_second_image_batch
-                train_step += 1
                 print(train_step)
                 gen_loss_b, dis_loss_b, gen_loss_a, dis_loss_a = self.train_step(
                     first_image_batch, second_image_batch)
@@ -89,29 +78,31 @@ class CycleGANTrainer:
                     tf.summary.scalar("discriminator_loss_b", dis_loss_b, step=train_step)
                     tf.summary.scalar("generator_loss_a", gen_loss_a, step=train_step)
                     tf.summary.scalar("discriminator_loss_a", dis_loss_a, step=train_step)
-                if train_step % save_image_step == 0:
+                if train_step % self.save_images_every_n_steps == 0:
                     img_to_plot = visualization.generate_and_save_images_in(
                         generator_model=self.generator_g,
                         epoch=train_step,
                         test_input=first_image_batch,
-                        dataset_name='summer2winter',
+                        dataset_name=os.path.join(self.dataset_type, 'summer2winter'),
                         cmap='gray',
-                        num_examples_to_display=1,
+                        num_examples_to_display=4,
                     )
                     img_to_plot = visualization.generate_and_save_images_in(
                         generator_model=self.generator_f,
                         epoch=train_step,
                         test_input=second_image_batch,
-                        dataset_name='winter2summer',
+                        dataset_name=os.path.join(self.dataset_type, 'winter2summer'),
                         cmap='gray',
-                        num_examples_to_display=1,
+                        num_examples_to_display=4,
                     )
+                train_step += 1
             with self.summary_writer.as_default():
-                tf.summary.image(
-                    name='test_images',
-                    data=np.reshape(img_to_plot, newshape=(1, 480, 640, 4)),
-                    step=epoch,
-                )
+                pass
+                # tf.summary.image(
+                #     name='test_images',
+                #     data=np.reshape(img_to_plot, newshape=(1, 480, 640, 4)),
+                #     step=epoch,
+                # )
             
             if (epoch + 1) % self.checkpoint_step == 0:
                 self.checkpoint.save(file_prefix=self.checkpoint_prefix)
