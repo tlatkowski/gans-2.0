@@ -1,6 +1,5 @@
 import os
 
-import numpy as np
 import tensorflow as tf
 
 from layers import losses
@@ -134,8 +133,8 @@ class CycleGANTrainer:
                                                                                        cycled_y)
             
             # Total generator loss = adversarial loss + cycle loss
-            total_gen_g_loss = gen_g_loss + total_cycle_loss  # + losses.identity_loss(real_y, same_y)
-            total_gen_f_loss = gen_f_loss + total_cycle_loss  # + losses.identity_loss(real_x, same_x)
+            total_gen_g_loss = gen_g_loss + total_cycle_loss + losses.identity_loss(real_y, same_y)
+            total_gen_f_loss = gen_f_loss + total_cycle_loss + losses.identity_loss(real_x, same_x)
             
             disc_x_loss = 0.5 * losses.discriminator_loss(disc_real_x, disc_fake_x)
             disc_y_loss = 0.5 * losses.discriminator_loss(disc_real_y, disc_fake_y)
