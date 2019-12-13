@@ -15,6 +15,10 @@ Vanilla GAN (CIFAR10)            |  Conditional GAN (CIFAR10)
 :-------------------------:|:-------------------------:
 ![vanilla_cifar10](./pics/vanilla_cifar10.gif)  |  ![conditional_cifar10](./pics/conditional_cifar10.gif)
 
+Cycle GAN (SUMMER2WINTER)            |  Cycle GAN (WINTER2SUMMER)
+:-------------------------:|:-------------------------:
+![cycle_s2w](./pics/cycle_summer2winter.gif)  |  ![cycle_w2s](./pics/cycle_winter2summer.gif)
+
 ## Installation
 
 In order to install all required dependencies, execute the following command:
