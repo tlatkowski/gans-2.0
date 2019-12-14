@@ -60,7 +60,7 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
                 if train_step % self.save_images_every_n_steps == 0:
                     img_to_plot = visualization.generate_and_save_images(
                         generator_model=self.generator,
-                        epoch=epoch + 1,
+                        epoch=train_step,
                         test_input=test_seed,
                         dataset_name=self.dataset_type,
                         num_examples_to_display=test_batch_size,

@@ -14,7 +14,8 @@ from utils import constants
 def make_gif_from_images(path, anim_file='dcgan.gif'):
     with imageio.get_writer(anim_file, mode='I') as writer:
         filenames = glob.glob(os.path.join(path, 'image*.png'))
-        filenames = sorted(filenames)
+        # filenames = sorted(filenames)
+        filenames = sorted(filenames, key=lambda s: int(s.split('_')[-1].replace('.png','')))
         last = -1
         for i, filename in enumerate(filenames):
             frame = 2 * (i ** 0.5)
@@ -22,8 +23,14 @@ def make_gif_from_images(path, anim_file='dcgan.gif'):
                 last = frame
             else:
                 continue
-            image = imageio.imread(filename)
-            writer.append_data(image)
+            for _ in range(3):
+                # frame = 2 * (i ** 0.5)
+                # if round(frame) > round(last):
+                #     last = frame
+                # else:
+                #     continue
+                image = imageio.imread(filename)
+                writer.append_data(image)
         image = imageio.imread(filename)
         writer.append_data(image)
 
