@@ -53,7 +53,71 @@ def generate_and_save_images(
             img_to_plot = predictions[i, :, :, :] * 127.5 + 127.5
         else:
             img_to_plot = predictions[i, :, :, 0] * 127.5 + 127.5
-        plt.imshow(img_to_plot/255, cmap=cmap)
+        plt.imshow(img_to_plot / 255, cmap=cmap)
+        plt.axis('off')
+    
+    save_path = os.path.join(constants.SAVE_IMAGE_DIR, dataset_name)
+    os.makedirs(save_path, exist_ok=True)
+    plt.savefig(os.path.join(save_path, 'image_at_epoch_{:04d}.png'.format(epoch)))
+    im = np.asarray(
+        PIL.Image.open(os.path.join(save_path, 'image_at_epoch_{:04d}.png'.format(epoch))))
+    return im
+
+
+def generate_images(
+        generator_model,
+        epoch,
+        test_input,
+        cmap=None,
+        num_examples_to_display=16,
+):
+    predictions = generator_model(test_input, training=False)
+    img_size = predictions.shape[1]
+    if predictions.shape[0] < num_examples_to_display:
+        raise ValueError("Input batch size cannot be less than number of example to display.")
+    
+    n = int(math.sqrt(num_examples_to_display))
+    if generator_model.num_channels == 3:
+        im = predictions[0, :, :, :] * 127.5 + 127.5
+    else:
+        im = predictions[0, :, :, 0] * 127.5 + 127.5
+    for i in range(1, num_examples_to_display):
+        if generator_model.num_channels == 3:
+            img_to_plot = predictions[i, :, :, :] * 127.5 + 127.5
+            im = np.concatenate([im, img_to_plot], axis=1)
+        else:
+            img_to_plot = predictions[i, :, :, 0] * 127.5 + 127.5
+            im = np.concatenate([im, img_to_plot], axis=1)
+    
+    im = np.reshape(im, newshape=(1, 4 * img_size, 4 * img_size, -1))
+    return im
+
+
+def generate_and_save_images_in(
+        generator_model,
+        epoch,
+        test_input,
+        dataset_name,
+        cmap=None,
+        num_examples_to_display=16,
+):
+    display.clear_output(wait=True)
+    predictions = generator_model(test_input, training=False)
+    if predictions.shape[0] < num_examples_to_display:
+        raise ValueError("Input batch size cannot be less than number of example to display.")
+    
+    n = int(math.sqrt(num_examples_to_display))
+    
+    for i in range(num_examples_to_display):
+        plt.subplot(n, n, i + 1)
+        if generator_model.num_channels == 3:
+            img_to_plot = predictions[i, :, :, :] * 127.5 + 127.5
+            img_to_plot = np.concatenate([test_input[i, :, :, :] * 127.5 + 127.5, img_to_plot],
+                                         axis=1)
+        else:
+            img_to_plot = predictions[i, :, :, 0] * 127.5 + 127.5
+        
+        plt.imshow(img_to_plot / 255, cmap=cmap)
         plt.axis('off')
     
     save_path = os.path.join(constants.SAVE_IMAGE_DIR, dataset_name)

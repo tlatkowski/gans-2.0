@@ -30,20 +30,41 @@ class ConditionalDiscriminatorCifar10:
         input_img = Input(shape=(self.img_height, self.img_width, self.num_channels))
         class_id = Input(shape=[1])
         
-        embedded_id = layers.Embedding(input_dim=10, output_dim=50)(class_id)
-        embedded_id = layers.Dense(units=input_img.shape[1] * input_img.shape[2])(embedded_id)
+        embedded_id = layers.Embedding(
+            input_dim=10,
+            output_dim=50,
+        )(class_id)
+        
+        embedded_id = layers.Dense(
+            units=input_img.shape[1] * input_img.shape[2],
+        )(embedded_id)
+        
         embedded_id = layers.Flatten()(embedded_id)
         
-        x = layers.Conv2D(filters=128, kernel_size=(3, 3), strides=(1, 1), padding='same')(
-            input_img)
+        x = layers.Conv2D(
+            filters=128,
+            kernel_size=(3, 3),
+            strides=(1, 1),
+            padding='same',
+        )(input_img)
         x = layers.BatchNormalization(momentum=0.9)(x)
         x = layers.LeakyReLU(alpha=0.1)(x)
         
-        x = layers.Conv2D(filters=128, kernel_size=(4, 4), strides=(2, 2), padding='same')(x)
+        x = layers.Conv2D(
+            filters=128,
+            kernel_size=(4, 4),
+            strides=(2, 2),
+            padding='same',
+        )(x)
         x = layers.BatchNormalization(momentum=0.9)(x)
         x = layers.LeakyReLU(alpha=0.1)(x)
         
-        x = layers.Conv2D(filters=128, kernel_size=(4, 4), strides=(2, 2), padding='same')(x)
+        x = layers.Conv2D(
+            filters=128,
+            kernel_size=(4, 4),
+            strides=(2, 2),
+            padding='same',
+        )(x)
         x = layers.BatchNormalization(momentum=0.9)(x)
         x = layers.LeakyReLU(alpha=0.1)(x)
         x = layers.Flatten()(x)
