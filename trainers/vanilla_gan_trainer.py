@@ -63,7 +63,7 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
                         epoch=train_step,
                         test_input=test_seed,
                         dataset_name=self.dataset_type,
-                        cmap='gray',
+                        # cmap='gray',
                     )
 
 
