@@ -23,7 +23,7 @@ def make_gif_from_images(path, anim_file='dcgan.gif'):
                 last = frame
             else:
                 continue
-            for _ in range(3):
+            for _ in range(2):
                 # frame = 2 * (i ** 0.5)
                 # if round(frame) > round(last):
                 #     last = frame
