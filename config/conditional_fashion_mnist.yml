@@ -1,0 +1,12 @@
+batch_size: 256
+buffer_size: 60000
+num_epochs: 100
+hidden_size: 100
+img_height: 28
+img_width: 28
+num_channels: 1
+num_classes: 10
+checkpoint_step: 10
+learning_rate_generator: 0.001
+learning_rate_discriminator: 0.001
+save_images_every_n_steps: 100
