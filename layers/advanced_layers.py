@@ -33,18 +33,11 @@ def subpixel_layer(x, r):
 
 
 def subpixel_upsampling(inputs, r):
-    _, _, _, c = inputs.get_shape().as_list()
-    size_split = int(c / (r * r))
-    Xc = tf.split(
-        axis=3,
-        num_or_size_splits=size_split,
-        value=inputs,
+    upsampled_layer = tf.nn.depth_to_space(
+        input=inputs,
+        block_size=r,
     )
-    inputs = tf.concat(
-        axis=3,
-        values=[subpixel_layer(x, r) for x in Xc],
-    )
-    return inputs
+    return upsampled_layer
 
 
 def densely_connected_residual_block(inputs):
