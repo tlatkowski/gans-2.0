@@ -64,19 +64,18 @@ python run.py --problem_type VANILLA_MNIST -continue_training
 #### GAN problem configuration
 
 The GAN problem configurations are placed at **./config**. If you want you can tweak those parameters, below is the example of VANILLA_MNIST problem configuration:
-```json
-{
-  "batch_size": 256,
-  "buffer_size": 60000,
-  "num_epochs": 100,
-  "hidden_size": 100,
-  "img_height": 28,
-  "img_width": 28,
-  "num_channels": 1,
-  "checkpoint_step": 10,
-  "learning_rate_generator": 0.0002,
-  "learning_rate_discriminator": 0.0002
-}
+```yml
+batch_size: 256
+buffer_size: 60000
+num_epochs: 100
+hidden_size: 100
+img_height: 28
+img_width: 28
+num_channels: 1
+checkpoint_step: 10
+learning_rate_generator: 0.0002
+learning_rate_discriminator: 0.0002
+save_images_every_n_steps: 100
 ```
  
 ## Monitoring model training
