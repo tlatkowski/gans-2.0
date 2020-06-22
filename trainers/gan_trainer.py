@@ -54,5 +54,9 @@ class GANTrainer:
         self.summary_writer = tf.summary.create_file_writer(self.checkpoint_path)
     
     @abstractmethod
-    def train(self, dataset: abstract_dataset.Dataset, num_epochs: int):
+    def train(
+            self,
+            dataset: abstract_dataset.Dataset,
+            num_epochs: int,
+    ):
         raise NotImplementedError

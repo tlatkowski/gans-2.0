@@ -73,9 +73,7 @@ def generate_and_save_images(
 
 def generate_images(
         generator_model,
-        epoch,
         test_input,
-        cmap=None,
         num_examples_to_display=16,
 ):
     predictions = generator_model(test_input, training=False)
