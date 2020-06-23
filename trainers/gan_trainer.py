@@ -19,8 +19,8 @@ class GANTrainer:
     def __init__(
             self,
             batch_size,
-            generator,
-            discriminator,
+            generators,
+            discriminators,
             dataset_type,
             lr_generator,
             lr_discriminator,
@@ -30,8 +30,8 @@ class GANTrainer:
             checkpoint_step=10,
     ):
         self.batch_size = batch_size
-        self.generator = generator
-        self.discriminator = discriminator
+        self.generators = generators
+        self.discriminators = discriminators
         self.checkpoint_step = checkpoint_step
         self.dataset_type = dataset_type
         self.lr_generator = lr_generator
@@ -50,13 +50,11 @@ class GANTrainer:
         )
 
         self.checkpoint_prefix = os.path.join(self.checkpoint_path, "ckpt")
-        self.discriminator = self.discriminator
-        self.generator = self.generator
         self.checkpoint = tf.train.Checkpoint(
             generator_optimizer_f=self.generator_optimizer,
             discriminator_optimizer_x=self.discriminator_optimizer,
-            generator=self.generator.model,
-            discriminator=self.discriminator.model,
+            **{k: v.model for k, v in self.generators.items()},
+            **{k: v.model for k, v in self.discriminators.items()}
         )
         self.summary_writer = tf.summary.create_file_writer(self.checkpoint_path)
 
@@ -86,19 +84,20 @@ class GANTrainer:
                     [tf.summary.scalar(k, v, step=train_step) for k, v in losses.items()]
 
                 if train_step % self.save_images_every_n_steps == 0:
-                    img_to_plot = visualization.generate_and_save_images(
-                        generator_model=self.generator,
-                        epoch=train_step,
-                        test_input=test_seed,
-                        dataset_name=self.dataset_type,
-                        num_examples_to_display=self.num_test_examples,
-                    )
-                    with self.summary_writer.as_default():
-                        tf.summary.image(
-                            name='test_images',
-                            data=np.reshape(img_to_plot, newshape=(1, 480, 640, 4)),
-                            step=train_step,
+                    for name, g in self.generators.items():
+                        img_to_plot = visualization.generate_and_save_images(
+                            generator_model=g,
+                            epoch=train_step,
+                            test_input=test_seed,
+                            dataset_name=self.dataset_type,
+                            num_examples_to_display=self.num_test_examples,
                         )
+                        with self.summary_writer.as_default():
+                            tf.summary.image(
+                                name='test_images',
+                                data=np.reshape(img_to_plot, newshape=(1, 480, 640, 4)),
+                                step=train_step,
+                            )
 
                 train_step += 1
 

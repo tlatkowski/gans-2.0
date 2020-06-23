@@ -26,8 +26,8 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
     ):
         super().__init__(
             batch_size,
-            generator,
-            discriminator,
+            {'generator': generator},
+            {'discriminator': discriminator},
             dataset_type,
             lr_generator,
             lr_discriminator,
@@ -36,6 +36,8 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
             NUM_TEST_EXAMPLES,
             checkpoint_step,
         )
+        self.generator = generator
+        self.discriminator = discriminator
 
     @tf.function
     def train_step(self, batch):
