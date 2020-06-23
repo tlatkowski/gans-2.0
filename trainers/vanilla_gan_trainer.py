@@ -37,9 +37,9 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
         )
 
     @tf.function
-    def train_step(self, real_images, generator_inputs=None):
-        if generator_inputs is None:
-            generator_inputs = tf.random.normal([self.batch_size, 100])
+    def train_step(self, batch):
+        real_images = batch
+        generator_inputs = tf.random.normal([self.batch_size, 100])
 
         with tf.GradientTape(persistent=True) as tape:
             fake_images = self.generator(generator_inputs, training=True)

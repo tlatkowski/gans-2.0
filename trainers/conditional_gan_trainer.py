@@ -36,12 +36,12 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
         )
 
     @tf.function
-    def train_step(self, real_images):
-        real_images, real_labels = real_images
-
+    def train_step(self, batch):
+        real_images, real_labels = batch
         batch_size = real_images.shape[0]
-        generator_inputs = tf.random.normal([batch_size, 100])
-        fake_labels = np.random.randint(0, 10, batch_size)
+        generator_inputs = tf.random.normal([batch_size, LATENT_SPACE_SIZE])
+        fake_labels = np.random.randint(0, NUM_CLASSES, batch_size)
+        
         with tf.GradientTape(persistent=True) as tape:
             fake_images = self.generator([generator_inputs, fake_labels], training=True)
 

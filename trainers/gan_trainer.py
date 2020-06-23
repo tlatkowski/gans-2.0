@@ -59,7 +59,7 @@ class GANTrainer:
         self.summary_writer = tf.summary.create_file_writer(self.checkpoint_path)
 
     @abstractmethod
-    def train_step(self, image_batch):
+    def train_step(self, batch):
         raise NotImplementedError
 
     @abstractmethod
