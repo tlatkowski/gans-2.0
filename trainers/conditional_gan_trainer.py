@@ -7,6 +7,7 @@ from trainers import gan_trainer
 SEED = 0
 LATENT_SPACE_SIZE = 100
 NUM_CLASSES = 10
+NUM_TEST_EXAMPLES = 100
 
 
 class ConditionalGANTrainer(gan_trainer.GANTrainer):
@@ -23,7 +24,7 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
             save_images_every_n_steps,
             checkpoint_step=10,
     ):
-        super(ConditionalGANTrainer, self).__init__(
+        super().__init__(
             batch_size,
             generator,
             discriminator,
@@ -32,6 +33,7 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
             lr_discriminator,
             continue_training,
             save_images_every_n_steps,
+            NUM_TEST_EXAMPLES,
             checkpoint_step,
         )
 
@@ -41,22 +43,22 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
         batch_size = real_images.shape[0]
         generator_inputs = tf.random.normal([batch_size, LATENT_SPACE_SIZE])
         fake_labels = np.random.randint(0, NUM_CLASSES, batch_size)
-        
+
         with tf.GradientTape(persistent=True) as tape:
             fake_images = self.generator([generator_inputs, fake_labels], training=True)
 
             real_output = self.discriminator([real_images, real_labels], training=True)
             fake_output = self.discriminator([fake_images, fake_labels], training=True)
 
-            gen_loss = losses.generator_loss(fake_output)
-            disc_loss = losses.discriminator_loss(real_output, fake_output)
+            generator_loss = losses.generator_loss(fake_output)
+            discriminator_loss = losses.discriminator_loss(real_output, fake_output)
 
         gradients_of_generator = tape.gradient(
-            target=gen_loss,
+            target=generator_loss,
             sources=self.generator.trainable_variables,
         )
         gradients_of_discriminator = tape.gradient(
-            target=disc_loss,
+            target=discriminator_loss,
             sources=self.discriminator.trainable_variables,
         )
 
@@ -67,7 +69,10 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
             zip(gradients_of_discriminator, self.discriminator.trainable_variables)
         )
 
-        return gen_loss, disc_loss
+        return {
+            'generator_loss':     generator_loss,
+            'discriminator_loss': discriminator_loss
+        }
 
     def test_seed(self):
         test_batch_size = NUM_CLASSES ** 2

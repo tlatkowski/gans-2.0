@@ -6,6 +6,7 @@ from utils import logging
 
 SEED = 0
 LATENT_SPACE_SIZE = 100
+NUM_TEST_EXAMPLES = 16
 
 logger = logging.get_logger(__name__)
 
@@ -33,6 +34,7 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
             lr_discriminator,
             continue_training,
             save_images_every_n_steps,
+            NUM_TEST_EXAMPLES,
             checkpoint_step,
         )
 
@@ -64,7 +66,10 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
         self.discriminator_optimizer.apply_gradients(
             zip(gradients_of_discriminator, self.discriminator.trainable_variables))
 
-        return generator_loss, discriminator_loss
+        return {
+            'generator_loss':     generator_loss,
+            'discriminator_loss': discriminator_loss
+        }
 
     def test_seed(self):
         return tf.random.normal([self.batch_size, LATENT_SPACE_SIZE])

@@ -26,6 +26,7 @@ class GANTrainer:
             lr_discriminator,
             continue_training,
             save_images_every_n_steps,
+            num_test_examples,
             checkpoint_step=10,
     ):
         self.batch_size = batch_size
@@ -36,6 +37,7 @@ class GANTrainer:
         self.lr_generator = lr_generator
         self.lr_discriminator = lr_discriminator
         self.save_images_every_n_steps = save_images_every_n_steps
+        self.num_test_examples = num_test_examples
         self.continue_training = continue_training
 
         self.generator_optimizer = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
@@ -79,10 +81,9 @@ class GANTrainer:
         num_epochs += latest_epoch
         for epoch in range(latest_epoch, num_epochs):
             for image_batch in dataset.train_dataset:
-                gen_loss, dis_loss = self.train_step(image_batch)
+                losses = self.train_step(image_batch)
                 with self.summary_writer.as_default():
-                    tf.summary.scalar("generator_loss", gen_loss, step=train_step)
-                    tf.summary.scalar("discriminator_loss", dis_loss, step=train_step)
+                    [tf.summary.scalar(k, v, step=train_step) for k, v in losses.items()]
 
                 if train_step % self.save_images_every_n_steps == 0:
                     img_to_plot = visualization.generate_and_save_images(
@@ -90,6 +91,7 @@ class GANTrainer:
                         epoch=train_step,
                         test_input=test_seed,
                         dataset_name=self.dataset_type,
+                        num_examples_to_display=self.num_test_examples,
                     )
                     with self.summary_writer.as_default():
                         tf.summary.image(
