@@ -1,13 +1,11 @@
-import numpy as np
 import tensorflow as tf
 
-from datasets import abstract_dataset
 from layers import losses
 from trainers import gan_trainer
 from utils import logging
-from utils import visualization
 
 SEED = 0
+LATENT_SPACE_SIZE = 100
 
 logger = logging.get_logger(__name__)
 
@@ -38,53 +36,6 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
             checkpoint_step,
         )
 
-    def train(
-            self,
-            dataset: abstract_dataset.Dataset,
-            num_epochs: int,
-    ):
-        train_step = 0
-        test_seed = tf.random.normal([self.batch_size, 100])
-
-        latest_checkpoint_epoch = 0
-        if self.continue_training:
-            latest_checkpoint = tf.train.latest_checkpoint(self.checkpoint_path)
-            if latest_checkpoint is not None:
-                latest_checkpoint_epoch = int(latest_checkpoint[latest_checkpoint.index("-") + 1:])
-                self.checkpoint.restore(latest_checkpoint)
-                logger.info(f'Training regeneration from checkpoint: {self.checkpoint_path}.')
-            else:
-                logger.info('No checkpoints found. Starting training from scratch.')
-        latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
-        num_epochs += latest_epoch
-        for epoch in range(latest_epoch, num_epochs):
-            for image_batch in dataset.train_dataset:
-
-                gen_loss, dis_loss = self.train_step(image_batch)
-                with self.summary_writer.as_default():
-                    tf.summary.scalar("generator_loss", gen_loss, step=train_step)
-                    tf.summary.scalar("discriminator_loss", dis_loss, step=train_step)
-
-                if train_step % self.save_images_every_n_steps == 0:
-                    img_to_plot = visualization.generate_and_save_images(
-                        generator_model=self.generator,
-                        epoch=train_step,
-                        test_input=test_seed,
-                        dataset_name=self.dataset_type,
-                    )
-                    with self.summary_writer.as_default():
-                        tf.summary.image(
-                            name='test_images',
-                            data=np.reshape(img_to_plot, newshape=(1, 480, 640, 4)),
-                            step=train_step,
-                        )
-
-                train_step += 1
-
-            if (epoch + 1) % self.checkpoint_step == 0:
-                self.checkpoint.save(file_prefix=self.checkpoint_prefix)
-                logger.info(f'Saved checkpoint to : {self.checkpoint_prefix}')
-
     @tf.function
     def train_step(self, real_images, generator_inputs=None):
         if generator_inputs is None:
@@ -114,3 +65,6 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
             zip(gradients_of_discriminator, self.discriminator.trainable_variables))
 
         return generator_loss, discriminator_loss
+
+    def test_seed(self):
+        return tf.random.normal([self.batch_size, LATENT_SPACE_SIZE])

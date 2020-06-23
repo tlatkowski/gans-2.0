@@ -1,16 +1,21 @@
 import os
 from abc import abstractmethod
 
+import numpy as np
 import tensorflow as tf
 
 from datasets import abstract_dataset
 from utils import constants
+from utils import logging
+from utils import visualization
 
 SEED = 0
 
+logger = logging.get_logger(__name__)
+
 
 class GANTrainer:
-    
+
     def __init__(
             self,
             batch_size,
@@ -32,16 +37,16 @@ class GANTrainer:
         self.lr_discriminator = lr_discriminator
         self.save_images_every_n_steps = save_images_every_n_steps
         self.continue_training = continue_training
-        
+
         self.generator_optimizer = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
         self.discriminator_optimizer = tf.keras.optimizers.Adam(self.lr_discriminator, beta_1=0.5)
-        
+
         self.checkpoint_path = os.path.join(
             constants.SAVE_IMAGE_DIR,
             dataset_type,
             constants.CHECKPOINT_DIR,
         )
-        
+
         self.checkpoint_prefix = os.path.join(self.checkpoint_path, "ckpt")
         self.discriminator = self.discriminator
         self.generator = self.generator
@@ -52,11 +57,57 @@ class GANTrainer:
             discriminator=self.discriminator.model,
         )
         self.summary_writer = tf.summary.create_file_writer(self.checkpoint_path)
-    
+
     @abstractmethod
+    def train_step(self, image_batch):
+        raise NotImplementedError
+
+    @abstractmethod
+    def test_seed(self):
+        raise NotImplementedError
+
     def train(
             self,
             dataset: abstract_dataset.Dataset,
             num_epochs: int,
     ):
-        raise NotImplementedError
+        train_step = 0
+        test_seed = self.test_seed()
+
+        latest_checkpoint_epoch = self.regenerate_training()
+        latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
+        num_epochs += latest_epoch
+        for epoch in range(latest_epoch, num_epochs):
+            for image_batch in dataset.train_dataset:
+                gen_loss, dis_loss = self.train_step(image_batch)
+                with self.summary_writer.as_default():
+                    tf.summary.scalar("generator_loss", gen_loss, step=train_step)
+                    tf.summary.scalar("discriminator_loss", dis_loss, step=train_step)
+
+                if train_step % self.save_images_every_n_steps == 0:
+                    img_to_plot = visualization.generate_and_save_images(
+                        generator_model=self.generator,
+                        epoch=train_step,
+                        test_input=test_seed,
+                        dataset_name=self.dataset_type,
+                    )
+                    with self.summary_writer.as_default():
+                        tf.summary.image(
+                            name='test_images',
+                            data=np.reshape(img_to_plot, newshape=(1, 480, 640, 4)),
+                            step=train_step,
+                        )
+
+                train_step += 1
+
+    def regenerate_training(self):
+        latest_checkpoint_epoch = 0
+        if self.continue_training:
+            latest_checkpoint = tf.train.latest_checkpoint(self.checkpoint_path)
+            if latest_checkpoint is not None:
+                latest_checkpoint_epoch = int(latest_checkpoint[latest_checkpoint.index("-") + 1:])
+                self.checkpoint.restore(latest_checkpoint)
+                logger.info(f'Training regeneration from checkpoint: {self.checkpoint_path}.')
+            else:
+                logger.info('No checkpoints found. Starting training from scratch.')
+        return latest_checkpoint_epoch
