@@ -22,8 +22,8 @@ class GANTrainer:
             generators,
             discriminators,
             dataset_type,
-            lr_generator,
-            lr_discriminator,
+            generators_optimizers,
+            discriminators_optimizers,
             continue_training,
             save_images_every_n_steps,
             num_test_examples,
@@ -34,14 +34,12 @@ class GANTrainer:
         self.discriminators = discriminators
         self.checkpoint_step = checkpoint_step
         self.dataset_type = dataset_type
-        self.lr_generator = lr_generator
-        self.lr_discriminator = lr_discriminator
         self.save_images_every_n_steps = save_images_every_n_steps
         self.num_test_examples = num_test_examples
         self.continue_training = continue_training
 
-        self.generator_optimizer = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
-        self.discriminator_optimizer = tf.keras.optimizers.Adam(self.lr_discriminator, beta_1=0.5)
+        self.generators_optimizers = generators_optimizers
+        self.discriminators_optimizers = discriminators_optimizers
 
         self.checkpoint_path = os.path.join(
             constants.SAVE_IMAGE_DIR,
@@ -51,8 +49,8 @@ class GANTrainer:
 
         self.checkpoint_prefix = os.path.join(self.checkpoint_path, "ckpt")
         self.checkpoint = tf.train.Checkpoint(
-            generator_optimizer_f=self.generator_optimizer,
-            discriminator_optimizer_x=self.discriminator_optimizer,
+            **{k: v for k, v in self.generators_optimizers.items()},
+            **{k: v for k, v in self.discriminators_optimizers.items()},
             **{k: v.model for k, v in self.generators.items()},
             **{k: v.model for k, v in self.discriminators.items()}
         )

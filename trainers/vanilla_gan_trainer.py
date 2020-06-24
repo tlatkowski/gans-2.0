@@ -19,26 +19,33 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
             generator,
             discriminator,
             dataset_type,
-            lr_generator,
-            lr_discriminator,
+            learning_rate_generator,
+            learning_rate_discriminator,
             continue_training,
             save_images_every_n_steps,
             checkpoint_step=10,
     ):
-        super().__init__(
-            batch_size,
-            {'generator': generator},
-            {'discriminator': discriminator},
-            dataset_type,
-            lr_generator,
-            lr_discriminator,
-            continue_training,
-            save_images_every_n_steps,
-            NUM_TEST_EXAMPLES,
-            checkpoint_step,
-        )
         self.generator = generator
         self.discriminator = discriminator
+        self.generator_optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate_generator, beta_1=0.5)
+        self.discriminator_optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate_discriminator, beta_1=0.5)
+
+        super().__init__(
+            batch_size=batch_size,
+            generators={'generator': generator},
+            discriminators={'discriminator': discriminator},
+            dataset_type=dataset_type,
+            generators_optimizers={
+                'generator_optimizer': self.generator_optimizer
+            },
+            discriminators_optimizers={
+                'discriminator_optimizer': self.discriminator_optimizer
+            },
+            continue_training=continue_training,
+            save_images_every_n_steps=save_images_every_n_steps,
+            num_test_examples=NUM_TEST_EXAMPLES,
+            checkpoint_step=checkpoint_step,
+        )
 
     @tf.function
     def train_step(self, batch):
