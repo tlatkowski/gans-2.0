@@ -1,10 +1,12 @@
 import tensorflow as tf
+from overrides import overrides
 
 from layers import losses
 from trainers import gan_trainer
 from utils import logging
 
 SEED = 0
+NUM_TEST_EXAMPLES = 4
 
 logger = logging.get_logger(__name__)
 
@@ -51,11 +53,12 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
             },
             continue_training=continue_training,
             save_images_every_n_steps=save_images_every_n_steps,
-            num_test_examples=0,
+            num_test_examples=NUM_TEST_EXAMPLES,
             checkpoint_step=checkpoint_step,
         )
 
     @tf.function
+    @overrides
     def train_step(self, batch):
         real_x, real_y = batch
 
@@ -127,5 +130,8 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
             'discriminator_y_loss': discriminator_y_loss
         }
 
-    def test_inputs(self):
-        return None
+    @overrides
+    def test_inputs(self, dataset):
+        summer, _ = next(dataset.train_dataset)
+        summer = summer[:NUM_TEST_EXAMPLES]
+        return summer

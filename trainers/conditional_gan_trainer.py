@@ -82,7 +82,8 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
             'discriminator_loss': discriminator_loss
         }
 
-    def test_inputs(self):
+    def test_inputs(self, dataset):
+        del dataset
         test_batch_size = NUM_CLASSES ** 2
         labels = np.repeat(list(range(NUM_CLASSES)), NUM_CLASSES)
         test_seed = [tf.random.normal([test_batch_size, LATENT_SPACE_SIZE]), np.array(labels)]

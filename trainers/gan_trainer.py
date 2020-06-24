@@ -61,7 +61,7 @@ class GANTrainer:
         raise NotImplementedError
 
     @abstractmethod
-    def test_inputs(self):
+    def test_inputs(self, dataset):
         raise NotImplementedError
 
     def train(
@@ -70,7 +70,7 @@ class GANTrainer:
             num_epochs: int,
     ):
         train_step = 0
-        test_seed = self.test_inputs()
+        test_seed = self.test_inputs(dataset)
 
         latest_checkpoint_epoch = self.regenerate_training()
         latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
@@ -81,7 +81,7 @@ class GANTrainer:
                 with self.summary_writer.as_default():
                     [tf.summary.scalar(k, v, step=train_step) for k, v in losses.items()]
 
-                if train_step % self.save_images_every_n_steps and self.test_inputs() == 0:
+                if train_step % self.save_images_every_n_steps == 0:
                     for name, g in self.generators.items():
                         img_to_plot = visualization.generate_and_save_images(
                             generator_model=g,
