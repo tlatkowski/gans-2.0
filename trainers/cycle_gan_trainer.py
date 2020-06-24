@@ -80,14 +80,19 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
             disc_fake_y = self.discriminator_y(fake_y, training=True)
 
             # calculate the loss
-            gen_g_loss = losses.generator_loss(disc_fake_y)
-            gen_f_loss = losses.generator_loss(disc_fake_x)
+            generator_g_loss = losses.generator_loss(disc_fake_y)
+            generator_f_loss = losses.generator_loss(disc_fake_x)
 
-            total_cycle_loss = losses.cycle_loss(real_x, cycled_x) + losses.cycle_loss(real_y, cycled_y)
+            cycle_loss_x = losses.cycle_loss(real_x, cycled_x)
+            cycle_loss_y = losses.cycle_loss(real_y, cycled_y)
 
+            total_cycle_loss = cycle_loss_x + cycle_loss_y
+
+            identity_loss_y = losses.identity_loss(real_y, same_y)
+            identity_loss_x = losses.identity_loss(real_x, same_x)
             # Total generator loss = adversarial loss + cycle loss
-            total_generator_g_loss = gen_g_loss + total_cycle_loss + losses.identity_loss(real_y, same_y)
-            total_generator_f_loss = gen_f_loss + total_cycle_loss + losses.identity_loss(real_x, same_x)
+            total_generator_g_loss = generator_g_loss + total_cycle_loss + identity_loss_y
+            total_generator_f_loss = generator_f_loss + total_cycle_loss + identity_loss_x
 
             discriminator_x_loss = 0.5 * losses.discriminator_loss(disc_real_x, disc_fake_x)
             discriminator_y_loss = 0.5 * losses.discriminator_loss(disc_real_y, disc_fake_y)
@@ -124,10 +129,14 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
             zip(discriminator_y_gradients, self.discriminator_y.trainable_variables)
         )
         return {
-            'generator_g_loss':     total_generator_g_loss,
-            'generator_f_loss':     total_generator_f_loss,
+            'generator_g_loss':     generator_g_loss,
+            'generator_f_loss':     generator_f_loss,
             'discriminator_x_loss': discriminator_x_loss,
-            'discriminator_y_loss': discriminator_y_loss
+            'discriminator_y_loss': discriminator_y_loss,
+            'identity_loss_x':      identity_loss_x,
+            'identity_loss_y':      identity_loss_y,
+            'cycle_loss_x':         cycle_loss_x,
+            'cycle_loss_y':         cycle_loss_y
         }
 
     @overrides

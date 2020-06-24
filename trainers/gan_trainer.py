@@ -79,7 +79,7 @@ class GANTrainer:
             for image_batch in dataset.train_dataset:
                 losses = self.train_step(image_batch)
                 with self.summary_writer.as_default():
-                    [tf.summary.scalar(k, v, step=train_step) for k, v in losses.items()]
+                    [tf.summary.scalar(f'Losses/{loss_name}', v, step=train_step) for loss_name, v in losses.items()]
 
                 if train_step % self.save_images_every_n_steps == 0:
                     for name, g in self.generators.items():
