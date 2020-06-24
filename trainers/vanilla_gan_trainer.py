@@ -80,5 +80,5 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
             'discriminator_loss': discriminator_loss
         }
 
-    def test_seed(self):
+    def test_inputs(self):
         return tf.random.normal([self.batch_size, LATENT_SPACE_SIZE])

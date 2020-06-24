@@ -1,17 +1,15 @@
-import os
-
 import tensorflow as tf
 
 from layers import losses
-from utils import constants
+from trainers import gan_trainer
 from utils import logging
-from utils import visualization
 
 SEED = 0
+
 logger = logging.get_logger(__name__)
 
 
-class CycleGANTrainer:
+class CycleGANTrainer(gan_trainer.GANTrainer):
 
     def __init__(
             self,
@@ -25,87 +23,42 @@ class CycleGANTrainer:
             save_images_every_n_steps,
             checkpoint_step=10,
     ):
-        self.batch_size = batch_size
-        self.generator = generator
-        self.discriminator = discriminator
-        self.checkpoint_step = checkpoint_step
-        self.dataset_type = dataset_type
-        self.lr_generator = lr_generator
-        self.lr_discriminator = lr_discriminator
-        self.continue_training = continue_training
-        self.save_images_every_n_steps = save_images_every_n_steps
+        self.generator_optimizer_f = tf.keras.optimizers.Adam(lr_generator, beta_1=0.5)
+        self.generator_optimizer_g = tf.keras.optimizers.Adam(lr_generator, beta_1=0.5)
+        self.discriminator_optimizer_x = tf.keras.optimizers.Adam(lr_discriminator, beta_1=0.5)
+        self.discriminator_optimizer_y = tf.keras.optimizers.Adam(lr_discriminator, beta_1=0.5)
 
-        self.generator_optimizer_f = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
-        self.generator_optimizer_g = tf.keras.optimizers.Adam(self.lr_generator, beta_1=0.5)
-        self.discriminator_optimizer_x = tf.keras.optimizers.Adam(self.lr_discriminator, beta_1=0.5)
-        self.discriminator_optimizer_y = tf.keras.optimizers.Adam(self.lr_discriminator, beta_1=0.5)
-
-        self.checkpoint_path = os.path.join(
-            constants.SAVE_IMAGE_DIR,
-            dataset_type,
-            constants.CHECKPOINT_DIR,
+        self.discriminator_x, self.discriminator_y = discriminator
+        self.generator_f, self.generator_g = generator
+        super().__init__(
+            batch_size=batch_size,
+            generators={
+                'generator_f': self.generator_f,
+                'generator_g': self.generator_g,
+            },
+            discriminators={
+                'discriminator_x': self.discriminator_x,
+                'discriminator_y': self.discriminator_y,
+            },
+            dataset_type=dataset_type,
+            generators_optimizers={
+                'generator_optimizer_f': self.generator_optimizer_f,
+                'generator_optimizer_g': self.generator_optimizer_g,
+            },
+            discriminators_optimizers={
+                'discriminator_optimizer_x': self.discriminator_optimizer_x,
+                'discriminator_optimizer_y': self.discriminator_optimizer_y,
+            },
+            continue_training=continue_training,
+            save_images_every_n_steps=save_images_every_n_steps,
+            num_test_examples=0,
+            checkpoint_step=checkpoint_step,
         )
-
-        self.checkpoint_prefix = os.path.join(self.checkpoint_path, "ckpt")
-        self.discriminator_x, self.discriminator_y = self.discriminator
-        self.generator_f, self.generator_g = self.generator
-        self.checkpoint = tf.train.Checkpoint(
-            generator_optimizer_f=self.generator_optimizer_f,
-            generator_optimizer_g=self.generator_optimizer_g,
-            discriminator_optimizer_x=self.discriminator_optimizer_x,
-            discriminator_optimizer_y=self.discriminator_optimizer_y,
-            generator_f=self.generator_f.model,
-            generator_g=self.generator_g.model,
-            discriminator_x=self.discriminator_x.model,
-            discriminator_y=self.discriminator_y.model,
-        )
-        self.summary_writer = tf.summary.create_file_writer(self.checkpoint_path)
-
-    def train(self, dataset, num_epochs):
-        train_step = 0
-
-        latest_checkpoint_epoch = self.regenerate_training()
-        latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
-        num_epochs += latest_epoch
-        for epoch in range(latest_epoch, num_epochs):
-            for first_second_image_batch in dataset():
-                first_image_batch, second_image_batch = first_second_image_batch
-                print(train_step)
-                losses = self.train_step(
-                    first_image_batch, second_image_batch)
-                with self.summary_writer.as_default():
-                    [tf.summary.scalar(k, v, step=train_step) for k, v in losses.items()]
-                if train_step % self.save_images_every_n_steps == 0:
-                    img_to_plot = visualization.generate_and_save_images_in(
-                        generator_model=self.generator_g,
-                        epoch=train_step,
-                        test_input=first_image_batch,
-                        dataset_name=os.path.join(self.dataset_type, 'summer2winter'),
-                        cmap='gray',
-                        num_examples_to_display=4,
-                    )
-                    img_to_plot = visualization.generate_and_save_images_in(
-                        generator_model=self.generator_f,
-                        epoch=train_step,
-                        test_input=second_image_batch,
-                        dataset_name=os.path.join(self.dataset_type, 'winter2summer'),
-                        cmap='gray',
-                        num_examples_to_display=4,
-                    )
-                train_step += 1
-            with self.summary_writer.as_default():
-                pass
-                # tf.summary.image(
-                #     name='test_images',
-                #     data=np.reshape(img_to_plot, newshape=(1, 480, 640, 4)),
-                #     step=epoch,
-                # )
-
-            if (epoch + 1) % self.checkpoint_step == 0:
-                self.checkpoint.save(file_prefix=self.checkpoint_prefix)
 
     @tf.function
-    def train_step(self, real_x, real_y):
+    def train_step(self, batch):
+        real_x, real_y = batch
+
         with tf.GradientTape(persistent=True) as tape:
             fake_y = self.generator_g(real_x, training=True)
             cycled_x = self.generator_f(fake_y, training=True)
@@ -174,14 +127,5 @@ class CycleGANTrainer:
             'discriminator_y_loss': discriminator_y_loss
         }
 
-    def regenerate_training(self):
-        latest_checkpoint_epoch = 0
-        if self.continue_training:
-            latest_checkpoint = tf.train.latest_checkpoint(self.checkpoint_path)
-            if latest_checkpoint is not None:
-                latest_checkpoint_epoch = int(latest_checkpoint[latest_checkpoint.index("-") + 1:])
-                self.checkpoint.restore(latest_checkpoint)
-                logger.info(f'Training regeneration from checkpoint: {self.checkpoint_path}.')
-            else:
-                logger.info('No checkpoints found. Starting training from scratch.')
-        return latest_checkpoint_epoch
+    def test_inputs(self):
+        return None
