@@ -17,7 +17,7 @@ class SummerToWinterDataset(abstract_dataset.Dataset):
     ):
         self.img_height = input_params.img_height
         self.img_width = input_params.img_width
-        super(SummerToWinterDataset, self).__init__(input_params, with_labels)
+        super().__init__(input_params, with_labels)
     
     def __call__(self, *args, **kwargs):
         return self.train_dataset

@@ -5,6 +5,7 @@ from datasets import fashion_mnist
 from datasets import mnist
 from datasets import summer2winter
 
+
 class ProblemType(enum.Enum):
     VANILLA_MNIST = 0,
     VANILLA_FASHION_MNIST = 1

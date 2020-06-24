@@ -6,17 +6,17 @@ from utils import data_utils
 
 
 class Cifar10Dataset(abstract_dataset.Dataset):
-    
+
     def __init__(
             self,
             input_params,
             with_labels=False,
     ):
-        super(Cifar10Dataset, self).__init__(input_params, with_labels)
-    
+        super().__init__(input_params, with_labels)
+
     def __call__(self, *args, **kwargs):
         return self.train_dataset
-    
+
     def load_data(self):
         cifar10 = datasets.cifar10
         (train_images, _), (_, _) = cifar10.load_data()
@@ -26,7 +26,7 @@ class Cifar10Dataset(abstract_dataset.Dataset):
             self.buffer_size).batch(
             self.batch_size)
         return train_dataset
-    
+
     def load_data_with_labels(self):
         cifar10 = datasets.cifar10
         (train_images, train_labels), (_, _) = cifar10.load_data()

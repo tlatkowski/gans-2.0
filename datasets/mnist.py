@@ -11,7 +11,7 @@ class MnistDataset(abstract_dataset.Dataset):
             input_params,
             with_labels=False,
     ):
-        super(MnistDataset, self).__init__(input_params, with_labels)
+        super().__init__(input_params, with_labels)
     
     def __call__(self, *args, **kwargs):
         return self.train_dataset

@@ -3,7 +3,7 @@ from abc import abstractmethod
 
 
 class Dataset(abc.ABC):
-    
+
     def __init__(
             self,
             input_params,
@@ -15,11 +15,11 @@ class Dataset(abc.ABC):
             self.train_dataset = self.load_data_with_labels()
         else:
             self.train_dataset = self.load_data()
-    
+
     @abstractmethod
     def load_data(self):
         raise NotImplementedError
-    
+
     @abstractmethod
     def load_data_with_labels(self):
         raise NotImplementedError
