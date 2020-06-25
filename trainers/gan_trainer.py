@@ -92,7 +92,7 @@ class GANTrainer:
                         )
                         with self.summary_writer.as_default():
                             tf.summary.image(
-                                name='test_images',
+                                name='test_outputs',
                                 data=np.reshape(img_to_plot, newshape=(1, 480, 640, 4)),
                                 step=train_step,
                             )
