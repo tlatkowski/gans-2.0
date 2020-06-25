@@ -29,6 +29,10 @@ class Generator(ABC):
         return self._model
 
     @property
+    def model_parameters(self):
+        return self._model_parameters
+
+    @property
     def num_channels(self):
         return self.model.output_shape[-1]
 
