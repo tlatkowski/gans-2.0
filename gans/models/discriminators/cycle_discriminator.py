@@ -1,57 +1,38 @@
-from tensorflow.python.keras import Input, Model
-from tensorflow.python.keras import layers
 import tensorflow_addons as tfa
+from easydict import EasyDict as edict
+from tensorflow.python.keras import Input
+from tensorflow.python.keras import Model
+from tensorflow.python.keras import layers
 
-class Discriminator:
-    
+from gans.models import model
+
+
+class Discriminator(model.Model):
+
     def __init__(
             self,
+            model_parameters: edict,
     ):
-        self.img_height = 256
-        self.img_width = 256
-        self.num_channels = 3
-        self._model = self.create_model()
-    
-    def __call__(self, inputs, **kwargs):
-        return self._model(inputs=inputs, **kwargs)
-    
-    @property
-    def trainable_variables(self):
-        return self._model.trainable_variables
-    
-    @property
-    def model(self):
-        return self._model
-    
-    def create_model(self):
-        input_img = Input(shape=(self.img_height, self.img_width, self.num_channels))
-        
-        x = layers.Conv2D(
-            filters=64,
-            kernel_size=(3, 3),
-            strides=(2, 2),
-            padding='same',
-        )(input_img)
+        super().__init__(model_parameters)
+
+    def define_model(self):
+        input_img = Input(shape=(
+            self.model_parameters.img_height,
+            self.model_parameters.img_width,
+            self.model_parameters.num_channels
+        ))
+
+        x = layers.Conv2D(filters=64, kernel_size=(3, 3), strides=(2, 2), padding='same')(input_img)
         x = layers.LeakyReLU()(x)
-        
-        x = layers.Conv2D(
-            filters=128,
-            kernel_size=(3, 3),
-            strides=(2, 2),
-            padding='same',
-        )(x)
+
+        x = layers.Conv2D(filters=128, kernel_size=(3, 3), strides=(2, 2), padding='same')(x)
         x = tfa.layers.InstanceNormalization(axis=-1)(x)
         x = layers.LeakyReLU()(x)
-        
-        x = layers.Conv2D(
-            filters=256,
-            kernel_size=(3, 3),
-            strides=(2, 2),
-            padding='same',
-        )(x)
+
+        x = layers.Conv2D(filters=256, kernel_size=(3, 3), strides=(2, 2), padding='same', )(x)
         x = tfa.layers.InstanceNormalization(axis=-1)(x)
         x = layers.LeakyReLU()(x)
-        
+
         x = layers.Conv2D(
             filters=512,
             kernel_size=(3, 3),
@@ -60,19 +41,14 @@ class Discriminator:
         )(x)
         x = tfa.layers.InstanceNormalization(axis=-1)(x)
         x = layers.LeakyReLU()(x)
-        
-        x = layers.Conv2D(
-            filters=512,
-            kernel_size=(3, 3),
-            strides=(2, 2),
-            padding='same',
-        )(x)
+
+        x = layers.Conv2D(filters=512, kernel_size=(3, 3), strides=(2, 2), padding='same')(x)
         x = tfa.layers.InstanceNormalization(axis=-1)(x)
         x = layers.LeakyReLU()(x)
-        
+
         x = layers.Flatten()(x)
         x = layers.Dense(units=1)(x)
-        
-        model = Model(name='discriminator', inputs=input_img, outputs=x)
-        
+
+        model = Model(name=self.model_name, inputs=input_img, outputs=x)
+
         return model

@@ -4,10 +4,10 @@ from tensorflow.python.keras import Input
 from tensorflow.python.keras import Model
 from tensorflow.python.keras import layers
 
-from gans.models.generators import generator
+from gans.models import model
 
 
-class UNetGenerator(generator.Generator):
+class UNetGenerator(model.Model):
 
     def __init__(
             self,
@@ -121,5 +121,5 @@ class UNetGenerator(generator.Generator):
             activation='tanh',
         )(x8)
 
-        model = Model(name=self, inputs=input_images, outputs=x9)
+        model = Model(name=self.model_name, inputs=input_images, outputs=x9)
         return model
