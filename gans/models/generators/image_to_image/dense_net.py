@@ -2,7 +2,7 @@ import tensorflow_addons as tfa
 from tensorflow.python.keras import Input, Model
 from tensorflow.python.keras import layers
 
-from layers import advanced_layers
+from gans.layers import advanced_layers
 
 
 class DenseNetGenerator:

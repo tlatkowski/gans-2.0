@@ -4,10 +4,10 @@ from abc import abstractmethod
 import numpy as np
 import tensorflow as tf
 
-from datasets import abstract_dataset
-from utils import constants
-from utils import logging
-from utils import visualization
+from gans.datasets import abstract_dataset
+from gans.utils import constants
+from gans.utils import logging
+from gans.utils import visualization
 
 SEED = 0
 

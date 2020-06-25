@@ -3,7 +3,7 @@ from functools import partial
 import tensorflow as tf
 import tensorflow_datasets as tfds
 
-from datasets import abstract_dataset
+from gans.datasets import abstract_dataset
 
 TFDS_SUMMER2WINTER_PATH = 'cycle_gan/summer2winter_yosemite'
 

@@ -1,7 +1,7 @@
 import tensorflow as tf
 
-from layers import losses
-from utils import visualization
+from gans.layers import losses
+from gans.utils import visualization
 
 SEED = 0
 

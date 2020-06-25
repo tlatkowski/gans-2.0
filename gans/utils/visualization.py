@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from IPython import display
 
-from utils import constants
+from gans.utils import constants
 
 
 def make_gif_from_images(path, anim_file='dcgan.gif'):
