@@ -3,10 +3,10 @@ from tensorflow.python.keras import Input
 from tensorflow.python.keras import Model
 from tensorflow.python.keras import layers
 
-from gans.models.generators import generator
+from gans.models import model
 
 
-class RandomToImageGenerator(generator.Generator):
+class RandomToImageGenerator(model.Model):
 
     def __init__(
             self,
@@ -32,5 +32,5 @@ class RandomToImageGenerator(generator.Generator):
 
         x = layers.Conv2DTranspose(1, (5, 5), strides=(2, 2), padding='same', use_bias=False, activation='tanh')(x)
 
-        model = Model(name=self, inputs=z, outputs=x)
+        model = Model(name=self.model_name, inputs=z, outputs=x)
         return model

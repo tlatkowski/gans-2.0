@@ -2,9 +2,10 @@ from abc import ABC
 from abc import abstractmethod
 
 from easydict import EasyDict as edict
+from tensorflow.python import keras
 
 
-class Generator(ABC):
+class Model(ABC):
 
     def __init__(
             self,
@@ -14,10 +15,10 @@ class Generator(ABC):
         self._model = self.define_model()
 
     def __call__(self, inputs, **kwargs):
-        return self._model(inputs=inputs, **kwargs)
+        return self.model(inputs=inputs, **kwargs)
 
     @abstractmethod
-    def define_model(self):
+    def define_model(self) -> keras.Model:
         raise NotImplementedError
 
     @property
@@ -29,12 +30,16 @@ class Generator(ABC):
         return self._model
 
     @property
-    def model_parameters(self):
+    def model_parameters(self) -> edict:
         return self._model_parameters
 
     @property
-    def num_channels(self):
+    def num_channels(self) -> int:
         return self.model.output_shape[-1]
 
+    @property
+    def model_name(self) -> str:
+        return self.__class__.__name__
+
     def __repr__(self):
-        return self.__name__
+        return self.model_name

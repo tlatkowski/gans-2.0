@@ -3,10 +3,10 @@ from tensorflow.python.keras import Input
 from tensorflow.python.keras import Model
 from tensorflow.python.keras import layers
 
-from gans.models.generators import generator
+from gans.models import model
 
 
-class RandomToImageCifar10CConditionalGenerator(generator.Generator):
+class RandomToImageCifar10CConditionalGenerator(model.Model):
 
     def __init__(
             self,
@@ -51,5 +51,5 @@ class RandomToImageCifar10CConditionalGenerator(generator.Generator):
 
         x = layers.Conv2D(3, kernel_size=(5, 5), strides=(1, 1), padding='same', use_bias=False, activation='tanh')(x)
 
-        model = Model(name=self, inputs=[z, class_id], outputs=x)
+        model = Model(name=self.model_name, inputs=[z, class_id], outputs=x)
         return model

@@ -5,10 +5,10 @@ from tensorflow.python.keras import Model
 from tensorflow.python.keras import layers
 
 from gans.layers import advanced_layers
-from gans.models.generators import generator
+from gans.models import model
 
 
-class CycleGenerator(generator.Generator):
+class CycleGenerator(model.Model):
 
     def __init__(
             self,
@@ -108,5 +108,5 @@ class CycleGenerator(generator.Generator):
             activation='tanh',
         )(x)
 
-        model = Model(name=self, inputs=input_images, outputs=x)
+        model = Model(name=self.model_name, inputs=input_images, outputs=x)
         return model

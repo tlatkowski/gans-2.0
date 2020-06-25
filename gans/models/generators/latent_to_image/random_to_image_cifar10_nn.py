@@ -3,10 +3,10 @@ from tensorflow.python.keras import Input
 from tensorflow.python.keras import Model
 from tensorflow.python.keras import layers
 
-from gans.models.generators import generator
+from gans.models import model
 
 
-class RandomToImageCifar10NearestNeighborUpSamplingGenerator(generator.Generator):
+class RandomToImageCifar10NearestNeighborUpSamplingGenerator(model.Model):
 
     def __init__(
             self,
@@ -34,5 +34,5 @@ class RandomToImageCifar10NearestNeighborUpSamplingGenerator(generator.Generator
         x = layers.UpSampling2D()(x)
         x = layers.Conv2D(3, (5, 5), strides=(1, 1), padding='same', use_bias=False, activation='tanh')(x)
 
-        model = Model(name=self, inputs=z, outputs=x)
+        model = Model(name=self.model_name, inputs=z, outputs=x)
         return model
