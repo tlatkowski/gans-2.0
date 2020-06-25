@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from layers import advanced_layers
+from gans.layers import advanced_layers
 
 
 class TestAdvancedLayers(tf.test.TestCase):

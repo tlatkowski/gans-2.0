@@ -1,6 +1,6 @@
 from easydict import EasyDict as edict
 
-from trainers import conditional_gan_trainer
+from gans.trainers import conditional_gan_trainer
 
 
 class ConditionalGAN:

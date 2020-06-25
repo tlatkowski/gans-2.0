@@ -1,7 +1,6 @@
-import tensorflow as tf
 from easydict import EasyDict as edict
 
-from trainers import vanilla_gan_trainer
+from gans.trainers import vanilla_gan_trainer
 
 
 class VanillaGAN:

@@ -1,9 +1,10 @@
 import argparse
 
-from datasets import dataset_factory
-from models import model_factories
-from utils import config
-from utils import logging
+from gans.datasets import dataset_factory
+from gans.datasets import problem_type
+from gans.models import model_factories
+from gans.utils import config
+from gans.utils import logging
 
 logger = logging.get_logger(__name__)
 
@@ -30,7 +31,7 @@ def main():
         '--problem_type',
         required=True,
         help='The problem type',
-        choices=dataset_factory.dataset_type_values(),
+        choices=problem_type.dataset_type_values(),
     )
 
     parser.add_argument(

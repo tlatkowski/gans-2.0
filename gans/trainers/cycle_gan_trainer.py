@@ -1,9 +1,9 @@
 import tensorflow as tf
 from overrides import overrides
 
-from layers import losses
-from trainers import gan_trainer
-from utils import logging
+from gans.layers import losses
+from gans.trainers import gan_trainer
+from gans.utils import logging
 
 SEED = 0
 NUM_TEST_EXAMPLES = 4
