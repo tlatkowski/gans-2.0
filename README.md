@@ -1,6 +1,19 @@
 ![](https://img.shields.io/badge/Python-3.6.8-blue.svg) ![](https://img.shields.io/badge/TensorFlow-2.0.0-blue.svg) ![](https://img.shields.io/badge/License-MIT-blue.svg) [![Build Status](https://travis-ci.com/tlatkowski/gans-2.0.svg?branch=cifar10-model)](https://travis-ci.com/tlatkowski/gans-2.0)
 
 # GANs 2.0: Generative Adversarial Networks in TensorFlow 2.0
+
+## Project aim
+
+The main aim of this project is to speed up the process of building 
+deep learning pipelines that are based on Generative Adversarial Networks 
+and simplify the prototyping of various generator/discriminator models. 
+This library provides several GAN trainers that can be used 
+as off-the-shelf features such us: 
+* Vanilla GAN
+* Conditional GAN
+* Cycle GAN
+
+## Examples
 Vanilla GAN (MNIST)            |  Conditional GAN (MNIST)
 :-------------------------:|:-------------------------:
 ![vanilla_mnist](./pics/vanilla_mnist.gif)  |  ![conditional_mnist](./pics/conditional_mnist.gif)
