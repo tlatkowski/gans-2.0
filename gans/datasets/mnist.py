@@ -8,10 +8,10 @@ class MnistDataset(abstract_dataset.Dataset):
     
     def __init__(
             self,
-            input_params,
+            model_parameters,
             with_labels=False,
     ):
-        super().__init__(input_params, with_labels)
+        super().__init__(model_parameters, with_labels)
     
     def __call__(self, *args, **kwargs):
         return self.train_dataset

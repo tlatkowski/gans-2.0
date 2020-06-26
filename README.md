@@ -12,6 +12,7 @@ as off-the-shelf features such us:
 * Vanilla GAN
 * Conditional GAN
 * Cycle GAN
+* Wasserstein GAN (TBD)
 
 ## Examples
 Vanilla GAN (MNIST)            |  Conditional GAN (MNIST)
