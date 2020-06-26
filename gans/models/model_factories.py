@@ -15,6 +15,7 @@ from gans.models.generators.latent_to_image import conditional_random_to_image
 from gans.models.generators.latent_to_image import conditional_random_to_image_cifar10
 from gans.models.generators.latent_to_image import random_to_image
 from gans.models.generators.latent_to_image import random_to_image_cifar10
+from gans.trainers import vanilla_gan_trainer
 
 
 class ModelType(enum.Enum):
@@ -37,16 +38,25 @@ def gan_model_factory(
     discriminator = discriminator_model_factory(input_params, input_args.problem_type)
 
     if gan_type == ModelType.VANILLA.name:
-        return vanilla_gan.VanillaGAN(
-            input_params=input_params,
+        gan_trainer = vanilla_gan_trainer.VanillaGANTrainer(
+            batch_size=input_params.batch_size,
             generator=generator,
             discriminator=discriminator,
-            problem_type=input_args.problem_type,
+            dataset_type=input_args.problem_type,
+            learning_rate_generator=input_params.learning_rate_generator,
+            learning_rate_discriminator=input_params.learning_rate_discriminator,
             continue_training=input_args.continue_training,
+            save_images_every_n_steps=input_params.save_images_every_n_steps,
+        )
+        return vanilla_gan.VanillaGAN(
+            model_parameters=input_params,
+            generator=generator,
+            discriminator=discriminator,
+            gan_trainer=gan_trainer,
         )
     elif gan_type == ModelType.CONDITIONAL.name:
         return conditional_gan.ConditionalGAN(
-            input_params=input_params,
+            model_parameters=input_params,
             generator=generator,
             discriminator=discriminator,
             problem_type=input_args.problem_type,
