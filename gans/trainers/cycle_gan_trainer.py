@@ -16,8 +16,8 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
     def __init__(
             self,
             batch_size,
-            generator,
-            discriminator,
+            generators,
+            discriminators,
             dataset_type,
             lr_generator,
             lr_discriminator,
@@ -30,8 +30,8 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
         self.discriminator_optimizer_x = tf.keras.optimizers.Adam(lr_discriminator, beta_1=0.5)
         self.discriminator_optimizer_y = tf.keras.optimizers.Adam(lr_discriminator, beta_1=0.5)
 
-        self.discriminator_x, self.discriminator_y = discriminator
-        self.generator_f, self.generator_g = generator
+        self.discriminator_x, self.discriminator_y = discriminators
+        self.generator_f, self.generator_g = generators
         super().__init__(
             batch_size=batch_size,
             generators={

@@ -64,7 +64,7 @@ def gan_model_factory(
         )
     elif gan_type == ModelType.CYCLE.name:
         return cycle_gan.CycleGAN(
-            input_params=input_params,
+            model_parameters=input_params,
             generators=generator,
             discriminators=discriminator,
             problem_type=input_args.problem_type,
