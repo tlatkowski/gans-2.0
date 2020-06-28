@@ -22,5 +22,5 @@ class ConditionalGAN:
     def fit(self, dataset):
         self.gan_trainer.train(dataset, self.num_epochs)
 
-    def predict(self):
-        pass
+    def predict(self, inputs):
+        return self.generator.model(inputs)

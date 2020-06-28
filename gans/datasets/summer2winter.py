@@ -12,12 +12,12 @@ class SummerToWinterDataset(abstract_dataset.Dataset):
     
     def __init__(
             self,
-            input_params,
+            model_parameters,
             with_labels=False,
     ):
-        self.img_height = input_params.img_height
-        self.img_width = input_params.img_width
-        super().__init__(input_params, with_labels)
+        self.img_height = model_parameters.img_height
+        self.img_width = model_parameters.img_width
+        super().__init__(model_parameters, with_labels)
     
     def __call__(self, *args, **kwargs):
         return self.train_dataset
