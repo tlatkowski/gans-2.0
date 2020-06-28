@@ -1,5 +1,6 @@
 import enum
 
+import tensorflow as tf
 from easydict import EasyDict as edict
 
 from gans.datasets import problem_type as pt
@@ -15,6 +16,8 @@ from gans.models.generators.latent_to_image import conditional_random_to_image
 from gans.models.generators.latent_to_image import conditional_random_to_image_cifar10
 from gans.models.generators.latent_to_image import random_to_image
 from gans.models.generators.latent_to_image import random_to_image_cifar10
+from gans.trainers import conditional_gan_trainer
+from gans.trainers import cycle_gan_trainer
 from gans.trainers import vanilla_gan_trainer
 
 
@@ -38,13 +41,22 @@ def gan_model_factory(
     discriminator = discriminator_model_factory(input_params, input_args.problem_type)
 
     if gan_type == ModelType.VANILLA.name:
+        generator_optimizer = tf.keras.optimizers.Adam(
+            learning_rate=input_params.learning_rate_generator,
+            beta_1=0.5,
+        )
+        discriminator_optimizer = tf.keras.optimizers.Adam(
+            learning_rate=input_params.learning_rate_discriminator,
+            beta_1=0.5,
+        )
+
         gan_trainer = vanilla_gan_trainer.VanillaGANTrainer(
             batch_size=input_params.batch_size,
             generator=generator,
             discriminator=discriminator,
             dataset_type=input_args.problem_type,
-            learning_rate_generator=input_params.learning_rate_generator,
-            learning_rate_discriminator=input_params.learning_rate_discriminator,
+            generator_optimizer=generator_optimizer,
+            discriminator_optimizer=discriminator_optimizer,
             continue_training=input_args.continue_training,
             save_images_every_n_steps=input_params.save_images_every_n_steps,
         )
@@ -55,20 +67,72 @@ def gan_model_factory(
             gan_trainer=gan_trainer,
         )
     elif gan_type == ModelType.CONDITIONAL.name:
+        generator_optimizer = tf.keras.optimizers.Adam(
+            learning_rate=input_params.learning_rate_generator,
+            beta_1=0.5,
+        )
+        discriminator_optimizer = tf.keras.optimizers.Adam(
+            learning_rate=input_params.learning_rate_discriminator,
+            beta_1=0.5,
+        )
+
+        gan_trainer = conditional_gan_trainer.ConditionalGANTrainer(
+            batch_size=input_params.batch_size,
+            generator=generator,
+            discriminator=discriminator,
+            generator_optimizer=generator_optimizer,
+            discriminator_optimizer=discriminator_optimizer,
+            dataset_type='VANILLA_MNIST',
+            continue_training=False,
+            save_images_every_n_steps=input_params.save_images_every_n_steps,
+        )
         return conditional_gan.ConditionalGAN(
             model_parameters=input_params,
             generator=generator,
             discriminator=discriminator,
-            problem_type=input_args.problem_type,
-            continue_training=input_args.continue_training,
+            gan_trainer=gan_trainer,
         )
     elif gan_type == ModelType.CYCLE.name:
+        generator_f = u_net.UNetGenerator(input_params)
+        generator_g = u_net.UNetGenerator(input_params)
+
+        discriminator_f = patch_discriminator.PatchDiscriminator(input_params)
+        discriminator_g = patch_discriminator.PatchDiscriminator(input_params)
+
+        generator_optimizer_f = tf.keras.optimizers.Adam(
+            learning_rate=input_params.learning_rate_generator,
+            beta_1=0.5,
+        )
+        generator_optimizer_g = tf.keras.optimizers.Adam(
+            learning_rate=input_params.learning_rate_generator,
+            beta_1=0.5,
+        )
+
+        discriminator_optimizer_f = tf.keras.optimizers.Adam(
+            learning_rate=input_params.learning_rate_discriminator,
+            beta_1=0.5,
+        )
+        discriminator_optimizer_g = tf.keras.optimizers.Adam(
+            learning_rate=input_params.learning_rate_discriminator,
+            beta_1=0.5,
+        )
+
+        gan_trainer = cycle_gan_trainer.CycleGANTrainer(
+            batch_size=input_params.batch_size,
+            generators=[generator_f, generator_g],
+            discriminators=[discriminator_f, discriminator_g],
+            dataset_type='SUMMER2WINTER',
+            generators_optimizers=[generator_optimizer_f, generator_optimizer_g],
+            discriminators_optimizers=[discriminator_optimizer_f, discriminator_optimizer_g],
+            continue_training=False,
+            save_images_every_n_steps=input_params.save_images_every_n_steps,
+        )
+
         return cycle_gan.CycleGAN(
             model_parameters=input_params,
-            generators=generator,
-            discriminators=discriminator,
-            problem_type=input_args.problem_type,
-            continue_training=input_args.continue_training,
+            generators=[generator_f, generator_g],
+            discriminators=[discriminator_f, discriminator_g],
+            gan_trainer=gan_trainer,
         )
     elif gan_type == ModelType.WASSERSTEIN.name:
         raise NotImplementedError

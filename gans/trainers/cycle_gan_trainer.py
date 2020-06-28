@@ -19,17 +19,14 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
             generators,
             discriminators,
             dataset_type,
-            lr_generator,
-            lr_discriminator,
+            generators_optimizers,
+            discriminators_optimizers,
             continue_training,
             save_images_every_n_steps,
             checkpoint_step=10,
     ):
-        self.generator_optimizer_f = tf.keras.optimizers.Adam(lr_generator, beta_1=0.5)
-        self.generator_optimizer_g = tf.keras.optimizers.Adam(lr_generator, beta_1=0.5)
-        self.discriminator_optimizer_x = tf.keras.optimizers.Adam(lr_discriminator, beta_1=0.5)
-        self.discriminator_optimizer_y = tf.keras.optimizers.Adam(lr_discriminator, beta_1=0.5)
-
+        self.generator_optimizer_f, self.generator_optimizer_g = generators_optimizers
+        self.discriminator_optimizer_x, self.discriminator_optimizer_y = discriminators_optimizers
         self.discriminator_x, self.discriminator_y = discriminators
         self.generator_f, self.generator_g = generators
         super().__init__(

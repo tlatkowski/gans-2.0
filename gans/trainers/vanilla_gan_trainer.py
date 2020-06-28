@@ -19,16 +19,16 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
             generator,
             discriminator,
             dataset_type,
-            learning_rate_generator,
-            learning_rate_discriminator,
+            generator_optimizer,
+            discriminator_optimizer,
             continue_training,
             save_images_every_n_steps,
             checkpoint_step=10,
     ):
         self.generator = generator
         self.discriminator = discriminator
-        self.generator_optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate_generator, beta_1=0.5)
-        self.discriminator_optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate_discriminator, beta_1=0.5)
+        self.generator_optimizer = generator_optimizer
+        self.discriminator_optimizer = discriminator_optimizer
 
         super().__init__(
             batch_size=batch_size,

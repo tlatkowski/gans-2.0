@@ -1,3 +1,4 @@
+import tensorflow as tf
 from easydict import EasyDict as edict
 
 from gans.datasets import summer2winter
@@ -25,13 +26,31 @@ generator_g = u_net.UNetGenerator(model_parameters)
 discriminator_f = patch_discriminator.PatchDiscriminator(model_parameters)
 discriminator_g = patch_discriminator.PatchDiscriminator(model_parameters)
 
+generator_optimizer_f = tf.keras.optimizers.Adam(
+    learning_rate=model_parameters.learning_rate_generator,
+    beta_1=0.5,
+)
+generator_optimizer_g = tf.keras.optimizers.Adam(
+    learning_rate=model_parameters.learning_rate_generator,
+    beta_1=0.5,
+)
+
+discriminator_optimizer_f = tf.keras.optimizers.Adam(
+    learning_rate=model_parameters.learning_rate_discriminator,
+    beta_1=0.5,
+)
+discriminator_optimizer_g = tf.keras.optimizers.Adam(
+    learning_rate=model_parameters.learning_rate_discriminator,
+    beta_1=0.5,
+)
+
 gan_trainer = cycle_gan_trainer.CycleGANTrainer(
     batch_size=model_parameters.batch_size,
     generators=[generator_f, generator_g],
     discriminators=[discriminator_f, discriminator_g],
     dataset_type='SUMMER2WINTER',
-    lr_generator=model_parameters.learning_rate_generator,
-    lr_discriminator=model_parameters.learning_rate_discriminator,
+    generators_optimizers=[generator_optimizer_f, generator_optimizer_g],
+    discriminators_optimizers=[discriminator_optimizer_f, discriminator_optimizer_g],
     continue_training=False,
     save_images_every_n_steps=model_parameters.save_images_every_n_steps,
 )
