@@ -9,7 +9,7 @@ class Model(ABC):
 
     def __init__(
             self,
-            model_parameters: edict,
+            model_parameters: edict = None,
     ):
         self._model_parameters = model_parameters
         self._model = self.define_model()

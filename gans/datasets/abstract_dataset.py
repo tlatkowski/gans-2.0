@@ -23,3 +23,6 @@ class Dataset(abc.ABC):
     @abstractmethod
     def load_data_with_labels(self):
         raise NotImplementedError
+
+    def __iter__(self):
+        return iter(self.train_dataset)

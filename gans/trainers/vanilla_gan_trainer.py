@@ -5,8 +5,8 @@ from gans.trainers import gan_trainer
 from gans.utils import logging
 
 SEED = 0
-LATENT_SPACE_SIZE = 100
-NUM_TEST_EXAMPLES = 16
+LATENT_SPACE_SIZE = 5
+NUM_TEST_EXAMPLES = 256
 
 logger = logging.get_logger(__name__)
 
@@ -50,7 +50,7 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
     @tf.function
     def train_step(self, batch):
         real_images = batch
-        generator_inputs = tf.random.normal([self.batch_size, 100])
+        generator_inputs = tf.random.normal([self.batch_size, LATENT_SPACE_SIZE])
 
         with tf.GradientTape(persistent=True) as tape:
             fake_images = self.generator(generator_inputs, training=True)

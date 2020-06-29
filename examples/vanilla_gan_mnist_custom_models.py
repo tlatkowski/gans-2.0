@@ -1,10 +1,11 @@
 import tensorflow as tf
 from easydict import EasyDict as edict
+from tensorflow.python import keras
+from tensorflow.python.keras import layers
 
 from gans.datasets import mnist
-from gans.models.discriminators import basic_discriminator
+from gans.models import sequential
 from gans.models.gans import vanilla_gan
-from gans.models.generators.latent_to_image import random_to_image
 from gans.trainers import vanilla_gan_trainer
 
 model_parameters = edict({
@@ -20,8 +21,46 @@ model_parameters = edict({
     'save_images_every_n_steps':   10
 })
 
-generator = random_to_image.RandomToImageGenerator(model_parameters)
-discriminator = basic_discriminator.Discriminator(model_parameters)
+generator = sequential.SequentialModel(
+    layers=[
+        keras.Input(shape=[model_parameters.hidden_size]),
+        layers.Dense(units=7 * 7 * 256, use_bias=False),
+        layers.BatchNormalization(),
+        layers.LeakyReLU(),
+
+        layers.Reshape((7, 7, 256)),
+        layers.Conv2DTranspose(128, (5, 5), strides=(1, 1), padding='same', use_bias=False),
+        layers.BatchNormalization(),
+        layers.LeakyReLU(),
+
+        layers.Conv2DTranspose(64, (5, 5), strides=(2, 2), padding='same', use_bias=False),
+        layers.BatchNormalization(),
+        layers.LeakyReLU(),
+
+        layers.Conv2DTranspose(1, (5, 5), strides=(2, 2), padding='same', use_bias=False, activation='tanh')
+    ]
+)
+
+discriminator = sequential.SequentialModel(
+    [
+        keras.Input(
+            shape=[
+                model_parameters.img_height,
+                model_parameters.img_width,
+                model_parameters.num_channels,
+            ]),
+        layers.Conv2D(filters=64, kernel_size=(5, 5), strides=(2, 2), padding='same'),
+        layers.LeakyReLU(),
+        layers.Dropout(0.3),
+
+        layers.Conv2D(filters=128, kernel_size=(5, 5), strides=(2, 2), padding='same'),
+        layers.LeakyReLU(),
+        layers.Dropout(rate=0.3),
+
+        layers.Flatten(),
+        layers.Dense(units=1),
+    ]
+)
 
 generator_optimizer = tf.keras.optimizers.Adam(
     learning_rate=model_parameters.learning_rate_generator,
