@@ -71,6 +71,33 @@ def generate_and_save_images(
     return im
 
 
+def generate_and_save_images2(
+        generator_model,
+        epoch,
+        test_input,
+        dataset_name,
+        cmap=None,
+        num_examples_to_display=16,
+):
+    display.clear_output(wait=True)
+    predictions = generator_model(test_input, training=False)
+    import tensorflow as tf
+    X1 = tf.random.uniform(shape=[5000]) - 0.5
+    X2 = X1 * X1
+    DATA = tf.stack([X1, X2], axis=1)
+    from matplotlib import pyplot as plt
+    plt.scatter(DATA[:, 0], DATA[:, 1])
+    plt.scatter(predictions[:, 0], predictions[:, 1])
+
+    save_path = os.path.join(constants.SAVE_IMAGE_DIR, dataset_name)
+    os.makedirs(save_path, exist_ok=True)
+    plt.savefig(os.path.join(save_path, 'image_at_epoch_{:04d}.png'.format(epoch)))
+    im = np.asarray(
+        PIL.Image.open(os.path.join(save_path, 'image_at_epoch_{:04d}.png'.format(epoch))))
+    plt.clf()
+    return im
+
+
 def generate_images(
         generator_model,
         test_input,

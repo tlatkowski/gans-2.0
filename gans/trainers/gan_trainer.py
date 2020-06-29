@@ -70,23 +70,24 @@ class GANTrainer:
             num_epochs: int,
     ):
         train_step = 0
-        test_seed = self.test_inputs(dataset)
+        test_samples = self.test_inputs(dataset)
 
         latest_checkpoint_epoch = self.regenerate_training()
         latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
         num_epochs += latest_epoch
         for epoch in range(latest_epoch, num_epochs):
-            for image_batch in dataset.train_dataset:
-                losses = self.train_step(image_batch)
+            # for batch in dataset.train_dataset:
+            for batch in dataset:
+                losses = self.train_step(batch)
                 with self.summary_writer.as_default():
                     [tf.summary.scalar(f'Losses/{loss_name}', v, step=train_step) for loss_name, v in losses.items()]
 
                 if train_step % self.save_images_every_n_steps == 0:
-                    for name, g in self.generators.items():
-                        img_to_plot = visualization.generate_and_save_images(
-                            generator_model=g,
+                    for name, generator in self.generators.items():
+                        img_to_plot = visualization.generate_and_save_images2(
+                            generator_model=generator,
                             epoch=train_step,
-                            test_input=test_seed,
+                            test_input=test_samples,
                             dataset_name=self.dataset_type,
                             num_examples_to_display=self.num_test_examples,
                         )
