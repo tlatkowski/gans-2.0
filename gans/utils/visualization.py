@@ -14,7 +14,8 @@ from gans.utils import constants
 def make_gif_from_images(path, anim_file='dcgan.gif'):
     with imageio.get_writer(anim_file, mode='I') as writer:
         filenames = glob.glob(os.path.join(path, 'image*.png'))
-        # filenames = sorted(filenames)
+        if not filenames:
+            raise ValueError('Empty list of files to plot.')
         filenames = sorted(filenames, key=lambda s: int(s.split('_')[-1].replace('.png','')))
         last = -1
         for i, filename in enumerate(filenames):
