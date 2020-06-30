@@ -15,6 +15,13 @@ as off-the-shelf features such us:
 * Wasserstein GAN (TBD)
 
 ## Examples
+
+### Function modeling
+Vanilla GAN (function x^2)            |  Conditional GAN (function: x^2, -x^2, x^3, -x^3)
+:-------------------------:|:-------------------------:
+![vanilla_mnist](./pics/vanilla_model_function_x^2.gif)  |  ![conditional_mnist](./pics/conditional_mnist.gif)
+
+### Image generation
 Vanilla GAN (MNIST)            |  Conditional GAN (MNIST)
 :-------------------------:|:-------------------------:
 ![vanilla_mnist](./pics/vanilla_mnist.gif)  |  ![conditional_mnist](./pics/conditional_mnist.gif)
