@@ -12,10 +12,10 @@ from gans.models.gans import conditional_gan
 from gans.models.gans import cycle_gan
 from gans.models.gans import vanilla_gan
 from gans.models.generators.image_to_image import u_net
-from gans.models.generators.latent_to_image import conditional_random_to_image
-from gans.models.generators.latent_to_image import conditional_random_to_image_cifar10
-from gans.models.generators.latent_to_image import random_to_image
-from gans.models.generators.latent_to_image import random_to_image_cifar10
+from gans.models.generators.latent_to_image import conditional_latent_to_image
+from gans.models.generators.latent_to_image import conditional_latent_to_image_cifar10
+from gans.models.generators.latent_to_image import latent_to_image
+from gans.models.generators.latent_to_image import latent_to_image_cifar10
 from gans.trainers import conditional_gan_trainer
 from gans.trainers import cycle_gan_trainer
 from gans.trainers import vanilla_gan_trainer
@@ -145,18 +145,18 @@ def generator_model_factory(
         problem_type: pt.ProblemType,
 ):
     if problem_type == pt.ProblemType.VANILLA_MNIST.name:
-        return random_to_image.RandomToImageGenerator(input_params)
+        return latent_to_image.RandomToImageGenerator(input_params)
     if problem_type == pt.ProblemType.VANILLA_FASHION_MNIST.name:
-        return random_to_image.RandomToImageGenerator(input_params)
+        return latent_to_image.RandomToImageGenerator(input_params)
     elif problem_type == pt.ProblemType.VANILLA_CIFAR10.name:
         # return generators.RandomToImageCifar10Generator(input_params)
-        return random_to_image_cifar10.RandomToImageCifar10Generator(input_params)
+        return latent_to_image_cifar10.RandomToImageCifar10Generator(input_params)
     elif problem_type == pt.ProblemType.CONDITIONAL_MNIST.name:
-        return conditional_random_to_image.RandomToImageConditionalGenerator(input_params)
+        return conditional_latent_to_image.RandomToImageConditionalGenerator(input_params)
     elif problem_type == pt.ProblemType.CONDITIONAL_FASHION_MNIST.name:
-        return conditional_random_to_image.RandomToImageConditionalGenerator(input_params)
+        return conditional_latent_to_image.RandomToImageConditionalGenerator(input_params)
     elif problem_type == pt.ProblemType.CONDITIONAL_CIFAR10.name:
-        return conditional_random_to_image_cifar10.RandomToImageCifar10CConditionalGenerator(
+        return conditional_latent_to_image_cifar10.RandomToImageCifar10CConditionalGenerator(
             input_params)
     elif problem_type == pt.ProblemType.CYCLE_SUMMER2WINTER.name:
         return [u_net.UNetGenerator(input_params), u_net.UNetGenerator(input_params)]

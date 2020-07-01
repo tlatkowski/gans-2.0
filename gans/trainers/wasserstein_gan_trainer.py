@@ -31,7 +31,7 @@ class WassersteinGANTrainer:
             print(epoch)
             for real_images in dataset:
                 self.train_step(real_images)
-            visualization.generate_and_save_images(
+            visualization.generate_and_save_images_for_image_problems(
                 self.generator,
                 epoch + 1,
                 seed,

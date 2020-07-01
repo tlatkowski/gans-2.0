@@ -6,7 +6,6 @@ from gans.trainers import gan_trainer
 from gans.utils import logging
 
 SEED = 0
-NUM_TEST_EXAMPLES = 256
 
 logger = logging.get_logger(__name__)
 
@@ -24,6 +23,7 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
             latent_size: int,
             continue_training: bool,
             save_images_every_n_steps: int,
+            visualization_type: str,
             checkpoint_step=10,
     ):
         self.generator = generator
@@ -44,7 +44,7 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
             },
             continue_training=continue_training,
             save_images_every_n_steps=save_images_every_n_steps,
-            num_test_examples=NUM_TEST_EXAMPLES,
+            visualization_type=visualization_type,
             checkpoint_step=checkpoint_step,
         )
 

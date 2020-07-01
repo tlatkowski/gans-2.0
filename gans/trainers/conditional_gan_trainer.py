@@ -6,7 +6,6 @@ from gans.models import model
 from gans.trainers import gan_trainer
 
 SEED = 0
-NUM_TEST_EXAMPLES = 256
 
 
 class ConditionalGANTrainer(gan_trainer.GANTrainer):
@@ -23,6 +22,7 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
             num_classes: int,
             continue_training: bool,
             save_images_every_n_steps: int,
+            visualization_type: str,
             checkpoint_step: int = 10,
     ):
         self.generator = generator
@@ -44,7 +44,7 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
             },
             continue_training=continue_training,
             save_images_every_n_steps=save_images_every_n_steps,
-            num_test_examples=NUM_TEST_EXAMPLES,
+            visualization_type=visualization_type,
             checkpoint_step=checkpoint_step,
         )
 
@@ -85,16 +85,9 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
             'discriminator_loss': discriminator_loss
         }
 
-    # def test_inputs(self, dataset):
-    #     del dataset
-    #     test_batch_size = NUM_CLASSES ** 2
-    #     labels = np.repeat(list(range(NUM_CLASSES)), NUM_CLASSES)
-    #     test_seed = [tf.random.normal([test_batch_size, LATENT_SPACE_SIZE]), np.array(labels)]
-    #     return test_seed
-
     def test_inputs(self, dataset):
         del dataset
-        # test_batch_size = self.num_classes ** 2
-        labels = np.repeat(list(range(self.num_classes)), 256)
-        test_seed = [tf.random.normal([len(labels), self.latent_size]), np.array(labels)]
+        test_batch_size = self.num_classes ** 2
+        labels = np.repeat(list(range(self.num_classes)), self.num_classes)
+        test_seed = [tf.random.normal([test_batch_size, self.latent_size]), np.array(labels)]
         return test_seed
