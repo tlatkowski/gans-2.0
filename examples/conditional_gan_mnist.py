@@ -14,7 +14,8 @@ model_parameters = edict({
     'batch_size':                  16,
     'num_epochs':                  10,
     'buffer_size':                 1000,
-    'hidden_size':                 100,
+    'latent_size':                 100,
+    'num_classes':                 10,
     'learning_rate_generator':     0.0001,
     'learning_rate_discriminator': 0.0001,
     'save_images_every_n_steps':   10
@@ -39,6 +40,8 @@ gan_trainer = conditional_gan_trainer.ConditionalGANTrainer(
     dataset_type='VANILLA_MNIST',
     generator_optimizer=generator_optimizer,
     discriminator_optimizer=discriminator_optimizer,
+    latent_size=model_parameters.latent_size,
+    num_classes=model_parameters.num_classes,
     continue_training=False,
     save_images_every_n_steps=model_parameters.save_images_every_n_steps,
 )

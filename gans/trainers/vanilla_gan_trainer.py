@@ -1,11 +1,11 @@
 import tensorflow as tf
 
 from gans.layers import losses
+from gans.models import model
 from gans.trainers import gan_trainer
 from gans.utils import logging
 
 SEED = 0
-LATENT_SPACE_SIZE = 5
 NUM_TEST_EXAMPLES = 256
 
 logger = logging.get_logger(__name__)
@@ -15,21 +15,22 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
 
     def __init__(
             self,
-            batch_size,
-            generator,
-            discriminator,
-            dataset_type,
+            batch_size: int,
+            generator: model.Model,
+            discriminator: model.Model,
+            dataset_type: str,
             generator_optimizer,
             discriminator_optimizer,
-            continue_training,
-            save_images_every_n_steps,
+            latent_size: int,
+            continue_training: bool,
+            save_images_every_n_steps: int,
             checkpoint_step=10,
     ):
         self.generator = generator
         self.discriminator = discriminator
         self.generator_optimizer = generator_optimizer
         self.discriminator_optimizer = discriminator_optimizer
-
+        self.latent_size = latent_size
         super().__init__(
             batch_size=batch_size,
             generators={'generator': generator},
@@ -50,7 +51,7 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
     @tf.function
     def train_step(self, batch):
         real_images = batch
-        generator_inputs = tf.random.normal([self.batch_size, LATENT_SPACE_SIZE])
+        generator_inputs = tf.random.normal([self.batch_size, self.latent_size])
 
         with tf.GradientTape(persistent=True) as tape:
             fake_images = self.generator(generator_inputs, training=True)
@@ -82,4 +83,4 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
 
     def test_inputs(self, dataset):
         del dataset
-        return tf.random.normal([self.batch_size, LATENT_SPACE_SIZE])
+        return tf.random.normal([self.batch_size, self.latent_size])
