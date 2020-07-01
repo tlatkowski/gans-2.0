@@ -53,6 +53,7 @@ gan_trainer = vanilla_gan_trainer.VanillaGANTrainer(
     latent_size=model_parameters.latent_size,
     continue_training=False,
     save_images_every_n_steps=model_parameters.save_images_every_n_steps,
+    visualization_type='fn',
 )
 vanilla_gan_model = vanilla_gan.VanillaGAN(
     model_parameters=model_parameters,

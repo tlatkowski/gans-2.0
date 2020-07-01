@@ -14,7 +14,7 @@ model_parameters = edict({
     'batch_size':                  16,
     'num_epochs':                  10,
     'buffer_size':                 1000,
-    'hidden_size':                 100,
+    'latent_size':                 100,
     'learning_rate_generator':     0.0001,
     'learning_rate_discriminator': 0.0001,
     'save_images_every_n_steps':   10
@@ -48,11 +48,12 @@ gan_trainer = cycle_gan_trainer.CycleGANTrainer(
     batch_size=model_parameters.batch_size,
     generators=[generator_f, generator_g],
     discriminators=[discriminator_f, discriminator_g],
-    dataset_type='SUMMER2WINTER',
+    dataset_type='CYCLE_GAN_SUMMER2WINTER',
     generators_optimizers=[generator_optimizer_f, generator_optimizer_g],
     discriminators_optimizers=[discriminator_optimizer_f, discriminator_optimizer_g],
     continue_training=False,
     save_images_every_n_steps=model_parameters.save_images_every_n_steps,
+    visualization_type='image',
 )
 cycle_gan_model = cycle_gan.CycleGAN(
     model_parameters=model_parameters,

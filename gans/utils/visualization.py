@@ -41,7 +41,7 @@ def display_image(epoch_no):
     return PIL.Image.open('image_at_epoch_{:04d}.png'.format(epoch_no))
 
 
-def generate_and_save_images(
+def generate_and_save_images_for_image_problems(
         generator_model,
         epoch,
         test_input,
@@ -73,7 +73,7 @@ def generate_and_save_images(
     return im
 
 
-def generate_and_save_images2(
+def generate_and_save_images_for_model_fn_problems(
         generator_model,
         epoch,
         test_input,

@@ -15,7 +15,7 @@ class RandomToImageGenerator(model.Model):
         super().__init__(model_parameters)
 
     def define_model(self):
-        z = Input(shape=[self.model_parameters.hidden_size])
+        z = Input(shape=[self.model_parameters.latent_size])
 
         x = layers.Dense(units=7 * 7 * 256, use_bias=False)(z)
         x = layers.BatchNormalization()(x)

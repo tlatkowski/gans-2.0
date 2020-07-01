@@ -26,7 +26,8 @@ class GANTrainer:
             discriminators_optimizers,
             continue_training,
             save_images_every_n_steps,
-            num_test_examples,
+            num_test_examples=None,
+            visualization_type='fn',
             checkpoint_step=10,
     ):
         self.batch_size = batch_size
@@ -36,6 +37,7 @@ class GANTrainer:
         self.dataset_type = dataset_type
         self.save_images_every_n_steps = save_images_every_n_steps
         self.num_test_examples = num_test_examples
+        self.visualization_type = visualization_type
         self.continue_training = continue_training
 
         self.generators_optimizers = generators_optimizers
@@ -83,13 +85,29 @@ class GANTrainer:
 
                 if train_step % self.save_images_every_n_steps == 0:
                     for name, generator in self.generators.items():
-                        img_to_plot = visualization.generate_and_save_images2(
-                            generator_model=generator,
-                            epoch=train_step,
-                            test_input=test_samples,
-                            dataset_name=self.dataset_type,
-                            num_examples_to_display=self.num_test_examples,
-                        )
+                        if self.num_test_examples is None:
+                            if isinstance(test_samples, list):
+                                self.num_test_examples = test_samples[0].shape[0]
+                            else:
+                                self.num_test_examples = test_samples.shape[0]
+                        if self.visualization_type == 'fn':
+                            img_to_plot = visualization.generate_and_save_images_for_model_fn_problems(
+                                generator_model=generator,
+                                epoch=train_step,
+                                test_input=test_samples,
+                                dataset_name=self.dataset_type,
+                                num_examples_to_display=self.num_test_examples,
+                            )
+                        elif self.visualization_type == 'image':
+                            img_to_plot = visualization.generate_and_save_images_for_image_problems(
+                                generator_model=generator,
+                                epoch=train_step,
+                                test_input=test_samples,
+                                dataset_name=self.dataset_type,
+                                num_examples_to_display=self.num_test_examples,
+                            )
+                        else:
+                            raise NotImplementedError
                         with self.summary_writer.as_default():
                             tf.summary.image(
                                 name='test_outputs',
