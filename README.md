@@ -17,9 +17,9 @@ as off-the-shelf features such us:
 ## Examples
 
 ### Function modeling
-Vanilla GAN (function x^2)            |  Conditional GAN (function: x^2, -x^2, x^3, -x^3)
+Vanilla GAN (Gaussian function)            |  Vanilla GAN (sigmoid function)
 :-------------------------:|:-------------------------:
-![vanilla_mnist](./pics/vanilla_model_function_x^2.gif)  |  ![conditional_mnist](./pics/conditional_mnist.gif)
+![vanilla_mnist](./pics/vanilla_gan_model_gauss.gif)  |  ![conditional_mnist](./pics/vanilla_gan_model_sigmoid.gif)
 
 ### Image generation
 Vanilla GAN (MNIST)            |  Conditional GAN (MNIST)
@@ -35,6 +35,8 @@ Vanilla GAN (FASHION_MNIST)            |  Conditional GAN (FASHION_MNIST)
 Vanilla GAN (CIFAR10)            |  Conditional GAN (CIFAR10)
 :-------------------------:|:-------------------------:
 ![vanilla_cifar10](./pics/vanilla_cifar10.gif)  |  ![conditional_cifar10](./pics/conditional_cifar10.gif)
+
+### Image translation
 
 Cycle GAN (SUMMER2WINTER)            |  Cycle GAN (WINTER2SUMMER)
 :-------------------------:|:-------------------------:
