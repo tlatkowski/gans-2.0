@@ -76,7 +76,6 @@ class GANTrainer:
         latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
         num_epochs += latest_epoch
         for epoch in range(latest_epoch, num_epochs):
-            # for batch in dataset.train_dataset:
             for batch in dataset:
                 losses = self.train_step(batch)
                 with self.summary_writer.as_default():

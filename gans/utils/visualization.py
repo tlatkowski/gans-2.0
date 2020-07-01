@@ -4,9 +4,10 @@ import os
 
 import PIL
 import imageio
-import matplotlib.pyplot as plt
 import numpy as np
+import tensorflow as tf
 from IPython import display
+from matplotlib import pyplot as plt
 
 from gans.utils import constants
 
@@ -82,25 +83,12 @@ def generate_and_save_images2(
 ):
     display.clear_output(wait=True)
     predictions = generator_model(test_input, training=False)
-    import tensorflow as tf
-    X1 = tf.random.uniform(shape=[5000], minval=-2, maxval=2)
-    # X2 = X1 * X1
-    X3 = X1 * X1 * X1
-    # X4 = -(X1 * X1)
-    X5 = -(X1 * X1 * X1)
-    # DATA1 = tf.stack([X1, X2], axis=1)
-    DATA2 = tf.stack([X1, X3], axis=1)
-    # DATA3 = tf.stack([X1, X4], axis=1)
-    DATA4 = tf.stack([X1, X5], axis=1)
-    from matplotlib import pyplot as plt
-    # plt.scatter(DATA1[:, 0], DATA1[:, 1])
-    plt.scatter(DATA2[:, 0], DATA2[:, 1])
-    # plt.scatter(DATA3[:, 0], DATA3[:, 1])
-    plt.scatter(DATA4[:, 0], DATA4[:, 1])
-    plt.scatter(predictions[:256, 0], predictions[:256, 1])
-    plt.scatter(predictions[256:512, 0], predictions[256:512, 1])
-    # plt.scatter(predictions[512:768, 0], predictions[512:768, 1])
-    # plt.scatter(predictions[768:1024, 0], predictions[768:1024, 1])
+    x = tf.random.uniform(shape=[5000], minval=-10, maxval=10)
+    y = tf.nn.sigmoid(x)
+    # y = tf.exp(-0.5 * x ** 2)
+    plt.scatter(x, y, cmap='Reds')
+    plt.scatter(predictions[:, 0], predictions[:, 1], cmap='Greens')
+    plt.grid()
 
     save_path = os.path.join(constants.SAVE_IMAGE_DIR, dataset_name)
     os.makedirs(save_path, exist_ok=True)
