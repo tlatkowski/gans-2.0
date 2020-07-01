@@ -2,32 +2,35 @@ import numpy as np
 import tensorflow as tf
 
 from gans.layers import losses
+from gans.models import model
 from gans.trainers import gan_trainer
 
 SEED = 0
-LATENT_SPACE_SIZE = 100
-NUM_CLASSES = 10
-NUM_TEST_EXAMPLES = 100
+NUM_TEST_EXAMPLES = 256
 
 
 class ConditionalGANTrainer(gan_trainer.GANTrainer):
 
     def __init__(
             self,
-            batch_size,
-            generator,
-            discriminator,
-            dataset_type,
+            batch_size: int,
+            generator: model.Model,
+            discriminator: model.Model,
+            dataset_type: str,
             generator_optimizer,
             discriminator_optimizer,
-            continue_training,
-            save_images_every_n_steps,
-            checkpoint_step=10,
+            latent_size: int,
+            num_classes: int,
+            continue_training: bool,
+            save_images_every_n_steps: int,
+            checkpoint_step: int = 10,
     ):
         self.generator = generator
         self.discriminator = discriminator
         self.generator_optimizer = generator_optimizer
         self.discriminator_optimizer = discriminator_optimizer
+        self.latent_size = latent_size
+        self.num_classes = num_classes
         super().__init__(
             batch_size=batch_size,
             generators={'generator': generator},
@@ -47,16 +50,16 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
 
     @tf.function
     def train_step(self, batch):
-        real_images, real_labels = batch
-        batch_size = real_images.shape[0]
-        generator_inputs = tf.random.normal([batch_size, LATENT_SPACE_SIZE])
-        fake_labels = np.random.randint(0, NUM_CLASSES, batch_size)
+        real_samples, real_labels = batch
+        batch_size = real_samples.shape[0]
+        generator_inputs = tf.random.normal([batch_size, self.latent_size])
+        fake_labels = np.random.randint(0, self.num_classes, batch_size)
 
         with tf.GradientTape(persistent=True) as tape:
-            fake_images = self.generator([generator_inputs, fake_labels], training=True)
+            fake_samples = self.generator([generator_inputs, fake_labels], training=True)
 
-            real_output = self.discriminator([real_images, real_labels], training=True)
-            fake_output = self.discriminator([fake_images, fake_labels], training=True)
+            real_output = self.discriminator([real_samples, real_labels], training=True)
+            fake_output = self.discriminator([fake_samples, fake_labels], training=True)
 
             generator_loss = losses.generator_loss(fake_output)
             discriminator_loss = losses.discriminator_loss(real_output, fake_output)
@@ -82,9 +85,16 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
             'discriminator_loss': discriminator_loss
         }
 
+    # def test_inputs(self, dataset):
+    #     del dataset
+    #     test_batch_size = NUM_CLASSES ** 2
+    #     labels = np.repeat(list(range(NUM_CLASSES)), NUM_CLASSES)
+    #     test_seed = [tf.random.normal([test_batch_size, LATENT_SPACE_SIZE]), np.array(labels)]
+    #     return test_seed
+
     def test_inputs(self, dataset):
         del dataset
-        test_batch_size = NUM_CLASSES ** 2
-        labels = np.repeat(list(range(NUM_CLASSES)), NUM_CLASSES)
-        test_seed = [tf.random.normal([test_batch_size, LATENT_SPACE_SIZE]), np.array(labels)]
+        # test_batch_size = self.num_classes ** 2
+        labels = np.repeat(list(range(self.num_classes)), 256)
+        test_seed = [tf.random.normal([len(labels), self.latent_size]), np.array(labels)]
         return test_seed
