@@ -45,7 +45,7 @@ def generate_and_save_images_for_image_problems(
         generator_model,
         epoch,
         test_input,
-        dataset_name,
+        save_path,
         cmap=None,
         num_examples_to_display=16,
 ):
@@ -65,7 +65,7 @@ def generate_and_save_images_for_image_problems(
         plt.imshow(img_to_plot / 255, cmap=cmap)
         plt.axis('off')
 
-    save_path = os.path.join(constants.SAVE_IMAGE_DIR, dataset_name)
+    # save_path = os.path.join(constants.SAVE_IMAGE_DIR, dataset_name)
     os.makedirs(save_path, exist_ok=True)
     plt.savefig(os.path.join(save_path, 'image_at_epoch_{:04d}.png'.format(epoch)))
     im = np.asarray(
