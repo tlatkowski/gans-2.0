@@ -6,6 +6,7 @@ import tensorflow as tf
 from tqdm import tqdm
 
 from gans.datasets import abstract_dataset
+from gans.trainers import gan_checkpoint_manager as ckpt_manager
 from gans.utils import constants
 from gans.utils import logging
 from gans.utils import visualization
@@ -50,21 +51,15 @@ class GANTrainer:
             constants.SAVE_IMAGE_DIR,
             dataset_type,
         )
-        self.training_checkpoint_path = os.path.join(
-            self.root_checkpoint_path,
-            constants.CHECKPOINT_DIR,
-        )
-
-        self.checkpoint = tf.train.Checkpoint(
-            **{k: v for k, v in self.generators_optimizers.items()},
-            **{k: v for k, v in self.discriminators_optimizers.items()},
-            **{k: v.model for k, v in self.generators.items()},
-            **{k: v.model for k, v in self.discriminators.items()}
-        )
-        self.checkpoint_manager = tf.train.CheckpointManager(
-            checkpoint=self.checkpoint,
-            directory=self.training_checkpoint_path,
-            max_to_keep=3,
+        self.checkpoint_manager = ckpt_manager.GANCheckpointManager(
+            components_to_save={
+                **self.generators_optimizers,
+                **self.discriminators_optimizers,
+                **{k: v.model for k, v in self.generators.items()},
+                **{k: v.model for k, v in self.discriminators.items()}
+            },
+            root_checkpoint_path=self.root_checkpoint_path,
+            continue_training=continue_training,
         )
 
         self.summary_writer = tf.summary.create_file_writer(self.root_checkpoint_path)
@@ -85,7 +80,7 @@ class GANTrainer:
         train_step = 0
         test_samples = self.test_inputs(dataset)
 
-        latest_checkpoint_epoch = self.regenerate_training()
+        latest_checkpoint_epoch = self.checkpoint_manager.regenerate_training()
         latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
         num_epochs += latest_epoch
         for epoch in tqdm(range(latest_epoch, num_epochs), desc='Epochs'):
@@ -138,15 +133,3 @@ class GANTrainer:
                     self.checkpoint_manager.save(checkpoint_number=epoch)
                     logger.info(f'Saved model for {train_step} step and {epoch} epoch.')
                 train_step += 1
-
-    def regenerate_training(self):
-        latest_checkpoint_epoch = 0
-        if self.continue_training:
-            latest_checkpoint = self.checkpoint_manager.latest_checkpoint
-            if latest_checkpoint is not None:
-                latest_checkpoint_epoch = int(latest_checkpoint[latest_checkpoint.index("-") + 1:])
-                self.checkpoint.restore(self.checkpoint_manager.latest_checkpoint)
-                logger.info(f'Training regeneration from checkpoint: {self.root_checkpoint_path}.')
-            else:
-                logger.info('No checkpoints found. Starting training from scratch.')
-        return latest_checkpoint_epoch

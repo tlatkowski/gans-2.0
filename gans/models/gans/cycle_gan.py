@@ -1,3 +1,5 @@
+from typing import List
+
 from easydict import EasyDict as edict
 
 from gans.models import model
@@ -9,8 +11,8 @@ class CycleGAN:
     def __init__(
             self,
             model_parameters: edict,
-            generators: model.Model,
-            discriminators: model.Model,
+            generators: List[model.Model],
+            discriminators: List[model.Model],
             gan_trainer: gan_trainer.GANTrainer,
     ):
         self.num_epochs = model_parameters.num_epochs
