@@ -2,7 +2,7 @@ import tensorflow as tf
 from easydict import EasyDict as edict
 
 from gans.datasets import mnist
-from gans.models.discriminators import basic_discriminator
+from gans.models.discriminators import discriminator
 from gans.models.gans import conditional_gan
 from gans.models.generators.latent_to_image import latent_to_image
 from gans.trainers import conditional_gan_trainer
@@ -22,7 +22,7 @@ model_parameters = edict({
 })
 
 generator = latent_to_image.RandomToImageGenerator(model_parameters)
-discriminator = basic_discriminator.Discriminator(model_parameters)
+discriminator = discriminator.Discriminator(model_parameters)
 
 generator_optimizer = tf.keras.optimizers.Adam(
     learning_rate=model_parameters.learning_rate_generator,

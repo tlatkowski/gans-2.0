@@ -4,9 +4,8 @@ import tensorflow as tf
 from easydict import EasyDict as edict
 
 from gans.datasets import problem_type as pt
-from gans.models.discriminators import basic_conditional_discriminator
-from gans.models.discriminators import basic_discriminator
-from gans.models.discriminators import cifar10_conditional_discriminator
+from gans.models.discriminators import discriminator
+from gans.models.discriminators import conditional_discriminator
 from gans.models.discriminators import patch_discriminator
 from gans.models.gans import conditional_gan
 from gans.models.gans import cycle_gan
@@ -166,17 +165,17 @@ def discriminator_model_factory(
         dataset_type: pt.ProblemType,
 ):
     if dataset_type == pt.ProblemType.VANILLA_MNIST.name:
-        return basic_discriminator.Discriminator(input_params)
+        return discriminator.Discriminator(input_params)
     if dataset_type == pt.ProblemType.VANILLA_FASHION_MNIST.name:
-        return basic_discriminator.Discriminator(input_params)
+        return discriminator.Discriminator(input_params)
     elif dataset_type == pt.ProblemType.VANILLA_CIFAR10.name:
-        return basic_discriminator.Discriminator(input_params)
+        return discriminator.Discriminator(input_params)
     elif dataset_type == pt.ProblemType.CONDITIONAL_MNIST.name:
-        return basic_conditional_discriminator.ConditionalDiscriminator(input_params)
+        return conditional_discriminator.ConditionalDiscriminator(input_params)
     elif dataset_type == pt.ProblemType.CONDITIONAL_FASHION_MNIST.name:
-        return basic_conditional_discriminator.ConditionalDiscriminator(input_params)
+        return conditional_discriminator.ConditionalDiscriminator(input_params)
     elif dataset_type == pt.ProblemType.CONDITIONAL_CIFAR10.name:
-        return cifar10_conditional_discriminator.ConditionalDiscriminatorCifar10(input_params)
+        return conditional_discriminator.ConditionalDiscriminatorCifar10(input_params)
     elif dataset_type == pt.ProblemType.CYCLE_SUMMER2WINTER.name:
         return [patch_discriminator.PatchDiscriminator(input_params),
                 patch_discriminator.PatchDiscriminator(input_params)]
