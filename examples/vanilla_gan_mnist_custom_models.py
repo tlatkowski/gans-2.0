@@ -5,7 +5,6 @@ from tensorflow.python.keras import layers
 
 from gans.datasets import mnist
 from gans.models import sequential
-from gans.models.gans import vanilla_gan
 from gans.trainers import vanilla_gan_trainer
 
 model_parameters = edict({
@@ -20,6 +19,8 @@ model_parameters = edict({
     'learning_rate_discriminator': 0.0001,
     'save_images_every_n_steps':   10
 })
+
+dataset = mnist.MnistDataset(model_parameters)
 
 generator = sequential.SequentialModel(
     layers=[
@@ -83,13 +84,8 @@ gan_trainer = vanilla_gan_trainer.VanillaGANTrainer(
     save_images_every_n_steps=model_parameters.save_images_every_n_steps,
     visualization_type='image',
 )
-vanilla_gan_model = vanilla_gan.VanillaGAN(
-    model_parameters=model_parameters,
-    generator=generator,
-    discriminator=discriminator,
-    gan_trainer=gan_trainer,
+
+gan_trainer.train(
+    dataset=dataset,
+    num_epochs=model_parameters.num_epochs,
 )
-
-dataset = mnist.MnistDataset(model_parameters)
-
-vanilla_gan_model.fit(dataset)

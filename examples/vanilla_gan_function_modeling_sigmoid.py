@@ -4,7 +4,6 @@ from tensorflow.python import keras
 from tensorflow.python.keras import layers
 
 from gans.models import sequential
-from gans.models.gans import vanilla_gan
 from gans.trainers import vanilla_gan_trainer
 
 model_parameters = edict({
@@ -16,6 +15,19 @@ model_parameters = edict({
     'learning_rate_discriminator': 0.0002,
     'save_images_every_n_steps':   20
 })
+
+
+def generate_samples(num_samples):
+    x = tf.random.uniform(shape=[num_samples], minval=-10, maxval=10)
+    y = tf.nn.sigmoid(x)
+    data = tf.stack([x, y], axis=1)
+    return tf.data.Dataset. \
+        from_tensor_slices(data). \
+        shuffle(model_parameters.buffer_size). \
+        batch(model_parameters.batch_size)
+
+
+dataset = generate_samples(num_samples=500000)
 
 generator = sequential.SequentialModel(
     layers=[
@@ -61,24 +73,8 @@ gan_trainer = vanilla_gan_trainer.VanillaGANTrainer(
     save_images_every_n_steps=model_parameters.save_images_every_n_steps,
     visualization_type='fn',
 )
-vanilla_gan_model = vanilla_gan.VanillaGAN(
-    model_parameters=model_parameters,
-    generator=generator,
-    discriminator=discriminator,
-    gan_trainer=gan_trainer,
+
+gan_trainer.train(
+    dataset=dataset,
+    num_epochs=model_parameters.num_epochs,
 )
-
-
-def generate_samples(num_samples):
-    x = tf.random.uniform(shape=[num_samples], minval=-10, maxval=10)
-    y = tf.nn.sigmoid(x)
-    data = tf.stack([x, y], axis=1)
-    return tf.data.Dataset. \
-        from_tensor_slices(data). \
-        shuffle(model_parameters.buffer_size). \
-        batch(model_parameters.batch_size)
-
-
-train_dataset = generate_samples(num_samples=500000)
-
-vanilla_gan_model.fit(train_dataset)

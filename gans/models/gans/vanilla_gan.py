@@ -1,28 +1,28 @@
 from easydict import EasyDict as edict
 
 from gans.models import model
-from gans.trainers import gan_trainer
+from gans.models.gans import gan
 
 
-class VanillaGAN:
+class VanillaGAN(gan.GAN):
 
     def __init__(
             self,
             model_parameters: edict,
             generator: model.Model,
             discriminator: model.Model,
-            gan_trainer: gan_trainer.GANTrainer,
     ):
         self.num_epochs = model_parameters.num_epochs
-        self.generator = generator
-        self.discriminator = discriminator
-        self.gan_trainer = gan_trainer
+        self._generator = generator
+        self._discriminator = discriminator
 
-    def fit(self, dataset):
-        self.gan_trainer.train(
-            dataset=dataset,
-            num_epochs=self.num_epochs,
-        )
+    @property
+    def generators(self):
+        return [self._generator]
+
+    @property
+    def discriminators(self):
+        return [self._discriminator]
 
     def predict(self, inputs):
-        return self.generator.model(inputs)
+        return self._generator.model(inputs)

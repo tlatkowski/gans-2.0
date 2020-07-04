@@ -3,7 +3,6 @@ from easydict import EasyDict as edict
 
 from gans.datasets import mnist
 from gans.models.discriminators import discriminator
-from gans.models.gans import conditional_gan
 from gans.models.generators.latent_to_image import latent_to_image
 from gans.trainers import conditional_gan_trainer
 
@@ -20,6 +19,7 @@ model_parameters = edict({
     'learning_rate_discriminator': 0.0001,
     'save_images_every_n_steps':   10
 })
+dataset = mnist.MnistDataset(model_parameters, with_labels=True)
 
 generator = latent_to_image.RandomToImageGenerator(model_parameters)
 discriminator = discriminator.Discriminator(model_parameters)
@@ -46,13 +46,7 @@ gan_trainer = conditional_gan_trainer.ConditionalGANTrainer(
     save_images_every_n_steps=model_parameters.save_images_every_n_steps,
     visualization_type='image',
 )
-conditional_gan_model = conditional_gan.ConditionalGAN(
-    model_parameters=model_parameters,
-    generator=generator,
-    discriminator=discriminator,
-    gan_trainer=gan_trainer,
+gan_trainer.train(
+    dataset=dataset,
+    num_epochs=model_parameters.num_epochs,
 )
-
-dataset = mnist.MnistDataset(model_parameters, with_labels=True)
-
-conditional_gan_model.fit(dataset)
