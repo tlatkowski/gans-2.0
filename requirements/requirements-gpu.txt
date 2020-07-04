@@ -1,1 +1,1 @@
-tensorflow-gpu==2.1.0rc1
+tensorflow-gpu==2.2.0
