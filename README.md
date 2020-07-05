@@ -1,4 +1,5 @@
-![](https://img.shields.io/badge/Python-3.6.8-blue.svg) ![](https://img.shields.io/badge/TensorFlow-2.2.0-blue.svg) ![](https://img.shields.io/badge/License-MIT-blue.svg) [![Build Status](https://travis-ci.com/tlatkowski/gans-2.0.svg?branch=cifar10-model)](https://travis-ci.com/tlatkowski/gans-2.0)
+![](https://img.shields.io/badge/Python-3.6.8-blue.svg) ![](https://img.shields.io/badge/TensorFlow-2.2.0-blue.svg) ![](https://img.shields.io/badge/License-MIT-blue.svg) [![Build Status](https://travis-ci.com/tlatkowski/gans-2.0.svg?branch=cifar10-model)](https://travis-ci.com/tlatkowski/gans-2.0) [![codecov](https://codecov.io/gh/tlatkowski/gans-2.0/branch/master/graph/badge.svg)](https://codecov.io/gh/tlatkowski/gans-2.0)
+
 
 # GANs 2.0: Generative Adversarial Networks in TensorFlow 2.0
 
