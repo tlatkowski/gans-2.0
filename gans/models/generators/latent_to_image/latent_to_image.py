@@ -6,7 +6,7 @@ from tensorflow.python.keras import layers
 from gans.models import model
 
 
-class RandomToImageGenerator(model.Model):
+class LatentToImageGenerator(model.Model):
 
     def __init__(
             self,
@@ -36,7 +36,7 @@ class RandomToImageGenerator(model.Model):
         return model
 
 
-class RandomToImageCifar10Generator(model.Model):
+class LatentToImageCifar10Generator(model.Model):
 
     def __init__(
             self,
@@ -45,7 +45,7 @@ class RandomToImageCifar10Generator(model.Model):
         super().__init__(model_parameters)
 
     def define_model(self):
-        z = Input(shape=[self.model_parameters.hidden_size])
+        z = Input(shape=[self.model_parameters.latent_size])
 
         x = layers.Dense(units=8 * 8 * 256, use_bias=False)(z)
         x = layers.BatchNormalization()(x)
@@ -66,7 +66,7 @@ class RandomToImageCifar10Generator(model.Model):
         return model
 
 
-class RandomToImageCifar10NearestNeighborUpSamplingGenerator(model.Model):
+class LatentToImageCifar10NearestNeighborUpSamplingGenerator(model.Model):
 
     def __init__(
             self,
@@ -75,7 +75,7 @@ class RandomToImageCifar10NearestNeighborUpSamplingGenerator(model.Model):
         super().__init__(model_parameters)
 
     def define_model(self):
-        z = Input(shape=[self.model_parameters.hidden_size])
+        z = Input(shape=[self.model_parameters.latent_size])
 
         x = layers.Dense(units=8 * 8 * 256, use_bias=False)(z)
         x = layers.BatchNormalization()(x)

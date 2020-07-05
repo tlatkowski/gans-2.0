@@ -6,7 +6,7 @@ from tensorflow.python.keras import layers
 from gans.models import model
 
 
-class RandomToImageConditionalGenerator(model.Model):
+class LatentToImageConditionalGenerator(model.Model):
 
     def __init__(
             self,
@@ -15,7 +15,7 @@ class RandomToImageConditionalGenerator(model.Model):
         super().__init__(model_parameters)
 
     def define_model(self):
-        z = Input(shape=[self.model_parameters.hidden_size])
+        z = Input(shape=[self.model_parameters.latent_size])
         class_id = Input(shape=[1])
 
         embedded_id = layers.Embedding(input_dim=10, output_dim=50)(class_id)
@@ -44,7 +44,7 @@ class RandomToImageConditionalGenerator(model.Model):
         return model
 
 
-class RandomToImageCifar10CConditionalGenerator(model.Model):
+class LatentToImageCifar10CConditionalGenerator(model.Model):
 
     def __init__(
             self,
@@ -53,7 +53,7 @@ class RandomToImageCifar10CConditionalGenerator(model.Model):
         super().__init__(model_parameters)
 
     def define_model(self):
-        z = Input(shape=[self.model_parameters.hidden_size])
+        z = Input(shape=[self.model_parameters.latent_size])
         class_id = Input(shape=[1])
 
         embedded_id = layers.Embedding(input_dim=10, output_dim=50)(class_id)
@@ -93,7 +93,7 @@ class RandomToImageCifar10CConditionalGenerator(model.Model):
         return model
 
 
-class RandomToImageNNUpsamplingCifar10CConditionalGenerator(model.Model):
+class LatentToImageNNUpsamplingCifar10CConditionalGenerator(model.Model):
 
     def __init__(
             self,
@@ -102,7 +102,7 @@ class RandomToImageNNUpsamplingCifar10CConditionalGenerator(model.Model):
         super().__init__(model_parameters)
 
     def define_model(self):
-        z = Input(shape=[self.model_parameters.hidden_size])
+        z = Input(shape=[self.model_parameters.latent_size])
         class_id = Input(shape=[1])
 
         embedded_id = layers.Embedding(input_dim=10, output_dim=50)(class_id)
@@ -133,7 +133,7 @@ class RandomToImageNNUpsamplingCifar10CConditionalGenerator(model.Model):
         return model
 
 
-class RandomToImageNNUpSamplingConditionalGenerator(model.Model):
+class LatentToImageNNUpSamplingConditionalGenerator(model.Model):
 
     def __init__(
             self,
@@ -142,7 +142,7 @@ class RandomToImageNNUpSamplingConditionalGenerator(model.Model):
         super().__init__(model_parameters)
 
     def define_model(self):
-        z = Input(shape=[self.model_parameters.hidden_size])
+        z = Input(shape=[self.model_parameters.latent_size])
         class_id = Input(shape=[1])
 
         embedded_id = layers.Embedding(input_dim=10, output_dim=50)(class_id)

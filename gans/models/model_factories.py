@@ -142,17 +142,17 @@ def generator_model_factory(
         problem_type: pt.ProblemType,
 ):
     if problem_type == pt.ProblemType.VANILLA_MNIST.name:
-        return latent_to_image.RandomToImageGenerator(input_params)
+        return latent_to_image.LatentToImageGenerator(input_params)
     if problem_type == pt.ProblemType.VANILLA_FASHION_MNIST.name:
-        return latent_to_image.RandomToImageGenerator(input_params)
+        return latent_to_image.LatentToImageGenerator(input_params)
     elif problem_type == pt.ProblemType.VANILLA_CIFAR10.name:
-        return latent_to_image.RandomToImageCifar10Generator(input_params)
+        return latent_to_image.LatentToImageCifar10Generator(input_params)
     elif problem_type == pt.ProblemType.CONDITIONAL_MNIST.name:
-        return conditional_latent_to_image.RandomToImageConditionalGenerator(input_params)
+        return conditional_latent_to_image.LatentToImageConditionalGenerator(input_params)
     elif problem_type == pt.ProblemType.CONDITIONAL_FASHION_MNIST.name:
-        return conditional_latent_to_image.RandomToImageConditionalGenerator(input_params)
+        return conditional_latent_to_image.LatentToImageConditionalGenerator(input_params)
     elif problem_type == pt.ProblemType.CONDITIONAL_CIFAR10.name:
-        return conditional_latent_to_image.RandomToImageCifar10CConditionalGenerator(
+        return conditional_latent_to_image.LatentToImageCifar10CConditionalGenerator(
             input_params)
     elif problem_type == pt.ProblemType.CYCLE_SUMMER2WINTER.name:
         return [u_net.UNetGenerator(input_params), u_net.UNetGenerator(input_params)]

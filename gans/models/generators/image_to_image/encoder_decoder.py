@@ -17,7 +17,11 @@ class CycleGenerator(model.Model):
         super().__init__(model_parameters)
 
     def define_model(self):
-        input_images = Input(shape=[256, 256, 3])
+        input_images = Input(shape=[
+            self.model_parameters.img_height,
+            self.model_parameters.img_width,
+            self.model_parameters.num_channels
+        ])
 
         x = layers.Conv2D(
             filters=64,

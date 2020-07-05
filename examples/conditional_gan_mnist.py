@@ -21,7 +21,7 @@ model_parameters = edict({
 })
 dataset = mnist.MnistDataset(model_parameters, with_labels=True)
 
-generator = latent_to_image.RandomToImageGenerator(model_parameters)
+generator = latent_to_image.LatentToImageGenerator(model_parameters)
 discriminator = discriminator.Discriminator(model_parameters)
 
 generator_optimizer = tf.keras.optimizers.Adam(

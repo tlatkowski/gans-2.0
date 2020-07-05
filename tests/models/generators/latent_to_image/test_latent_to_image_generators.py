@@ -10,7 +10,7 @@ class TestLatentToImageGenerators(tf.test.TestCase):
         input_params = edict({
             'latent_size': 100
         })
-        g = latent_to_image.RandomToImageGenerator(input_params)
+        g = latent_to_image.LatentToImageGenerator(input_params)
         z = tf.random.normal(shape=[1, 100])
         output_img = g(z)
         expected_shape = (1, 28, 28, 1)

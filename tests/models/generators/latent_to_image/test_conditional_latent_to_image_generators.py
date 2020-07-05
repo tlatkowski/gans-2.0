@@ -11,7 +11,7 @@ class TestConditionalLatentToImageGenerators(tf.test.TestCase):
             'latent_size': 100,
             'num_classes': 10
         })
-        g = conditional_latent_to_image.RandomToImageConditionalGenerator(input_params)
+        g = conditional_latent_to_image.LatentToImageConditionalGenerator(input_params)
         z = tf.random.normal(shape=(1, 100))
         class_id = tf.zeros(shape=(1,))
         output_img = g([z, class_id])
