@@ -9,4 +9,4 @@ script:
   - pytest --cov-report=xml --cov=gans tests/
 
 after_success:
-  - codecov
+  - bash <(curl -s https://codecov.io/bash)
