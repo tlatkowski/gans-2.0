@@ -6,7 +6,7 @@ install:
   - pip install -r requirements/requirements-cpu.txt
 # command to run tests
 script:
-  - pytest --cov-config .coveragerc --cov=gans tests
+  - pytest --cov-report=xml --cov=gans tests/
 
 after_success:
   - codecov
