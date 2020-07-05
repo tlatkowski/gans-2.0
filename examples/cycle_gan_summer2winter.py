@@ -3,7 +3,7 @@ from easydict import EasyDict as edict
 
 from gans.datasets import summer2winter
 from gans.models.discriminators import patch_discriminator
-from gans.models.generators.image_to_image import u_net
+from gans.models.generators.image_to_image import unet
 from gans.trainers import cycle_gan_trainer
 
 model_parameters = edict({
@@ -20,8 +20,8 @@ model_parameters = edict({
 })
 dataset = summer2winter.SummerToWinterDataset(model_parameters)
 
-generator_f = u_net.UNetGenerator(model_parameters)
-generator_g = u_net.UNetGenerator(model_parameters)
+generator_f = unet.UNetGenerator(model_parameters)
+generator_g = unet.UNetGenerator(model_parameters)
 
 discriminator_f = patch_discriminator.PatchDiscriminator(model_parameters)
 discriminator_g = patch_discriminator.PatchDiscriminator(model_parameters)

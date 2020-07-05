@@ -8,7 +8,7 @@ from gans.layers import advanced_layers
 from gans.models import model
 
 
-class CycleGenerator(model.Model):
+class EncoderDecoderGenerator(model.Model):
 
     def __init__(
             self,

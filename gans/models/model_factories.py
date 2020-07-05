@@ -10,7 +10,7 @@ from gans.models.discriminators import patch_discriminator
 from gans.models.gans import conditional_gan
 from gans.models.gans import cycle_gan
 from gans.models.gans import vanilla_gan
-from gans.models.generators.image_to_image import u_net
+from gans.models.generators.image_to_image import unet
 from gans.models.generators.latent_to_image import conditional_latent_to_image
 from gans.models.generators.latent_to_image import latent_to_image
 from gans.trainers import conditional_gan_trainer
@@ -90,8 +90,8 @@ def gan_model_factory(
             gan_trainer=gan_trainer,
         )
     elif gan_type == ModelType.CYCLE.name:
-        generator_f = u_net.UNetGenerator(input_params)
-        generator_g = u_net.UNetGenerator(input_params)
+        generator_f = unet.UNetGenerator(input_params)
+        generator_g = unet.UNetGenerator(input_params)
 
         discriminator_f = patch_discriminator.PatchDiscriminator(input_params)
         discriminator_g = patch_discriminator.PatchDiscriminator(input_params)
@@ -155,7 +155,7 @@ def generator_model_factory(
         return conditional_latent_to_image.LatentToImageCifar10CConditionalGenerator(
             input_params)
     elif problem_type == pt.ProblemType.CYCLE_SUMMER2WINTER.name:
-        return [u_net.UNetGenerator(input_params), u_net.UNetGenerator(input_params)]
+        return [unet.UNetGenerator(input_params), unet.UNetGenerator(input_params)]
     else:
         raise NotImplementedError
 
