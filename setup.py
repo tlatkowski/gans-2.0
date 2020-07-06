@@ -1,5 +1,4 @@
 from setuptools import setup
-from setuptools import Extension
 
 with open('requirements/requirements.txt') as f:
     requirements = f.readlines()
@@ -11,9 +10,12 @@ setup(
     description='GANs2.0',
     long_description=(
         'Generative Adversarial Networks in TensorFlow 2.0.'
-        ),
+    ),
     long_description_content_type='text/markdown',
     install_requires=requirements,
+    extras_require={
+        'tensorflow': ['tensorflow>=2.2.0'],
+    },
     packages=[
         'gans.datasets',
         'gans.layers',
