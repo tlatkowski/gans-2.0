@@ -55,18 +55,6 @@ pip install gans2[tensorflow_gpu]
 pip install gans2[tensorflow]
 ```
 
-The current version of pipeline supports the following datasets:
- * MNIST
- * FASHION MNIST
- * CIFAR10
- * SUMMER2WINTER
- 
-The set of supported Generative Adversarial Networks:
- * Vanilla GAN
- * Conditional GAN
- * Cycle GAN
- * Wasserstein GAN (TBD)
-
 ## Running training pipeline code examples for Vanilla GAN for MNIST digit generation
 
 #### Pre-defined models
