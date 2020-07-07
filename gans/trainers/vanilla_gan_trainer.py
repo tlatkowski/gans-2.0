@@ -50,14 +50,14 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
 
     @tf.function
     def train_step(self, batch):
-        real_images = batch
+        real_examples = batch
         generator_inputs = tf.random.normal([self.batch_size, self.latent_size])
 
         with tf.GradientTape(persistent=True) as tape:
-            fake_images = self.generator(generator_inputs, training=True)
+            fake_examples = self.generator(generator_inputs, training=True)
 
-            real_output = self.discriminator(real_images, training=True)
-            fake_output = self.discriminator(fake_images, training=True)
+            real_output = self.discriminator(real_examples, training=True)
+            fake_output = self.discriminator(fake_examples, training=True)
 
             generator_loss = losses.generator_loss(fake_output)
             discriminator_loss = losses.discriminator_loss(real_output, fake_output)

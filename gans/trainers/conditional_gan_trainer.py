@@ -50,16 +50,16 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
 
     @tf.function
     def train_step(self, batch):
-        real_samples, real_labels = batch
-        batch_size = real_samples.shape[0]
+        real_examples, real_labels = batch
+        batch_size = real_examples.shape[0]
         generator_inputs = tf.random.normal([batch_size, self.latent_size])
         fake_labels = np.random.randint(0, self.num_classes, batch_size)
 
         with tf.GradientTape(persistent=True) as tape:
-            fake_samples = self.generator([generator_inputs, fake_labels], training=True)
+            fake_examples = self.generator([generator_inputs, fake_labels], training=True)
 
-            real_output = self.discriminator([real_samples, real_labels], training=True)
-            fake_output = self.discriminator([fake_samples, fake_labels], training=True)
+            real_output = self.discriminator([real_examples, real_labels], training=True)
+            fake_output = self.discriminator([fake_examples, fake_labels], training=True)
 
             generator_loss = losses.generator_loss(fake_output)
             discriminator_loss = losses.discriminator_loss(real_output, fake_output)

@@ -13,7 +13,7 @@ as off-the-shelf features such us:
 * Vanilla GAN
 * Conditional GAN
 * Cycle GAN
-* Wasserstein GAN (TBD)
+* Wasserstein GAN
 
 ## Examples
 
@@ -216,6 +216,8 @@ gan_trainer.train(
 [Conditional GAN for MNIST digit generation](./examples/conditional_gan_mnist.py)
 
 [Cycle GAN for summer2winter/winter2summer style transfer](./examples/cycle_gan_summer2winter.py)
+
+[Wasserstein GAN for MNIST digit generatio](./examples/wasserstein_gan_trainer.py)
 
 ## Monitoring model training
 In order to visualize a training process (loss values, generated outputs) run the following command in the project directory:
