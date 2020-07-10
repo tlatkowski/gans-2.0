@@ -3,7 +3,7 @@ from tensorflow.python import keras
 from tensorflow.python.keras import Input
 from tensorflow.python.keras import Model
 from tensorflow.python.keras import layers
-
+from gans.models.discriminators import patch_discriminator
 from gans.models import model
 
 
@@ -84,10 +84,42 @@ class SingleScaleGenerator(model.Model):
 
 def build_progressive_generators(
         start_dim,
-        numscale: int,
-        model_parameters,
+        num_scales: int,
+        r: int,
 ):
     generators = []
-    for _ in range(numscale):
+    for i in range(num_scales):
+        if i == 0:
+            model_parameters = edict({
+                'img_height':       start_dim[0] * (r ** i),
+                'img_width':        start_dim[1] * (r ** i),
+                'num_channels':     start_dim[2],
+                'has_input_images': False,
+            })
+        else:
+            model_parameters = edict({
+                'img_height':       start_dim[0] * (r ** i),
+                'img_width':        start_dim[1] * (r ** i),
+                'num_channels':     start_dim[2],
+                'has_input_images': True,
+            })
         singan_generator = SingleScaleGenerator(model_parameters)
         generators.append(singan_generator)
+    return generators
+
+
+def build_patch_discriminators(
+        start_dim,
+        num_scales: int,
+        r: int,
+):
+    discriminators = []
+    for i in range(num_scales):
+        model_parameters = edict({
+            'img_height':       start_dim[0] * (r ** i),
+            'img_width':        start_dim[1] * (r ** i),
+            'num_channels':     start_dim[2],
+        })
+        singan_discriminator = patch_discriminator.SinGANPatchDiscriminator(model_parameters)
+        discriminators.append(singan_discriminator)
+    return discriminators
