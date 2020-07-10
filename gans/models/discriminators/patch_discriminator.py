@@ -46,3 +46,35 @@ class PatchDiscriminator(model.Model):
         model = Model(name=self.model_name, inputs=input_img, outputs=x)
 
         return model
+
+
+class SinGANPatchDiscriminator(model.Model):
+
+    def __init__(
+            self,
+            model_parameters: edict,
+    ):
+        super().__init__(model_parameters)
+
+    def define_model(self):
+        input_img = Input(shape=(
+            self.model_parameters.img_height,
+            self.model_parameters.img_width,
+            self.model_parameters.num_channels
+        ))
+
+        x = layers.Conv2D(filters=32, kernel_size=(3, 3), strides=(1, 1), padding='same')(input_img)
+        x = layers.BatchNormalization()(x)
+        x = layers.LeakyReLU()(x)
+
+        x = layers.Conv2D(filters=32, kernel_size=(3, 3), strides=(1, 1), padding='same')(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.LeakyReLU()(x)
+
+        x = layers.Conv2D(filters=32, kernel_size=(3, 3), strides=(1, 1), padding='same')(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.LeakyReLU()(x)
+
+        model = Model(name=self.model_name, inputs=input_img, outputs=x)
+
+        return model
