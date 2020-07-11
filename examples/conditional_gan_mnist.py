@@ -1,3 +1,4 @@
+import numpy as np
 import tensorflow as tf
 from easydict import EasyDict as edict
 
@@ -20,6 +21,16 @@ model_parameters = edict({
     'save_images_every_n_steps':   10
 })
 dataset = mnist.MnistDataset(model_parameters, with_labels=True)
+
+
+def validation_dataset():
+    test_batch_size = model_parameters.num_classes ** 2
+    labels = np.repeat(list(range(model_parameters.num_classes)), model_parameters.num_classes)
+    validation_samples = [tf.random.normal([test_batch_size, model_parameters.latent_size]), np.array(labels)]
+    return validation_samples
+
+
+validation_dataset = validation_dataset()
 
 generator = latent_to_image.LatentToImageGenerator(model_parameters)
 discriminator = discriminator.Discriminator(model_parameters)
@@ -49,4 +60,5 @@ gan_trainer = conditional_gan_trainer.ConditionalGANTrainer(
 gan_trainer.train(
     dataset=dataset,
     num_epochs=model_parameters.num_epochs,
+    validation_dataset=validation_dataset,
 )

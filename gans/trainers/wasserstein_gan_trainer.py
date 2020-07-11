@@ -87,7 +87,7 @@ class WassersteinGANTrainer(gan_trainer.GANTrainer):
         return {
             'generator_loss':     generator_loss,
             'discriminator_loss': discriminator_loss,
-            'gradient_penalty': gradient_penalty,
+            'gradient_penalty':   gradient_penalty,
         }
 
     def gradient_penalty(self, real_examples, fake_examples):
@@ -112,7 +112,3 @@ class WassersteinGANTrainer(gan_trainer.GANTrainer):
         norm = tf.sqrt(tf.reduce_sum(tf.square(grads), axis=[1, 2, 3]))
         gp = tf.reduce_mean((norm - 1.0) ** 2)
         return gp
-
-    def test_inputs(self, dataset):
-        del dataset
-        return tf.random.normal([self.batch_size, self.latent_size])

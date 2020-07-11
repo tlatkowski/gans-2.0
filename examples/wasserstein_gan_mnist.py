@@ -21,6 +21,13 @@ model_parameters = edict({
 
 dataset = mnist.MnistDataset(model_parameters)
 
+
+def validation_dataset():
+    return tf.random.normal([model_parameters.batch_size, model_parameters.latent_size])
+
+
+validation_dataset = validation_dataset()
+
 generator = latent_to_image.LatentToImageGenerator(model_parameters)
 discriminator = discriminator.Discriminator(model_parameters)
 
@@ -49,4 +56,5 @@ gan_trainer = wgan_trainer.WassersteinGANTrainer(
 gan_trainer.train(
     dataset=dataset,
     num_epochs=model_parameters.num_epochs,
+    validation_dataset=validation_dataset,
 )

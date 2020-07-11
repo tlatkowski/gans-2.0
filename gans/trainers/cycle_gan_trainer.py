@@ -137,9 +137,3 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
             'cycle_loss_x':         cycle_loss_x,
             'cycle_loss_y':         cycle_loss_y
         }
-
-    @overrides
-    def test_inputs(self, dataset):
-        summer, _ = next(dataset.train_dataset)
-        summer = summer[:NUM_TEST_EXAMPLES]
-        return summer

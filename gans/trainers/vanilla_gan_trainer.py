@@ -80,7 +80,3 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
             'generator_loss':     generator_loss,
             'discriminator_loss': discriminator_loss
         }
-
-    def test_inputs(self, dataset):
-        del dataset
-        return tf.random.normal([self.batch_size, self.latent_size])

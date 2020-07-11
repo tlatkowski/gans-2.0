@@ -29,6 +29,13 @@ def generate_samples(num_samples):
 
 dataset = generate_samples(num_samples=500000)
 
+
+def validation_dataset():
+    return tf.random.normal([model_parameters.batch_size, model_parameters.latent_size])
+
+
+validation_dataset = validation_dataset()
+
 generator = sequential.SequentialModel(
     layers=[
         keras.Input(shape=[model_parameters.latent_size]),
@@ -71,4 +78,5 @@ gan_trainer = vanilla_gan_trainer.VanillaGANTrainer(
 gan_trainer.train(
     dataset=dataset,
     num_epochs=model_parameters.num_epochs,
+    validation_dataset=validation_dataset,
 )
