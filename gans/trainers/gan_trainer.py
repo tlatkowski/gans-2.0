@@ -68,17 +68,13 @@ class GANTrainer:
     def train_step(self, batch):
         raise NotImplementedError
 
-    @abstractmethod
-    def test_inputs(self, dataset):
-        raise NotImplementedError
-
     def train(
             self,
             dataset: abstract_dataset.Dataset,
             num_epochs: int,
+            validation_dataset: None,
     ):
         train_step = 0
-        test_samples = self.test_inputs(dataset)
 
         latest_checkpoint_epoch = self.checkpoint_manager.regenerate_training()
         latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
@@ -97,15 +93,15 @@ class GANTrainer:
                 if train_step % self.save_images_every_n_steps == 0:
                     for name, generator in self.generators.items():
                         if self.num_test_examples is None:
-                            if isinstance(test_samples, list):
-                                self.num_test_examples = test_samples[0].shape[0]
+                            if isinstance(validation_dataset, list):
+                                self.num_test_examples = validation_dataset[0].shape[0]
                             else:
-                                self.num_test_examples = test_samples.shape[0]
+                                self.num_test_examples = validation_dataset.shape[0]
                         if self.visualization_type == 'fn':
                             img_to_plot = visualization.generate_and_save_images_for_model_fn_problems(
                                 generator_model=generator,
                                 epoch=train_step,
-                                test_input=test_samples,
+                                test_input=validation_dataset,
                                 dataset_name=self.dataset_type,
                                 num_examples_to_display=self.num_test_examples,
                             )
@@ -113,7 +109,7 @@ class GANTrainer:
                             img_to_plot = visualization.generate_and_save_images_for_image_problems(
                                 generator_model=generator,
                                 epoch=train_step,
-                                test_input=test_samples,
+                                test_input=validation_dataset,
                                 save_path=os.path.join(self.root_checkpoint_path, 'images'),
                                 num_examples_to_display=self.num_test_examples,
                             )

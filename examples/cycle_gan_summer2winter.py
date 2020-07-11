@@ -20,6 +20,15 @@ model_parameters = edict({
 })
 dataset = summer2winter.SummerToWinterDataset(model_parameters)
 
+
+def validation_dataset(dataset):
+    summer, _ = next(dataset.train_dataset)
+    summer = summer[:4]
+    return summer
+
+
+validation_dataset = validation_dataset(dataset)
+
 generator_f = unet.UNetGenerator(model_parameters)
 generator_g = unet.UNetGenerator(model_parameters)
 
@@ -59,4 +68,5 @@ gan_trainer = cycle_gan_trainer.CycleGANTrainer(
 gan_trainer.train(
     dataset=dataset,
     num_epochs=model_parameters.num_epochs,
+    validation_dataset=validation_dataset,
 )
