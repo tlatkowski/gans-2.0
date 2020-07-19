@@ -14,6 +14,7 @@ as off-the-shelf features such us:
 * Conditional GAN
 * Cycle GAN
 * Wasserstein GAN
+* Progressive GAN (WIP)
 
 ## Examples
 
