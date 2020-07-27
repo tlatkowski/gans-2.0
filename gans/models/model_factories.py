@@ -1,11 +1,12 @@
 import enum
+from enum import unique
 
 import tensorflow as tf
 from easydict import EasyDict as edict
 
 from gans.datasets import problem_type as pt
-from gans.models.discriminators import discriminator
 from gans.models.discriminators import conditional_discriminator
+from gans.models.discriminators import discriminator
 from gans.models.discriminators import patch_discriminator
 from gans.models.gans import conditional_gan
 from gans.models.gans import cycle_gan
@@ -18,15 +19,16 @@ from gans.trainers import cycle_gan_trainer
 from gans.trainers import vanilla_gan_trainer
 
 
-class ModelType(enum.Enum):
-    VANILLA = 0,
-    CONDITIONAL = 1,
-    WASSERSTEIN = 2,
-    CYCLE = 3
+@unique
+class GANType(enum.Enum):
+    VANILLA = 'vanilla',
+    CONDITIONAL = 'conditional',
+    WASSERSTEIN = 'wasserstein',
+    CYCLE = 'cycle'
 
 
 def model_type_values():
-    return [i.name for i in ModelType]
+    return [i.name for i in GANType]
 
 
 def gan_model_factory(
@@ -37,7 +39,7 @@ def gan_model_factory(
     generator = generator_model_factory(input_params, input_args.problem_type)
     discriminator = discriminator_model_factory(input_params, input_args.problem_type)
 
-    if gan_type == ModelType.VANILLA.name:
+    if gan_type == GANType.VANILLA.name:
         generator_optimizer = tf.keras.optimizers.Adam(
             learning_rate=input_params.learning_rate_generator,
             beta_1=0.5,
@@ -51,7 +53,7 @@ def gan_model_factory(
             batch_size=input_params.batch_size,
             generator=generator,
             discriminator=discriminator,
-            dataset_type=input_args.problem_type,
+            training_name=input_args.problem_type,
             generator_optimizer=generator_optimizer,
             discriminator_optimizer=discriminator_optimizer,
             continue_training=input_args.continue_training,
@@ -63,7 +65,7 @@ def gan_model_factory(
             discriminator=discriminator,
             gan_trainer=gan_trainer,
         )
-    elif gan_type == ModelType.CONDITIONAL.name:
+    elif gan_type == GANType.CONDITIONAL.name:
         generator_optimizer = tf.keras.optimizers.Adam(
             learning_rate=input_params.learning_rate_generator,
             beta_1=0.5,
@@ -79,7 +81,7 @@ def gan_model_factory(
             discriminator=discriminator,
             generator_optimizer=generator_optimizer,
             discriminator_optimizer=discriminator_optimizer,
-            dataset_type='VANILLA_MNIST',
+            training_name='VANILLA_MNIST',
             continue_training=False,
             save_images_every_n_steps=input_params.save_images_every_n_steps,
         )
@@ -89,7 +91,7 @@ def gan_model_factory(
             discriminator=discriminator,
             gan_trainer=gan_trainer,
         )
-    elif gan_type == ModelType.CYCLE.name:
+    elif gan_type == GANType.CYCLE.name:
         generator_f = unet.UNetGenerator(input_params)
         generator_g = unet.UNetGenerator(input_params)
 
@@ -118,7 +120,7 @@ def gan_model_factory(
             batch_size=input_params.batch_size,
             generators=[generator_f, generator_g],
             discriminators=[discriminator_f, discriminator_g],
-            dataset_type='SUMMER2WINTER',
+            training_name='SUMMER2WINTER',
             generators_optimizers=[generator_optimizer_f, generator_optimizer_g],
             discriminators_optimizers=[discriminator_optimizer_f, discriminator_optimizer_g],
             continue_training=False,
@@ -131,7 +133,7 @@ def gan_model_factory(
             discriminators=[discriminator_f, discriminator_g],
             gan_trainer=gan_trainer,
         )
-    elif gan_type == ModelType.WASSERSTEIN.name:
+    elif gan_type == GANType.WASSERSTEIN.name:
         raise NotImplementedError
     else:
         raise NotImplementedError

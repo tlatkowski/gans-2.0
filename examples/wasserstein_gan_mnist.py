@@ -4,6 +4,7 @@ from easydict import EasyDict as edict
 from gans.datasets import mnist
 from gans.models.discriminators import discriminator
 from gans.models.generators.latent_to_image import latent_to_image
+from gans.trainers import optimizers
 from gans.trainers import wasserstein_gan_trainer as wgan_trainer
 
 model_parameters = edict({
@@ -31,11 +32,11 @@ validation_dataset = validation_dataset()
 generator = latent_to_image.LatentToImageGenerator(model_parameters)
 discriminator = discriminator.Discriminator(model_parameters)
 
-generator_optimizer = tf.keras.optimizers.Adam(
+generator_optimizer = optimizers.Adam(
     learning_rate=model_parameters.learning_rate_generator,
     beta_1=0.5,
 )
-discriminator_optimizer = tf.keras.optimizers.Adam(
+discriminator_optimizer = optimizers.Adam(
     learning_rate=model_parameters.learning_rate_discriminator,
     beta_1=0.5,
 )
@@ -44,7 +45,7 @@ gan_trainer = wgan_trainer.WassersteinGANTrainer(
     batch_size=model_parameters.batch_size,
     generator=generator,
     discriminator=discriminator,
-    dataset_type='WASSERSTEIN_GAN_MNIST',
+    training_name='WASSERSTEIN_GAN_MNIST',
     generator_optimizer=generator_optimizer,
     discriminator_optimizer=discriminator_optimizer,
     latent_size=model_parameters.latent_size,

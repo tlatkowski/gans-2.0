@@ -14,13 +14,14 @@ class WassersteinGANTrainer(gan_trainer.GANTrainer):
             batch_size: int,
             generator: model.Model,
             discriminator: model.Model,
-            dataset_type: str,
+            training_name: str,
             generator_optimizer,
             discriminator_optimizer,
             latent_size: int,
             continue_training: bool,
             save_images_every_n_steps: int,
             visualization_type: str,
+            n_critic=5,
             gp_weight=10.0,
             checkpoint_step=10,
     ):
@@ -29,12 +30,13 @@ class WassersteinGANTrainer(gan_trainer.GANTrainer):
         self.generator_optimizer = generator_optimizer
         self.discriminator_optimizer = discriminator_optimizer
         self.latent_size = latent_size
+        self.n_critic = n_critic
         self.gp_weight = gp_weight
         super().__init__(
             batch_size=batch_size,
             generators={'generator': generator},
             discriminators={'discriminator': discriminator},
-            dataset_type=dataset_type,
+            training_name=training_name,
             generators_optimizers={
                 'generator_optimizer': self.generator_optimizer
             },
@@ -51,7 +53,7 @@ class WassersteinGANTrainer(gan_trainer.GANTrainer):
     def train_step(self, batch):
         real_examples = batch
 
-        for i in range(5):
+        for _ in range(self.n_critic):
             generator_inputs = tf.random.normal([self.batch_size, self.latent_size])
             with tf.GradientTape(persistent=True) as tape:
                 fake_examples = self.generator(generator_inputs, training=True)
@@ -64,11 +66,12 @@ class WassersteinGANTrainer(gan_trainer.GANTrainer):
                 discriminator_loss = discriminator_loss + gradient_penalty * self.gp_weight
 
             gradients_of_discriminator = tape.gradient(
-                discriminator_loss,
-                self.discriminator.trainable_variables,
+                target=discriminator_loss,
+                sources=self.discriminator.trainable_variables,
             )
             self.discriminator_optimizer.apply_gradients(
-                zip(gradients_of_discriminator, self.discriminator.trainable_variables))
+                grads_and_vars=zip(gradients_of_discriminator, self.discriminator.trainable_variables)
+            )
 
         generator_inputs = tf.random.normal([self.batch_size, self.latent_size])
         with tf.GradientTape(persistent=True) as tape:
@@ -77,12 +80,13 @@ class WassersteinGANTrainer(gan_trainer.GANTrainer):
             generator_loss = losses.generator_loss(fake_output)
 
         gradients_of_generator = tape.gradient(
-            generator_loss,
-            self.generator.trainable_variables,
+            target=generator_loss,
+            sources=self.generator.trainable_variables,
         )
 
         self.generator_optimizer.apply_gradients(
-            zip(gradients_of_generator, self.generator.trainable_variables))
+            grads_and_vars=zip(gradients_of_generator, self.generator.trainable_variables)
+        )
 
         return {
             'generator_loss':     generator_loss,

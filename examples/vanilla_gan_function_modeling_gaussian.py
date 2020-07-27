@@ -4,6 +4,7 @@ from tensorflow.python import keras
 from tensorflow.python.keras import layers
 
 from gans.models import sequential
+from gans.trainers import optimizers
 from gans.trainers import vanilla_gan_trainer
 
 model_parameters = edict({
@@ -53,11 +54,11 @@ discriminator = sequential.SequentialModel(
     ]
 )
 
-generator_optimizer = tf.keras.optimizers.Adam(
+generator_optimizer = optimizers.Adam(
     learning_rate=model_parameters.learning_rate_generator,
     beta_1=0.5,
 )
-discriminator_optimizer = tf.keras.optimizers.Adam(
+discriminator_optimizer = optimizers.Adam(
     learning_rate=model_parameters.learning_rate_discriminator,
     beta_1=0.5,
 )
@@ -66,7 +67,7 @@ gan_trainer = vanilla_gan_trainer.VanillaGANTrainer(
     batch_size=model_parameters.batch_size,
     generator=generator,
     discriminator=discriminator,
-    dataset_type='VANILLA_GAN_MODEL_GAUSSIAN',
+    training_name='VANILLA_GAN_MODEL_GAUSSIAN',
     generator_optimizer=generator_optimizer,
     discriminator_optimizer=discriminator_optimizer,
     latent_size=model_parameters.latent_size,

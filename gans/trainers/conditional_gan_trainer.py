@@ -15,7 +15,7 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
             batch_size: int,
             generator: model.Model,
             discriminator: model.Model,
-            dataset_type: str,
+            training_name: str,
             generator_optimizer,
             discriminator_optimizer,
             latent_size: int,
@@ -35,7 +35,7 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
             batch_size=batch_size,
             generators={'generator': generator},
             discriminators={'discriminator': discriminator},
-            dataset_type=dataset_type,
+            training_name=training_name,
             generators_optimizers={
                 'generator_optimizer': self.generator_optimizer
             },
@@ -74,10 +74,10 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
         )
 
         self.generator_optimizer.apply_gradients(
-            zip(gradients_of_generator, self.generator.trainable_variables)
+            grads_and_vars=zip(gradients_of_generator, self.generator.trainable_variables)
         )
         self.discriminator_optimizer.apply_gradients(
-            zip(gradients_of_discriminator, self.discriminator.trainable_variables)
+            grads_and_vars=zip(gradients_of_discriminator, self.discriminator.trainable_variables)
         )
 
         return {

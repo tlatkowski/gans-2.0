@@ -1,8 +1,8 @@
-import tensorflow as tf
 from easydict import EasyDict as edict
 
 from gans.datasets import summer2winter
 from gans.models.generators.image_to_image import resnets
+from gans.trainers import optimizers
 from gans.trainers import progressive_gan_trainer
 
 model_parameters = edict({
@@ -31,12 +31,12 @@ discriminators = resnets.build_patch_discriminators(
     r=2,
 )
 
-generator_optimizer = tf.keras.optimizers.Adam(
+generator_optimizer = optimizers.Adam(
     learning_rate=model_parameters.learning_rate_generator,
     beta_1=0.5,
 )
 
-discriminator_optimizer = tf.keras.optimizers.Adam(
+discriminator_optimizer = optimizers.Adam(
     learning_rate=model_parameters.learning_rate_discriminator,
     beta_1=0.5,
 )
@@ -45,7 +45,7 @@ gan_trainer = progressive_gan_trainer.ProgressiveGANTrainer(
     batch_size=model_parameters.batch_size,
     generators=generators,
     discriminators=discriminators,
-    dataset_type='PROGRESSIVE_GAN_ANIMATION',
+    training_name='PROGRESSIVE_GAN_ANIMATION',
     generators_optimizers=[generator_optimizer],
     discriminators_optimizers=[discriminator_optimizer],
 )

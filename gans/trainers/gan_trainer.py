@@ -1,12 +1,15 @@
 import os
 from abc import abstractmethod
+from typing import List
 
 import numpy as np
 import tensorflow as tf
 from tqdm import tqdm
 
 from gans.datasets import abstract_dataset
+from gans.models import model
 from gans.trainers import gan_checkpoint_manager as ckpt_manager
+from gans.trainers import optimizers
 from gans.utils import constants
 from gans.utils import logging
 from gans.utils import visualization
@@ -20,16 +23,16 @@ class GANTrainer:
 
     def __init__(
             self,
-            batch_size,
-            generators,
-            discriminators,
-            dataset_type,
-            generators_optimizers,
-            discriminators_optimizers,
-            continue_training,
-            save_images_every_n_steps,
+            batch_size: int,
+            generators: List[model.Model],
+            discriminators: List[model.Model],
+            training_name: str,
+            generators_optimizers: List[optimizers.Optimizer],
+            discriminators_optimizers: List[optimizers.Optimizer],
+            continue_training: bool,
+            save_images_every_n_steps: int,
             num_test_examples=None,
-            visualization_type='fn',
+            visualization_type: str = 'fn',
             checkpoint_step=10,
             save_model_every_n_step=1000,
     ):
@@ -38,7 +41,7 @@ class GANTrainer:
         self.discriminators = discriminators
         self.checkpoint_step = checkpoint_step
         self.save_model_every_n_step = save_model_every_n_step
-        self.dataset_type = dataset_type
+        self.training_name = training_name
         self.save_images_every_n_steps = save_images_every_n_steps
         self.num_test_examples = num_test_examples
         self.visualization_type = visualization_type
@@ -49,7 +52,7 @@ class GANTrainer:
 
         self.root_checkpoint_path = os.path.join(
             constants.SAVE_IMAGE_DIR,
-            dataset_type,
+            training_name,
         )
         self.checkpoint_manager = ckpt_manager.GANCheckpointManager(
             components_to_save={
@@ -102,7 +105,7 @@ class GANTrainer:
                                 generator_model=generator,
                                 epoch=train_step,
                                 test_input=validation_dataset,
-                                dataset_name=self.dataset_type,
+                                training_name=self.training_name,
                                 num_examples_to_display=self.num_test_examples,
                             )
                         elif self.visualization_type == 'image':

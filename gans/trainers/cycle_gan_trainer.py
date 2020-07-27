@@ -18,7 +18,7 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
             batch_size,
             generators,
             discriminators,
-            dataset_type,
+            training_name,
             generators_optimizers,
             discriminators_optimizers,
             continue_training,
@@ -40,7 +40,7 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
                 'discriminator_x': self.discriminator_x,
                 'discriminator_y': self.discriminator_y,
             },
-            dataset_type=dataset_type,
+            training_name=training_name,
             generators_optimizers={
                 'generator_optimizer_f': self.generator_optimizer_f,
                 'generator_optimizer_g': self.generator_optimizer_g,

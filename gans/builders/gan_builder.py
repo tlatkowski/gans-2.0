@@ -13,7 +13,7 @@ def build_vanilla_gan(
         batch_size=model_parameters.batch_size,
         generator=generator,
         discriminator=discriminator,
-        dataset_type='VANILLA_MNIST',
+        training_name='VANILLA_MNIST',
         generator_optimizer=generator_optimizer,
         discriminator_optimizer=discriminator_optimizer,
         continue_training=False,
