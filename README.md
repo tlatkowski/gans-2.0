@@ -66,6 +66,7 @@ from easydict import EasyDict as edict
 from gans.datasets import mnist
 from gans.models.discriminators import discriminator
 from gans.models.generators.latent_to_image import latent_to_image
+from gans.trainers import optimizers
 from gans.trainers import vanilla_gan_trainer
 
 model_parameters = edict({
@@ -86,11 +87,11 @@ dataset = mnist.MnistDataset(model_parameters)
 generator = latent_to_image.LatentToImageGenerator(model_parameters)
 discriminator = discriminator.Discriminator(model_parameters)
 
-generator_optimizer = tf.keras.optimizers.Adam(
+generator_optimizer = optimizers.Adam(
     learning_rate=model_parameters.learning_rate_generator,
     beta_1=0.5,
 )
-discriminator_optimizer = tf.keras.optimizers.Adam(
+discriminator_optimizer = optimizers.Adam(
     learning_rate=model_parameters.learning_rate_discriminator,
     beta_1=0.5,
 )
@@ -123,6 +124,7 @@ from tensorflow.python.keras import layers
 
 from gans.datasets import mnist
 from gans.models import sequential
+from gans.trainers import optimizers
 from gans.trainers import vanilla_gan_trainer
 
 model_parameters = edict({
@@ -181,11 +183,11 @@ discriminator = sequential.SequentialModel(
     ]
 )
 
-generator_optimizer = tf.keras.optimizers.Adam(
+generator_optimizer = optimizers.Adam(
     learning_rate=model_parameters.learning_rate_generator,
     beta_1=0.5,
 )
-discriminator_optimizer = tf.keras.optimizers.Adam(
+discriminator_optimizer = optimizers.Adam(
     learning_rate=model_parameters.learning_rate_discriminator,
     beta_1=0.5,
 )
