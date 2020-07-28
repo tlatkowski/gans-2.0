@@ -6,6 +6,7 @@ import numpy as np
 import tensorflow as tf
 from tqdm import tqdm
 
+from gans.callbacks import callback
 from gans.datasets import abstract_dataset
 from gans.models import model
 from gans.trainers import gan_checkpoint_manager as ckpt_manager
@@ -35,6 +36,7 @@ class GANTrainer:
             visualization_type: str = 'fn',
             checkpoint_step=10,
             save_model_every_n_step=1000,
+            callbacks: List[callback.Callback] = None,
     ):
         self.batch_size = batch_size
         self.generators = generators
