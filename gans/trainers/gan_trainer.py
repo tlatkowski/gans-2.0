@@ -3,10 +3,10 @@ from abc import abstractmethod
 from typing import List
 
 import numpy as np
-import tensorflow as tf
 from tqdm import tqdm
 
 from gans.callbacks import callback
+from gans.callbacks import logger
 from gans.datasets import abstract_dataset
 from gans.models import model
 from gans.trainers import gan_checkpoint_manager as ckpt_manager
@@ -17,7 +17,7 @@ from gans.utils import visualization
 
 SEED = 0
 
-logger = logging.get_logger(__name__)
+log = logging.get_logger(__name__)
 
 
 class GANTrainer:
@@ -48,6 +48,7 @@ class GANTrainer:
         self.num_test_examples = num_test_examples
         self.visualization_type = visualization_type
         self.continue_training = continue_training
+        self.callbacks = callbacks or []
 
         self.generators_optimizers = generators_optimizers
         self.discriminators_optimizers = discriminators_optimizers
@@ -55,6 +56,9 @@ class GANTrainer:
         self.root_checkpoint_path = os.path.join(
             constants.SAVE_IMAGE_DIR,
             training_name,
+        )
+        self.logger = logger.TensorboardLogger(
+            root_checkpoint_path=self.root_checkpoint_path,
         )
         self.checkpoint_manager = ckpt_manager.GANCheckpointManager(
             components_to_save={
@@ -67,11 +71,22 @@ class GANTrainer:
             continue_training=continue_training,
         )
 
-        self.summary_writer = tf.summary.create_file_writer(self.root_checkpoint_path)
-
     @abstractmethod
     def train_step(self, batch):
         raise NotImplementedError
+
+    def on_epoch_begin(self):
+        pass
+
+    def on_epoch_end(self):
+        pass
+
+    def on_training_step_begin(self):
+        pass
+
+    def on_training_step_end(self):
+        for c in self.callbacks:
+            c.on_training_step_end()
 
     def train(
             self,
@@ -85,15 +100,17 @@ class GANTrainer:
         latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
         num_epochs += latest_epoch
         for epoch in tqdm(range(latest_epoch, num_epochs), desc='Epochs'):
+            self.on_epoch_begin()
             dataset_tqdm = tqdm(
                 iterable=dataset,
                 desc="Batches",
                 leave=True
             )
             for batch in dataset_tqdm:
+                self.on_training_step_begin()
                 losses = self.train_step(batch)
-                with self.summary_writer.as_default():
-                    [tf.summary.scalar(f'Losses/{loss_name}', v, step=train_step) for loss_name, v in losses.items()]
+                self.on_training_step_end()
+                self.logger.log_scalars(name='Losses', scalars=losses, step=train_step)
 
                 if train_step % self.save_images_every_n_steps == 0:
                     for name, generator in self.generators.items():
@@ -120,17 +137,16 @@ class GANTrainer:
                             )
                         else:
                             raise NotImplementedError
-                        with self.summary_writer.as_default():
-                            tf.summary.image(
-                                name='test_outputs',
-                                data=np.reshape(img_to_plot, newshape=(1, 480, 640, 4)),
-                                step=train_step,
-                            )
+                        self.logger.log_images(
+                            name='test_outputs',
+                            images=np.reshape(img_to_plot, newshape=(1, 480, 640, 4)),
+                            step=train_step,
+                        )
                 steps_per_second = 1. / dataset_tqdm.avg_time if dataset_tqdm.avg_time else 0.
-                with self.summary_writer.as_default():
-                    tf.summary.scalar('steps_per_second', steps_per_second, train_step)
+                self.logger.log_scalars(name='', scalars={'steps_per_second': steps_per_second}, step=train_step)
 
                 if train_step % self.save_model_every_n_step == 0:
                     self.checkpoint_manager.save(checkpoint_number=epoch)
-                    logger.info(f'Saved model for {train_step} step and {epoch} epoch.')
+                    log.info(f'Saved model for {train_step} step and {epoch} epoch.')
                 train_step += 1
+            self.on_epoch_end()
