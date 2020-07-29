@@ -24,6 +24,7 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
             continue_training: bool,
             save_images_every_n_steps: int,
             visualization_type: str,
+            validation_dataset,
             checkpoint_step=10,
     ):
         self.generator = generator
@@ -46,6 +47,7 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
             save_images_every_n_steps=save_images_every_n_steps,
             visualization_type=visualization_type,
             checkpoint_step=checkpoint_step,
+            validation_dataset=validation_dataset,
         )
 
     @tf.function

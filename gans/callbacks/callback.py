@@ -3,18 +3,14 @@ import abc
 
 class Callback(abc.ABC):
 
-    @abc.abstractmethod
-    def on_epoch_begin(self):
+    def on_epoch_begin(self, trainer):
         pass
 
-    @abc.abstractmethod
-    def on_epoch_end(self):
+    def on_epoch_end(self, trainer):
         pass
 
-    @abc.abstractmethod
-    def on_training_step_begin(self):
+    def on_training_step_begin(self, trainer):
         pass
 
-    @abc.abstractmethod
-    def on_training_step_end(self):
+    def on_training_step_end(self, trainer):
         pass

@@ -2,18 +2,17 @@ import os
 from abc import abstractmethod
 from typing import List
 
-import numpy as np
 from tqdm import tqdm
 
 from gans.callbacks import callback
 from gans.callbacks import logger
+from gans.callbacks import saver
 from gans.datasets import abstract_dataset
 from gans.models import model
 from gans.trainers import gan_checkpoint_manager as ckpt_manager
 from gans.trainers import optimizers
 from gans.utils import constants
 from gans.utils import logging
-from gans.utils import visualization
 
 SEED = 0
 
@@ -35,8 +34,9 @@ class GANTrainer:
             num_test_examples=None,
             visualization_type: str = 'fn',
             checkpoint_step=10,
-            save_model_every_n_step=1000,
+            save_model_every_n_step=100,
             callbacks: List[callback.Callback] = None,
+            validation_dataset=None,
     ):
         self.batch_size = batch_size
         self.generators = generators
@@ -48,7 +48,10 @@ class GANTrainer:
         self.num_test_examples = num_test_examples
         self.visualization_type = visualization_type
         self.continue_training = continue_training
-        self.callbacks = callbacks or []
+        self.validation_dataset = validation_dataset
+
+        self.global_step = 0
+        self.epoch = 0
 
         self.generators_optimizers = generators_optimizers
         self.discriminators_optimizers = discriminators_optimizers
@@ -70,6 +73,14 @@ class GANTrainer:
             root_checkpoint_path=self.root_checkpoint_path,
             continue_training=continue_training,
         )
+        self.saver = saver.Saver(
+            save_images_every_n_steps=save_images_every_n_steps,
+            num_test_examples=num_test_examples,
+        )
+        self.callbacks = callbacks or [
+            self.checkpoint_manager,
+            self.saver,
+        ]
 
     @abstractmethod
     def train_step(self, batch):
@@ -86,67 +97,31 @@ class GANTrainer:
 
     def on_training_step_end(self):
         for c in self.callbacks:
-            c.on_training_step_end()
+            c.on_training_step_end(self)
 
     def train(
             self,
             dataset: abstract_dataset.Dataset,
             num_epochs: int,
-            validation_dataset: None,
     ):
-        train_step = 0
+        global_step = 0
+        dataset_tqdm = tqdm(
+            iterable=dataset,
+            desc="Batches",
+            leave=True
+        )
 
         latest_checkpoint_epoch = self.checkpoint_manager.regenerate_training()
         latest_epoch = latest_checkpoint_epoch * self.checkpoint_step
         num_epochs += latest_epoch
-        for epoch in tqdm(range(latest_epoch, num_epochs), desc='Epochs'):
+        for self.epoch in tqdm(range(latest_epoch, num_epochs), desc='Epochs'):
             self.on_epoch_begin()
-            dataset_tqdm = tqdm(
-                iterable=dataset,
-                desc="Batches",
-                leave=True
-            )
             for batch in dataset_tqdm:
                 self.on_training_step_begin()
                 losses = self.train_step(batch)
                 self.on_training_step_end()
-                self.logger.log_scalars(name='Losses', scalars=losses, step=train_step)
-
-                if train_step % self.save_images_every_n_steps == 0:
-                    for name, generator in self.generators.items():
-                        if self.num_test_examples is None:
-                            if isinstance(validation_dataset, list):
-                                self.num_test_examples = validation_dataset[0].shape[0]
-                            else:
-                                self.num_test_examples = validation_dataset.shape[0]
-                        if self.visualization_type == 'fn':
-                            img_to_plot = visualization.generate_and_save_images_for_model_fn_problems(
-                                generator_model=generator,
-                                epoch=train_step,
-                                test_input=validation_dataset,
-                                training_name=self.training_name,
-                                num_examples_to_display=self.num_test_examples,
-                            )
-                        elif self.visualization_type == 'image':
-                            img_to_plot = visualization.generate_and_save_images_for_image_problems(
-                                generator_model=generator,
-                                epoch=train_step,
-                                test_input=validation_dataset,
-                                save_path=os.path.join(self.root_checkpoint_path, 'images'),
-                                num_examples_to_display=self.num_test_examples,
-                            )
-                        else:
-                            raise NotImplementedError
-                        self.logger.log_images(
-                            name='test_outputs',
-                            images=np.reshape(img_to_plot, newshape=(1, 480, 640, 4)),
-                            step=train_step,
-                        )
+                self.logger.log_scalars(name='Losses', scalars=losses, step=global_step)
                 steps_per_second = 1. / dataset_tqdm.avg_time if dataset_tqdm.avg_time else 0.
-                self.logger.log_scalars(name='', scalars={'steps_per_second': steps_per_second}, step=train_step)
-
-                if train_step % self.save_model_every_n_step == 0:
-                    self.checkpoint_manager.save(checkpoint_number=epoch)
-                    log.info(f'Saved model for {train_step} step and {epoch} epoch.')
-                train_step += 1
+                self.logger.log_scalars(name='', scalars={'steps_per_second': steps_per_second}, step=self.global_step)
+                self.global_step += 1
             self.on_epoch_end()
