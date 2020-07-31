@@ -1,6 +1,7 @@
 import tensorflow as tf
 from easydict import EasyDict as edict
 
+from gans.callbacks import saver
 from gans.datasets import mnist
 from gans.models.discriminators import discriminator
 from gans.models.generators.latent_to_image import latent_to_image
@@ -40,7 +41,11 @@ discriminator_optimizer = optimizers.Adam(
     learning_rate=model_parameters.learning_rate_discriminator,
     beta_1=0.5,
 )
-
+callbacks = [
+    saver.ImageProblemSaver(
+        save_images_every_n_steps=model_parameters.save_images_every_n_steps,
+    )
+]
 gan_trainer = wgan_trainer.WassersteinGANTrainer(
     batch_size=model_parameters.batch_size,
     generator=generator,
@@ -51,11 +56,11 @@ gan_trainer = wgan_trainer.WassersteinGANTrainer(
     latent_size=model_parameters.latent_size,
     continue_training=False,
     save_images_every_n_steps=model_parameters.save_images_every_n_steps,
-    visualization_type='image',
+    validation_dataset=validation_dataset,
+    callbacks=callbacks,
 )
 
 gan_trainer.train(
     dataset=dataset,
     num_epochs=model_parameters.num_epochs,
-    validation_dataset=validation_dataset,
 )
