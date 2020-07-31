@@ -23,9 +23,9 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
             latent_size: int,
             continue_training: bool,
             save_images_every_n_steps: int,
-            visualization_type: str,
             validation_dataset,
             checkpoint_step=10,
+            callbacks=None,
     ):
         self.generator = generator
         self.discriminator = discriminator
@@ -45,9 +45,9 @@ class VanillaGANTrainer(gan_trainer.GANTrainer):
             },
             continue_training=continue_training,
             save_images_every_n_steps=save_images_every_n_steps,
-            visualization_type=visualization_type,
             checkpoint_step=checkpoint_step,
             validation_dataset=validation_dataset,
+            callbacks=callbacks,
         )
 
     @tf.function

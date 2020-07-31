@@ -22,9 +22,9 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
             num_classes: int,
             continue_training: bool,
             save_images_every_n_steps: int,
-            visualization_type: str,
             checkpoint_step: int = 10,
             validation_dataset=None,
+            callbacks=None,
     ):
         self.generator = generator
         self.discriminator = discriminator
@@ -45,9 +45,9 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
             },
             continue_training=continue_training,
             save_images_every_n_steps=save_images_every_n_steps,
-            visualization_type=visualization_type,
             checkpoint_step=checkpoint_step,
             validation_dataset=validation_dataset,
+            callbacks=callbacks,
         )
 
     @tf.function

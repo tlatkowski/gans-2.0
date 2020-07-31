@@ -1,5 +1,6 @@
 from easydict import EasyDict as edict
 
+from gans.callbacks import saver
 from gans.datasets import summer2winter
 from gans.models.discriminators import patch_discriminator
 from gans.models.generators.image_to_image import unet
@@ -53,6 +54,12 @@ discriminator_optimizer_g = optimizers.Adam(
     beta_1=0.5,
 )
 
+callbacks = [
+    saver.ImageProblemSaver(
+        save_images_every_n_steps=model_parameters.save_images_every_n_steps,
+    )
+]
+
 gan_trainer = cycle_gan_trainer.CycleGANTrainer(
     batch_size=model_parameters.batch_size,
     generators=[generator_f, generator_g],
@@ -62,8 +69,8 @@ gan_trainer = cycle_gan_trainer.CycleGANTrainer(
     discriminators_optimizers=[discriminator_optimizer_f, discriminator_optimizer_g],
     continue_training=False,
     save_images_every_n_steps=model_parameters.save_images_every_n_steps,
-    visualization_type='image',
     validation_dataset=validation_dataset,
+    callbacks=callbacks,
 )
 
 gan_trainer.train(

@@ -13,9 +13,9 @@ class ProgressiveGANTrainer(gan_trainer.GANTrainer):
             discriminators_optimizers,
             continue_training,
             save_images_every_n_steps,
-            visualization_type: str,
             checkpoint_step=10,
             validation_dataset=None,
+            callbacks=None,
     ):
         super().__init__(
             batch_size=batch_size,
@@ -26,9 +26,9 @@ class ProgressiveGANTrainer(gan_trainer.GANTrainer):
             discriminators_optimizers=discriminators_optimizers,
             continue_training=continue_training,
             save_images_every_n_steps=save_images_every_n_steps,
-            visualization_type=visualization_type,
             checkpoint_step=checkpoint_step,
             validation_dataset=validation_dataset,
+            callbacks=callbacks,
         )
 
     def train_step(self, batch):

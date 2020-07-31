@@ -23,9 +23,9 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
             discriminators_optimizers,
             continue_training,
             save_images_every_n_steps,
-            visualization_type: str,
             checkpoint_step=10,
             validation_dataset=None,
+            callbacks=None,
     ):
         self.generator_optimizer_f, self.generator_optimizer_g = generators_optimizers
         self.discriminator_optimizer_x, self.discriminator_optimizer_y = discriminators_optimizers
@@ -53,9 +53,9 @@ class CycleGANTrainer(gan_trainer.GANTrainer):
             continue_training=continue_training,
             save_images_every_n_steps=save_images_every_n_steps,
             num_test_examples=NUM_TEST_EXAMPLES,
-            visualization_type=visualization_type,
             checkpoint_step=checkpoint_step,
             validation_dataset=validation_dataset,
+            callbacks=callbacks,
         )
 
     @tf.function

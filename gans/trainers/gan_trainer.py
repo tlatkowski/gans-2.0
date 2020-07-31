@@ -33,7 +33,6 @@ class GANTrainer:
             continue_training: bool,
             save_images_every_n_steps: int,
             num_test_examples=None,
-            visualization_type: str = 'fn',
             checkpoint_step=10,
             save_model_every_n_step=100,
             callbacks: List[callback.Callback] = None,
@@ -47,7 +46,6 @@ class GANTrainer:
         self.training_name = training_name
         self.save_images_every_n_steps = save_images_every_n_steps
         self.num_test_examples = num_test_examples
-        self.visualization_type = visualization_type
         self.continue_training = continue_training
         self.validation_dataset = validation_dataset
 
@@ -74,15 +72,12 @@ class GANTrainer:
             root_checkpoint_path=self.root_checkpoint_path,
             continue_training=continue_training,
         )
-        self.saver = saver.Saver(
-            save_images_every_n_steps=save_images_every_n_steps,
-            num_test_examples=num_test_examples,
-        )
-        self.callbacks = callbacks or [
+
+        default_callbacks = [
             self.checkpoint_manager,
-            self.saver,
             basic_callbacks.GlobalStepIncrementer(),
         ]
+        self.callbacks = callbacks + default_callbacks
 
     @abstractmethod
     def train_step(self, batch):
