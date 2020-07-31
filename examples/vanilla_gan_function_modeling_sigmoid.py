@@ -80,10 +80,10 @@ gan_trainer = vanilla_gan_trainer.VanillaGANTrainer(
     continue_training=False,
     save_images_every_n_steps=model_parameters.save_images_every_n_steps,
     visualization_type='fn',
+    validation_dataset=validation_dataset,
 )
 
 gan_trainer.train(
     dataset=dataset,
     num_epochs=model_parameters.num_epochs,
-    validation_dataset=validation_dataset,
 )

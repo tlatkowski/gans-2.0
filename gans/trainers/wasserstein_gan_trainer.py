@@ -24,6 +24,7 @@ class WassersteinGANTrainer(gan_trainer.GANTrainer):
             n_critic=5,
             gp_weight=10.0,
             checkpoint_step=10,
+            validation_dataset=None,
     ):
         self.generator = generator
         self.discriminator = discriminator
@@ -47,6 +48,7 @@ class WassersteinGANTrainer(gan_trainer.GANTrainer):
             save_images_every_n_steps=save_images_every_n_steps,
             visualization_type=visualization_type,
             checkpoint_step=checkpoint_step,
+            validation_dataset=validation_dataset,
         )
 
     @tf.function

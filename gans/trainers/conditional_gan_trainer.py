@@ -24,6 +24,7 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
             save_images_every_n_steps: int,
             visualization_type: str,
             checkpoint_step: int = 10,
+            validation_dataset=None,
     ):
         self.generator = generator
         self.discriminator = discriminator
@@ -46,6 +47,7 @@ class ConditionalGANTrainer(gan_trainer.GANTrainer):
             save_images_every_n_steps=save_images_every_n_steps,
             visualization_type=visualization_type,
             checkpoint_step=checkpoint_step,
+            validation_dataset=validation_dataset,
         )
 
     @tf.function

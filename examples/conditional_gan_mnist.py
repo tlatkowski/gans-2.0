@@ -57,9 +57,9 @@ gan_trainer = conditional_gan_trainer.ConditionalGANTrainer(
     continue_training=False,
     save_images_every_n_steps=model_parameters.save_images_every_n_steps,
     visualization_type='image',
+    validation_dataset=validation_dataset,
 )
 gan_trainer.train(
     dataset=dataset,
     num_epochs=model_parameters.num_epochs,
-    validation_dataset=validation_dataset,
 )

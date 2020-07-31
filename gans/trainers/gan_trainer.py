@@ -4,6 +4,7 @@ from typing import List
 
 from tqdm import tqdm
 
+from gans.callbacks import basic_callbacks
 from gans.callbacks import callback
 from gans.callbacks import logger
 from gans.callbacks import saver
@@ -80,24 +81,12 @@ class GANTrainer:
         self.callbacks = callbacks or [
             self.checkpoint_manager,
             self.saver,
+            basic_callbacks.GlobalStepIncrementer(),
         ]
 
     @abstractmethod
     def train_step(self, batch):
         raise NotImplementedError
-
-    def on_epoch_begin(self):
-        pass
-
-    def on_epoch_end(self):
-        pass
-
-    def on_training_step_begin(self):
-        pass
-
-    def on_training_step_end(self):
-        for c in self.callbacks:
-            c.on_training_step_end(self)
 
     def train(
             self,
@@ -123,5 +112,20 @@ class GANTrainer:
                 self.logger.log_scalars(name='Losses', scalars=losses, step=global_step)
                 steps_per_second = 1. / dataset_tqdm.avg_time if dataset_tqdm.avg_time else 0.
                 self.logger.log_scalars(name='', scalars={'steps_per_second': steps_per_second}, step=self.global_step)
-                self.global_step += 1
             self.on_epoch_end()
+
+    def on_epoch_begin(self):
+        for c in self.callbacks:
+            c.on_epoch_begin(self)
+
+    def on_epoch_end(self):
+        for c in self.callbacks:
+            c.on_epoch_end(self)
+
+    def on_training_step_begin(self):
+        for c in self.callbacks:
+            c.on_training_step_begin(self)
+
+    def on_training_step_end(self):
+        for c in self.callbacks:
+            c.on_training_step_end(self)
