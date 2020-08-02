@@ -9,10 +9,15 @@ class FashionMnistDataset(abstract_dataset.Dataset):
 
     def __init__(
             self,
-            input_params,
+            batch_size,
+            buffer_size,
             with_labels=False,
     ):
-        super().__init__(input_params, with_labels)
+        super().__init__(
+            batch_size=batch_size,
+            buffer_size=buffer_size,
+            with_labels=with_labels
+        )
 
     def __call__(self, *args, **kwargs):
         return self.train_dataset

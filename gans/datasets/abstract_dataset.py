@@ -6,11 +6,12 @@ class Dataset(abc.ABC):
 
     def __init__(
             self,
-            input_params,
+            batch_size,
+            buffer_size,
             with_labels=False,
     ):
-        self.batch_size = input_params.batch_size
-        self.buffer_size = input_params.buffer_size
+        self.batch_size = batch_size
+        self.buffer_size = buffer_size
         if with_labels:
             self.train_dataset = self.load_data_with_labels()
         else:

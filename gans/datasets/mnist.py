@@ -5,17 +5,22 @@ from gans.utils import data_utils
 
 
 class MnistDataset(abstract_dataset.Dataset):
-    
+
     def __init__(
             self,
-            model_parameters,
+            batch_size,
+            buffer_size,
             with_labels=False,
     ):
-        super().__init__(model_parameters, with_labels)
-    
+        super().__init__(
+            batch_size=batch_size,
+            buffer_size=buffer_size,
+            with_labels=with_labels
+        )
+
     def __call__(self, *args, **kwargs):
         return self.train_dataset
-    
+
     def load_data(self):
         (train_images, _), (_, _) = tf.keras.datasets.mnist.load_data()
         train_images = train_images.reshape(train_images.shape[0], 28, 28, 1).astype('float32')
@@ -25,7 +30,7 @@ class MnistDataset(abstract_dataset.Dataset):
             self.buffer_size).batch(
             self.batch_size)
         return train_dataset
-    
+
     def load_data_with_labels(self):
         (train_images, train_labels), (_, _) = tf.keras.datasets.mnist.load_data()
         train_images = train_images.reshape(train_images.shape[0], 28, 28, 1).astype('float32')
