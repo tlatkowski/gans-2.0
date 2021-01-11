@@ -7,7 +7,7 @@
 
 The main aim of this project is to speed up a process of building 
 deep learning pipelines that are based on Generative Adversarial Networks 
-and simplify a prototyping of various generator/discriminator models. 
+and simplify prototyping of various generator/discriminator models. 
 This library provides several GAN trainers that can be used 
 as off-the-shelf features such us: 
 * Vanilla GAN
