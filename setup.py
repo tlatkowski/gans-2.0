@@ -17,7 +17,7 @@ setup(
         'tqdm==4.47.0',
         'tensorflow-addons~=0.6',
         'tensorflow-datasets==1.3.0',
-        'pyyaml==5.1.2',
+        'pyyaml==5.4',
         'overrides==3.1.0',
     ],
     extras_require={
