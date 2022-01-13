@@ -12,7 +12,7 @@ setup(
     install_requires=[
         'matplotlib==3.1.0',
         'easydict==1.9',
-        'Pillow==7.1.0',
+        'Pillow==9.0.0',
         'imageio==2.5.0',
         'tqdm==4.47.0',
         'tensorflow-addons~=0.6',
